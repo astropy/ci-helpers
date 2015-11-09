@@ -64,8 +64,18 @@ function InstallMiniconda ($python_version, $architecture, $python_home) {
     }
 }
 
-function main () {
-    InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
-}
+# Install miniconda
+InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
+SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
 
-main
+# Install the build and runtime dependencies of the project.
+conda update conda
+
+# Create a conda environment using the astropy bonus packages
+conda create -q -n test -c astropy-ci-extras python=%PYTHON_VERSION%
+activate test
+
+# Check that we have the expected version of Python
+python --version
+
+
