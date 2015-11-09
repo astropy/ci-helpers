@@ -33,7 +33,7 @@ else
 fi
 
 # ASTROPY
-if [[ !-z $ASTROPY_VERSION ]]; then
+if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == development ]] || [[ $ASTROPY_VERSION == dev ]]; then
         $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy;
     elif [[ $ASTROPY_VERSION == stable ]]; then
