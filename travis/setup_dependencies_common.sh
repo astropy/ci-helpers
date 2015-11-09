@@ -33,7 +33,7 @@ else
 fi
 
 # ASTROPY
-if [[ -v $ASTROPY_VERSION ]]; then
+if [[ !-z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == development ]] || [[ $ASTROPY_VERSION == dev ]]; then
         $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy;
     elif [[ $ASTROPY_VERSION == stable ]]; then
@@ -47,9 +47,8 @@ fi
 # versions are always explicitly specified.
 
 # OPTIONAL DEPENDENCIES
-if [[ $SETUP_CMD != egg_info ]] && $INSTALL_OPTIONAL; then
-    $CONDA_INSTALL --channel astropy $OPTIONAL_DEPENDENCIES
-    $PIP_INSTALL $OPTIONAL_DEPENDENCIES
+if $INSTALL_OPTIONAL; then
+    $CONDA_INSTALL $OPTIONAL_DEPENDENCIES
 fi
 
 # DOCUMENTATION DEPENDENCIES
