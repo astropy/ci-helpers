@@ -10,6 +10,7 @@ The scripts include:
 
 * ``appveyor/install-miniconda.ps1`` - set up conda on Windows
 * ``appveyor/windows_sdk.cmd`` - set up the compiler environment on Windows
+* ``travis/setup_dependencies_common.sh`` - set up conda packages on Linux and MacOS X
 * ``travis/setup_conda_linux.sh`` - set up conda on Linux
 * ``travis/setup_conda_osx.sh`` - set up conda on MacOS X
 
