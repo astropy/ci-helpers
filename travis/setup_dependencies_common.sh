@@ -42,22 +42,22 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == development ]] || [[ $ASTROPY_VERSION == dev ]]; then
         # Install Astropy core dependencies first
         $CONDA_INSTALL Cython jinja2
-        $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy;
+        $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy
     elif [[ $ASTROPY_VERSION == stable ]]; then
-        $CONDA_INSTALL astropy;
+        $CONDA_INSTALL astropy
     else
-        $CONDA_INSTALL astropy=$ASTROPY_VERSION;
+        $CONDA_INSTALL astropy=$ASTROPY_VERSION
     fi
 fi
 
 # ADDITIONAL DEPENDENCIES
 if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES
+fi
 
 if [[ ! -z $PIP_ADDITIONAL_DEPENDENCIES ]]; then
     $PIP_INSTALL $PIP_ADDITIONAL_DEPENDENCIES
 fi
-
 
 # Now set up shortcut to conda install command to make sure the Python and Numpy
 # versions are always explicitly specified.
@@ -81,6 +81,6 @@ fi
 if [[ $SETUP_CMD == 'test --coverage' ]]; then
   # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
   # with the fix of https://github.com/astropy/astropy/issues/4175.
-  pip install coverage==3.7.1;
-  pip install coveralls;
+  $PIP_INSTALL coverage==3.7.1
+  $PIP_INSTALL coveralls
 fi
