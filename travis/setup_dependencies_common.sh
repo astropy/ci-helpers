@@ -54,25 +54,16 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     fi
 fi
 
-# ADDITIONAL DEPENDENCIES
+# Now set up shortcut to conda install command to make sure the Python and Numpy
+# versions are always explicitly specified.
+
+# ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES
 fi
 
 if [[ ! -z $PIP_ADDITIONAL_DEPENDENCIES ]]; then
     $PIP_INSTALL $PIP_ADDITIONAL_DEPENDENCIES
-fi
-
-# Now set up shortcut to conda install command to make sure the Python and Numpy
-# versions are always explicitly specified.
-
-# OPTIONAL DEPENDENCIES
-if [[ ! -z $CONDA_OPTIONAL_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_OPTIONAL_DEPENDENCIES
-fi
-
-if [[ ! -z $PIP_OPTIONAL_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_OPTIONAL_DEPENDENCIES
 fi
 
 # DOCUMENTATION DEPENDENCIES
