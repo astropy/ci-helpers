@@ -1,5 +1,5 @@
 About
-=====
+-----
 
 [![Build Status](https://travis-ci.org/astrofrog/ci-helpers.svg?branch=master)](https://travis-ci.org/astrofrog/ci-helpers)
 [![Build status](https://ci.appveyor.com/api/projects/status/4mqtucv6ks4peakf/branch/master?svg=true)](https://ci.appveyor.com/project/Astropy/ci-helpers/branch/master)
@@ -22,10 +22,9 @@ This repository can be cloned directly from the ``.travis.yml`` and
 included as a sub-module in repositories.
 
 How to use
-==========
+----------
 
-Travis
-------
+### Travis
 
 Include the following lines at the start of the ``before_install`` section in ``.travis.yml``:
 
@@ -35,8 +34,7 @@ before_install:
     - source ci-helpers/travis/setup_environment_$TRAVIS_OS_NAME.sh
 ```
 
-AppVeyor
---------
+### AppVeyor
 
 Include the following lines at the start of the ``install`` section in ``appveyor.yml``:
 
@@ -48,7 +46,7 @@ install:
 ```
 
 What this does
-==============
+--------------
 
 The above lines:
 
