@@ -19,14 +19,14 @@ if [[ $SETUP_CMD == egg_info ]]; then
     return  # no more dependencies needed
 fi
 
+# CORE DEPENDENCIES
+conda install pytest pip
+
 # PEP8
 if [[ $MAIN_CMD == pep8* ]]; then
     $PIP_INSTALL pep8
     return  # no more dependencies needed
 fi
-
-# CORE DEPENDENCIES
-conda install pytest Cython jinja2 pip
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
