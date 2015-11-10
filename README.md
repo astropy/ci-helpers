@@ -9,6 +9,8 @@ This repository contains a set of scripts that are used by the
 [Travis](http://travis-ci.org) and [AppVeyor](http://www.appveyor.com/) 
 services respectively.
 
+The idea is to clone these at the last minute when the continuous integration is about to be run. This is better than including this repository as a sub-module, because this allows updates to this repository to take effect immediately, and not have to update the sub-module every time a change is made.
+
 How to use
 ----------
 
