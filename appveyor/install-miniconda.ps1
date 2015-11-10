@@ -66,7 +66,10 @@ function InstallMiniconda ($python_version, $architecture, $python_home) {
 
 # Install miniconda
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
-$env:Path += ";%PYTHON%;%PYTHON%\\Scripts"
+
+# Set environment variables
+$env:Path += ";C:\conda\"
+$env:Path += ";C:\conda\Scripts\"
 
 # Install the build and runtime dependencies of the project.
 conda update conda
