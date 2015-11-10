@@ -1,0 +1,22 @@
+language: python
+
+python:
+    - 2.7
+    - 3.4
+
+sudo: false
+
+addons:
+    apt:
+        packages:
+            - graphviz
+            - texlive-latex-extra
+            - dvipng
+
+before_install:
+    - git clone . ci-helpers
+    - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+
+script:
+   - python --version
+   - conda --version
