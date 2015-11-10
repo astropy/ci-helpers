@@ -51,6 +51,8 @@ if $INSTALL_OPTIONAL; then
     $CONDA_INSTALL $OPTIONAL_DEPENDENCIES
 fi
 
+set -x
+
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
 if [[ $SETUP_CMD == build_sphinx* ]]; then
