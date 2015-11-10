@@ -16,7 +16,7 @@ How to use
 
 Include the following lines at the start of the ``before_install`` section in ``.travis.yml``:
 
-```
+```yaml
 before_install:
     - git clone git://github.com/astropy/ci-helpers.git
     - source ci-helpers/travis/setup_environment_$TRAVIS_OS_NAME.sh
@@ -26,7 +26,7 @@ before_install:
 
 Include the following lines at the start of the ``install`` section in ``appveyor.yml``:
 
-```
+```yaml
 install:
     - "git clone git://github.com/astropy/ci-helpers.git"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
