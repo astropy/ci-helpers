@@ -5,7 +5,9 @@ conda config --set always_yes yes --set changeps1 no
 conda update -q conda
 conda info -a
 
-PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
+if [[ -z $PYTHON_VERSION ]]; then
+    PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
+fi
 
 # CONDA
 conda create -n test -c astropy-ci-extras python=$PYTHON_VERSION pip
@@ -52,8 +54,6 @@ fi
 if $INSTALL_OPTIONAL; then
     $CONDA_INSTALL $OPTIONAL_DEPENDENCIES
 fi
-
-set -x
 
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
