@@ -30,10 +30,10 @@ conda install pytest Cython jinja2 pip
 # NUMPY
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install -c astropy-ci-extras python=$PYTHON_VERSION"
 else
     conda install  numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    export CONDA_INSTALL="conda install -c astropy-ci-extras python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 fi
 
 # ASTROPY
