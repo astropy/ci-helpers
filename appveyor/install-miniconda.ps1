@@ -71,6 +71,9 @@ InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
 $env:Path += ";C:\conda\"
 $env:Path += ";C:\conda\Scripts\"
 
+# Conda config
+conda config --set always_yes true
+
 # Install the build and runtime dependencies of the project.
 conda update conda
 

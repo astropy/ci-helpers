@@ -28,6 +28,7 @@ platform:
 install:
     - "git clone . ci-helpers"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
+    - "conda env list"
 
 # Not a .NET project, we build SunPy in the install step instead
 build: false
