@@ -26,9 +26,17 @@ platform:
     -x64
 
 install:
+
+    # Install Miniconda
     - "git clone . ci-helpers"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    - "conda env list"
+
+    # Set path again, need to find a way to avoid doing this again
+    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+    # Test that PATH is set correctly
+    - "conda --version"
+    - "python --version"
 
 # Not a .NET project, we build SunPy in the install step instead
 build: false
