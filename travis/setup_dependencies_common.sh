@@ -6,10 +6,6 @@ conda config --add channels astropy-ci-extras
 conda update -q conda
 conda info -a
 
-# Printing out the dependencies for making debugging easier
-echo $CONDA_ADDITIONAL_DEPENDENCIES
-echo $PIP_ADDITIONAL_DEPENDENCIES
-
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
 export PYTHONIOENCODING=UTF8
@@ -62,12 +58,13 @@ fi
 # versions are always explicitly specified.
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
-if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES
+if [[ -z $CONDA_DEPENDENCIES ]]; then
+    if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]] || [[ ! -z $CONDA_OPTIONAL_DEPENDENCIES ]]; then
+    $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES $CONDA_OPTIONAL_DEPENDENCIES
 fi
 
-if [[ ! -z $PIP_ADDITIONAL_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_ADDITIONAL_DEPENDENCIES
+if [[ ! -z $PIP_DEPENDENCIES ]]; then
+    $PIP_INSTALL $PIP_DEPENDENCIES
 fi
 
 # DOCUMENTATION DEPENDENCIES
