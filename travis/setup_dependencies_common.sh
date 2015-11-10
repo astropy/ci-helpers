@@ -2,6 +2,7 @@
 
 hash -r
 conda config --set always_yes yes --set changeps1 no
+conda config --add channels astropy-ci-extras
 conda update -q conda
 conda info -a
 
@@ -10,7 +11,7 @@ if [[ -z $PYTHON_VERSION ]]; then
 fi
 
 # CONDA
-conda create -n test -c astropy-ci-extras python=$PYTHON_VERSION pip
+conda create -n test python=$PYTHON_VERSION pip
 source activate test
 
 # EGG_INFO
@@ -30,10 +31,10 @@ conda install pytest Cython jinja2 pip
 # NUMPY
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
-    export CONDA_INSTALL="conda install -c astropy-ci-extras python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
 else
     conda install  numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install -c astropy-ci-extras python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 fi
 
 # ASTROPY
