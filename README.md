@@ -1,7 +1,7 @@
 About
 -----
 
-[![Build Status](https://travis-ci.org/astrofrog/ci-helpers.svg?branch=master)](https://travis-ci.org/astrofrog/ci-helpers)
+[![Build Status](https://travis-ci.org/astropy/ci-helpers.svg?branch=master)](https://travis-ci.org/astropy/ci-helpers)
 [![Build status](https://ci.appveyor.com/api/projects/status/4mqtucv6ks4peakf/branch/master?svg=true)](https://ci.appveyor.com/project/Astropy/ci-helpers/branch/master)
 
 This repository contains a set of scripts that are used by the 
