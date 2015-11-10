@@ -6,7 +6,7 @@ conda update -q conda
 conda info -a
 
 # CONDA
-conda create --yes -n test -c astropy-ci-extras python=$PYTHON_VERSION pip
+conda create -n test -c astropy-ci-extras python=$PYTHON_VERSION pip
 source activate test
 
 # EGG_INFO
@@ -21,15 +21,15 @@ if [[ $MAIN_CMD == pep8* ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install --yes pytest Cython jinja2 pip
+conda install pytest Cython jinja2 pip
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
-    export CONDA_INSTALL="conda install --yes python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
 else
-    conda install --yes numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install --yes python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    conda install  numpy=$NUMPY_VERSION
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 fi
 
 # ASTROPY
