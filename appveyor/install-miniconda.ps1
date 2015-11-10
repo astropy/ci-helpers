@@ -73,15 +73,17 @@ $env:PATH += ";C:\conda\Scripts\"
 
 # Conda config
 conda config --set always_yes true
+conda config --add channels astropy-ci-extras
 
 # Install the build and runtime dependencies of the project.
-conda update conda
+conda update -q conda
 
 # Create a conda environment using the astropy bonus packages
-conda create -q -n test -c astropy-ci-extras python=$env:PYTHON_VERSION
+conda create -n test -c astropy-ci-extras python=$env:PYTHON_VERSION
 activate test
 
 # Check that we have the expected version of Python
 python --version
 
-
+# Install the specified versions of numpy as astropy and other dependencies
+conda install numpy=%NUMPY_VERSION% astropy=%ASTROPY_VERSION% %CONDA_ADDITIONAL_DEPENDENCIES%
