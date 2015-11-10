@@ -20,7 +20,11 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install pytest pip
+conda install pytest pip $CONDA_DEPENDENCIES
+
+if [[ ! -z $PIP_DEPENDENCIES ]]; then
+    $PIP_INSTALL $PIP_DEPENDENCIES
+fi
 
 # PEP8
 if [[ $MAIN_CMD == pep8* ]]; then
