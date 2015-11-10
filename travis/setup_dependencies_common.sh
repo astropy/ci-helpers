@@ -20,11 +20,7 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install pytest pip $CONDA_ADDITIONAL_DEPENDENCIES
-
-if [[ ! -z $PIP_ADDITIONAL_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_ADDITIONAL_DEPENDENCIES
-fi
+conda install pytest pip
 
 # PEP8
 if [[ $MAIN_CMD == pep8* ]]; then
@@ -53,6 +49,15 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         $CONDA_INSTALL astropy=$ASTROPY_VERSION;
     fi
 fi
+
+# ADDITIONAL DEPENDENCIES
+if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]]; then
+    $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES
+
+if [[ ! -z $PIP_ADDITIONAL_DEPENDENCIES ]]; then
+    $PIP_INSTALL $PIP_ADDITIONAL_DEPENDENCIES
+fi
+
 
 # Now set up shortcut to conda install command to make sure the Python and Numpy
 # versions are always explicitly specified.
