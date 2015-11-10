@@ -78,7 +78,7 @@ conda config --set always_yes true
 conda update conda
 
 # Create a conda environment using the astropy bonus packages
-conda create -q -n test -c astropy-ci-extras python=%PYTHON_VERSION%
+conda create -q -n test -c astropy-ci-extras python=$env:PYTHON_VERSION
 activate test
 
 # Check that we have the expected version of Python
