@@ -6,6 +6,10 @@ conda config --add channels astropy-ci-extras
 conda update -q conda
 conda info -a
 
+# Use utf8 encoding. Should be default, but this is insurance against
+# future changes
+export PYTHONIOENCODING=UTF8
+
 if [[ -z $PYTHON_VERSION ]]; then
     PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
 fi
