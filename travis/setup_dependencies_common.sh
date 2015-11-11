@@ -15,7 +15,7 @@ if [[ -z $PYTHON_VERSION ]]; then
 fi
 
 # CONDA
-conda create -n test python=$PYTHON_VERSION pip
+conda create -n test python=$PYTHON_VERSION
 source activate test
 
 # EGG_INFO
