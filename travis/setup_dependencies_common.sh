@@ -60,17 +60,22 @@ fi
 # versions are always explicitly specified.
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
-if [[ -z $CONDA_DEPENDENCIES ]]; then
-    if [[ ! -z $CONDA_ADDITIONAL_DEPENDENCIES ]] || [[ ! -z $CONDA_OPTIONAL_DEPENDENCIES ]]; then
-        $CONDA_INSTALL $CONDA_ADDITIONAL_DEPENDENCIES $CONDA_OPTIONAL_DEPENDENCIES
-    fi
-
-else
+if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES
 fi
 
 if [[ ! -z $PIP_DEPENDENCIES ]]; then
     $PIP_INSTALL $PIP_DEPENDENCIES
+fi
+
+# PARALLEL BUILDS
+if [[ $SETUP_CMD == *parallel* ]]; then
+    $PIP_INSTALL pytest-xdist
+fi
+
+# OPEN FILES
+if [[ $SETUP_CMD == *open-files* ]]; then
+    $CONDA_INSTALL psutil
 fi
 
 # DOCUMENTATION DEPENDENCIES
