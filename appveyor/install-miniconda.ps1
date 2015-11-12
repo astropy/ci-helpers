@@ -86,4 +86,8 @@ activate test
 python --version
 
 # Install the specified versions of numpy as astropy and other dependencies
-conda install pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+if (Test-Path variable:global:ASTROPY_VERSION) {
+   conda install pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+} else {
+   conda install pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+}
