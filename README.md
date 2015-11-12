@@ -46,6 +46,8 @@ Following this, various dependencies are installed depending on the following en
     * ``build_sphinx``: the Sphinx and matplotlib packages are installed in
       addition to other packages that might be requested via other
       environment variables.
+      
+    * ``test``: runs the test suite after the dependencies are installed.
 
   In addition, if ``SETUP_CMD`` contains the following flags, extra dependencies are installed:
 
