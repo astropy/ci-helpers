@@ -33,6 +33,7 @@ install:
 
     # Set path again, need to find a way to avoid doing this again
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+    - "activate test"
 
     # Test that PATH is set correctly
     - "conda --version"
