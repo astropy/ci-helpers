@@ -38,9 +38,12 @@ fi
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
     export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
-else
-    conda install  numpy=$NUMPY_VERSION
+elif [[ ! -z $NUMPY_VERSION ]]; then
+    conda install numpy=$NUMPY_VERSION
     export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+else
+    conda install numpy
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy"
 fi
 
 # ASTROPY
