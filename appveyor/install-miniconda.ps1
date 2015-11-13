@@ -89,7 +89,7 @@ python --version
 
 # Install the specified versions of numpy as astropy and other dependencies
 if (Test-Path variable:global:ASTROPY_VERSION) {
-   conda install -q pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+   conda install -n test -q pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
 } else {
-   conda install -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+   conda install -n test -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
 }
