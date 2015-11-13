@@ -88,8 +88,11 @@ $env:PATH = "C:\conda\envs\test;C:\conda\envs\test\Scripts;C:\conda\envs\test\Li
 python --version
 
 # Install the specified versions of numpy as astropy and other dependencies
-if ($env:ASTROPY_VERSION) {
-   conda install -n test -q pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+if ($env:CONDA_DEPENDENCIES -eq "") {
+   conda install -n test -q pytest numpy=$env:NUMPY_VERSION
 } else {
    conda install -n test -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
 }
+
+if ($env:ASTROPY_VERSION) {
+   conda install -n test -q numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION
