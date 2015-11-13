@@ -46,7 +46,7 @@ matrix:
                TEST_CMD='python -c "import astrodendro"'
 
 before_install:
-    - git clone --depth=10 file://$PWD ci-helpers
+    - ln -s . ci-helpers
     - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
 
 script:
