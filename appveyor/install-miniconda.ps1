@@ -79,7 +79,7 @@ conda config --add channels astropy-ci-extras
 conda update -q conda
 
 # Create a conda environment using the astropy bonus packages
-conda create -n test -c astropy-ci-extras python=$env:PYTHON_VERSION
+conda create -q -n test python=$env:PYTHON_VERSION
 activate test
 
 # Check that we have the expected version of Python
@@ -87,7 +87,7 @@ python --version
 
 # Install the specified versions of numpy as astropy and other dependencies
 if (Test-Path variable:global:ASTROPY_VERSION) {
-   conda install pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+   conda install -q pytest numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
 } else {
-   conda install pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+   conda install -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
 }
