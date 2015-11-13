@@ -42,8 +42,7 @@ elif [[ ! -z $NUMPY_VERSION ]]; then
     conda install numpy=$NUMPY_VERSION
     export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
-    conda install numpy
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy"
+    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
 fi
 
 # ASTROPY
