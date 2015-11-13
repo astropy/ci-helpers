@@ -50,4 +50,4 @@ before_install:
     - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
 
 script:
-   - $TEST_CMD
+   - eval $TEST_CMD
