@@ -68,7 +68,7 @@ function InstallMiniconda ($python_version, $architecture, $python_home) {
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
 
 # Set environment variables
-$env:PATH = "C:\conda\;C:\conda\Scripts\;" + $env:PATH
+$env:PATH = "C:\conda;C:\conda\Scripts;" + $env:PATH
 
 # Conda config
 conda config --set always_yes true
@@ -80,6 +80,9 @@ conda update -q conda
 # Create a conda environment using the astropy bonus packages
 conda create -q -n test python=$env:PYTHON_VERSION
 activate test
+
+# Set environment variables for environment (activate test doesn't seem to do the trick)
+$env:PATH = "C:\conda\envs\test;C:\conda\envs\test\Scripts;C:\conda\envs\test\Library\bin;" + $env:PATH
 
 # Check that we have the expected version of Python
 python --version
