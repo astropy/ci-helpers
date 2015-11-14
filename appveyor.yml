@@ -15,23 +15,30 @@ environment:
 
       - PYTHON_VERSION: "2.6"
         NUMPY_VERSION: "1.9"
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.9\")"
+
       - PYTHON_VERSION: "3.4"
         NUMPY_VERSION: "1.9"
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.9\")"
+
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "1.10"
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.10\")"
 
-      - PYTHON_VERSION: "3.4"
-        NUMPY_VERSION: "1.9"
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.10"
         ASTROPY_VERSION: "development"
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.10\"); import astropy; assert astropy.__version__.startswith(\"1.1\")"
 
-      - PYTHON_VERSION: "3.4"
-        NUMPY_VERSION: "1.9"
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.10"
         ASTROPY_VERSION: "stable"
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.10\"); import astropy; assert astropy.__version__.startswith(\"1.0\")"
 
-      - PYTHON_VERSION: "3.4"
-        NUMPY_VERSION: "1.9"
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.10"
         ASTROPY_VERSION: "1.0"
-
+        TEST_CMD: "import numpy; assert numpy.__version__.startswith(\"1.10\"); import astropy; assert astropy.__version__.startswith(\"1.0\")"
 
 platform:
     -x64
@@ -54,5 +61,5 @@ install:
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% python --version"
+  - "%CMD_IN_ENV% python -c %TEST_CMD%"
 
