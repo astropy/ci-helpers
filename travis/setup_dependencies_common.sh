@@ -15,7 +15,7 @@ if [[ -z $PYTHON_VERSION ]]; then
 fi
 
 # CONDA
-conda create -n test python=$PYTHON_VERSION
+conda create -q -n test python=$PYTHON_VERSION
 source activate test
 
 # EGG_INFO
@@ -24,7 +24,7 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install pytest pip
+conda install -q pytest pip
 
 export PIP_INSTALL='pip install'
 
@@ -36,14 +36,14 @@ fi
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
-    conda install Cython
+    conda install -q Cython
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    conda install -q numpy=$NUMPY_VERSION
+    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
-    export CONDA_INSTALL="conda install python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 fi
 
 # ASTROPY
