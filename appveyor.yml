@@ -13,14 +13,13 @@ environment:
 
   matrix:
 
-      # We test Python 2.6 and 3.4 because 2.6 is most likely to have issues in
-      # Python 2 (if 2.6 passes, 2.7 virtually always passes) and Python 3.4 is
-      # the latest Python 3 release.
-
       - PYTHON_VERSION: "2.6"
-        NUMPY_VERSION: "1.9.1"
+        NUMPY_VERSION: "1.9"
       - PYTHON_VERSION: "3.4"
-        NUMPY_VERSION: "1.9.1"
+        NUMPY_VERSION: "1.9"
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.10"
+
 
 platform:
     -x64
@@ -39,7 +38,7 @@ install:
     - "conda --version"
     - "python --version"
 
-# Not a .NET project, we build SunPy in the install step instead
+# Not a .NET project, we build ci-helpers in the install step instead
 build: false
 
 test_script:
