@@ -95,6 +95,12 @@ if ($env:CONDA_DEPENDENCIES -eq "") {
 }
 
 # Check whether astropy is required and if yes install it
-if ($env:ASTROPY_VERSION) {
+if ($env:ASTROPY_VERSION -match "dev") {
+   # Install pip and Astropy core build dependencies first
+   conda install -n test -q numpy=$env:NUMPY_VERSION Cython jinja2 pip
+   pip install git+http://github.com/astropy/astropy.git#egg=astropy
+} elseif ($env:ASTROPY_VERSION -match "stable") {
+   conda install -n test -q numpy=$env:NUMPY_VERSION astropy
+} elseif ($env:ASTROPY_VERSION) {
    conda install -n test -q numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION
 }
