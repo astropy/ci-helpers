@@ -1,8 +1,18 @@
 #!/bin/bash -x
 
 hash -r
+
 conda config --set always_yes yes --set changeps1 no
-conda config --add channels astropy-ci-extras
+
+if [[ -z $CONDA_CHANNELS ]]; then
+    CONDA_CHANNELS=astropy-ci-extras
+fi
+
+for channel in $CONDA_CHANNELS
+do
+    conda config --add channels $channel
+done
+
 conda update -q conda
 conda info -a
 
