@@ -27,7 +27,7 @@ matrix:
     include:
         - python: 3.5
           env: SETUP_CMD='build_sphinx'
-               TEST_CMD='python -c "import sphinx"'
+
         - python: 3.5
           env: MAIN_CMD='pep8'
                TEST_CMD='pep8 --version'

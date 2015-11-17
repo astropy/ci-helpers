@@ -43,3 +43,9 @@ def test_astropy():
 def test_dependency_imports():
     for package in dependency_list:
         __import__(package)
+
+
+def test_sphinx():
+    if 'SETUP_CMD' in os.environ:
+        if 'build_sphinx' in os.environ['SETUP_CMD']:
+            import sphinx
