@@ -57,7 +57,7 @@ Following this, various dependencies are installed depending on the following en
 
 * ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed. If set to a version number, that
-  version is installed.
+  version is installed. 
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
@@ -122,9 +122,7 @@ This does the following:
 
 Following this, various dependencies are installed depending on the following environment variables
 
-* ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Numpy is installed. If set to a version number, that
-  version is installed.
+* ``$NUMPY_VERSION``: Set the version number to be installed.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
