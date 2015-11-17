@@ -71,6 +71,9 @@ Following this, various dependencies are installed depending on the following en
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with pip.
 
+* ``$CONDA_CHANNELS``: this should be a space-separated string of conda
+  channel names, and defaults to ``astropy-ci-extras``.
+
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is that the ``script`` section of the ``.travis.yml`` file can be set to:
 
 ```

@@ -53,6 +53,11 @@ matrix:
         - python: 3.5
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
                TEST_CMD='python -c "import astropy"'
+        - python: 2.7
+          env: SETUP_CMD='test'
+               TEST_CMD='python -c "import PyQt5"'
+               CONDA_CHANNELS='astropy-ci-extras astrofrog'
+               CONDA_DEPENDENCIES='pyqt5'
 
 
 before_install:
