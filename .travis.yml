@@ -52,7 +52,7 @@ matrix:
         - python: 2.7
           env: SETUP_CMD='test'
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
-               CONDA_DEPENDENCIES='pyqt5'
+               CONDA_DEPENDENCIES='PyQt5'
 
 
 before_install:
