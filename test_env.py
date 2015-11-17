@@ -19,7 +19,7 @@ dependency_list = PIP_DEPENDENCIES + CONDA_DEPENDENCIES
 
 
 def test_numpy():
-    if os.environ.get('NUMPY_VERSION', None) is not None:
+    if 'NUMPY_VERSION' in os.environ:
         import numpy
         try:
             assert numpy.__version__.startswith(os.environ['NUMPY_VERSION'])
@@ -28,7 +28,7 @@ def test_numpy():
 
 
 def test_astropy():
-    if os.environ.get('ASTROPY_VERSION', None) is not None:
+    if 'ASTROPY_VERSION' in os.environ:
         import astropy
         try:
             assert astropy.__version__.startswith(os.environ['ASTROPY_VERSION'])
