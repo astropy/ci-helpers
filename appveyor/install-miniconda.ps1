@@ -88,13 +88,19 @@ $env:PATH = "C:\conda\envs\test;C:\conda\envs\test\Scripts;C:\conda\envs\test\Li
 python --version
 
 # Install the specified versions of numpy and other dependencies
-if ($env:CONDA_DEPENDENCIES -eq "") {
-   conda install -n test -q pytest numpy=$env:NUMPY_VERSION
-} else {
+if ($env:CONDA_DEPENDENCIES) {
    conda install -n test -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+} else {
+   conda install -n test -q pytest numpy=$env:NUMPY_VERSION
 }
 
 # Check whether astropy is required and if yes install it
-if ($env:ASTROPY_VERSION) {
+if ($env:ASTROPY_VERSION -match "dev") {
+   # Install pip and Astropy core build dependencies first
+   conda install -n test -q numpy=$env:NUMPY_VERSION Cython jinja2 pip
+   pip install git+http://github.com/astropy/astropy.git#egg=astropy
+} elseif ($env:ASTROPY_VERSION -match "stable") {
+   conda install -n test -q numpy=$env:NUMPY_VERSION astropy
+} elseif ($env:ASTROPY_VERSION) {
    conda install -n test -q numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION
 }
