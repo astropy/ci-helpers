@@ -19,7 +19,7 @@ env:
         - TEST_CMD='py.test test_env.py'
     matrix:
         - SETUP_CMD='egg_info'
-          env: TEST_CMD='python --version'
+          TEST_CMD='python --version'
 
         - SETUP_CMD='test'
 
