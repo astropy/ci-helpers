@@ -1,4 +1,5 @@
 import os
+import sys
 
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
@@ -16,6 +17,13 @@ else:
     CONDA_DEPENDENCIES = []
 
 dependency_list = PIP_DEPENDENCIES + CONDA_DEPENDENCIES
+
+
+def test_python_version():
+    if 'PYTHON_VERSION' in os.environ:
+        assert sys.version.startwith(os.environ['PYTHON_VERSION'])
+    elif 'TRAVIS_PYTHON_VERSION' in os.environ:
+        assert sys.version.startwith(os.environ['TRAVIS_PYTHON_VERSION'])
 
 
 def test_numpy():
