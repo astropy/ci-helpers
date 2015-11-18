@@ -43,10 +43,10 @@ Following this, various dependencies are installed depending on the following en
     * ``egg_info``: no dependencies are installed once the conda environment
       has been created and any other environment variables are ignored.
 
-    * ``build_sphinx``: the Sphinx and matplotlib packages are installed in
-      addition to other packages that might be requested via other
-      environment variables.
-      
+    * ``build_sphinx`` or ``build_docs``: the Sphinx and matplotlib packages
+      are installed in addition to other packages that might be requested
+      via other environment variables.
+
     * ``test``: runs the test suite after the dependencies are installed.
 
   In addition, if ``SETUP_CMD`` contains the following flags, extra dependencies are installed:
@@ -57,7 +57,7 @@ Following this, various dependencies are installed depending on the following en
 
 * ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed. If set to a version number, that
-  version is installed. 
+  version is installed.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
