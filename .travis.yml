@@ -28,9 +28,13 @@ matrix:
         - python: 3.5
           env: SETUP_CMD='build_sphinx'
 
+        - python: 2.7
+          env: SETUP_CMD='build_docs'
+
         - python: 3.5
           env: MAIN_CMD='pep8'
                TEST_CMD='pep8 --version'
+
         - python: 3.5
           env: SETUP_CMD='test' NUMPY_VERSION=1.10
 

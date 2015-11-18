@@ -93,7 +93,7 @@ fi
 
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
-if [[ $SETUP_CMD == build_sphinx* ]]; then
+if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     $CONDA_INSTALL Sphinx matplotlib
 fi
 

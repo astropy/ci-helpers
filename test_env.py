@@ -47,5 +47,6 @@ def test_dependency_imports():
 
 def test_sphinx():
     if 'SETUP_CMD' in os.environ:
-        if 'build_sphinx' in os.environ['SETUP_CMD']:
+        if ('build_sphinx' in os.environ['SETUP_CMD'] or
+            'build_docs' in os.environ['SETUP_CMD']):
             import sphinx
