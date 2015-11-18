@@ -21,9 +21,9 @@ dependency_list = PIP_DEPENDENCIES + CONDA_DEPENDENCIES
 
 def test_python_version():
     if 'PYTHON_VERSION' in os.environ:
-        assert sys.version.startwith(os.environ['PYTHON_VERSION'])
+        assert sys.version.startswith(os.environ['PYTHON_VERSION'])
     elif 'TRAVIS_PYTHON_VERSION' in os.environ:
-        assert sys.version.startwith(os.environ['TRAVIS_PYTHON_VERSION'])
+        assert sys.version.startswith(os.environ['TRAVIS_PYTHON_VERSION'])
 
 
 def test_numpy():
