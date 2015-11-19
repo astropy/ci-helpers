@@ -90,35 +90,37 @@ python --version
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
     if($env:NUMPY_VERSION -match "stable") {
-        $env:NUMPY_OPTION = "numpy"
+        $NUMPY_OPTION = "numpy"
     } elseif($env:NUMPY_VERSION -match "dev") {
-        $env:NUMPY_OPTION = "Cython pip"
+        $NUMPY_OPTION = "Cython pip".Split(" ")
     } else {
-        $env:NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
+        $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
 } else {
-    $env:NUMPY_OPTION = ""
+    $NUMPY_OPTION = ""
 }
 
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        $env:ASTROPY_OPTION = "astropy"
+        $ASTROPY_OPTION = "astropy"
     } elseif($env:ASTROPY_VERSION -match "dev") {
-        $env:ASTROPY_OPTION = "Cython pip"
+        $ASTROPY_OPTION = "Cython pip".Split(" ")
     } else {
-        $env:ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
+        $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
 } else {
-    $env:ASTROPY_OPTION = ""
+    $ASTROPY_OPTION = ""
 }
 
 # Install the specified versions of numpy and other dependencies
-if (-not $env:CONDA_DEPENDENCIES) {
-    $env:CONDA_DEPENDENCIES = ""
+if ($env:CONDA_DEPENDENCIES) {
+    $CONDA_DEPENDENCIES = $env:CONDA_DEPENDENCIES.split(" ")
+} else {
+    $CONDA_DEPENDENCIES = ""
 }
 
-conda install -n test -q pytest $env:NUMPY_OPTION.Split(" ") $env:ASTROPY_OPTION.Split(" ") $env:CONDA_DEPENDENCIES.Split(" ")
+conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
