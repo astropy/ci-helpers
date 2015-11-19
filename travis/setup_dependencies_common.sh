@@ -36,7 +36,7 @@ fi
 # CORE DEPENDENCIES
 conda install -q pytest pip
 
-export PIP_INSTALL='pip install'
+export PIP_INSTALL='pip install -q'
 
 # PEP8
 if [[ $MAIN_CMD == pep8* ]]; then
