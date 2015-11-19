@@ -105,7 +105,7 @@ if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
         $ASTROPY_OPTION = "astropy"
     } elseif($env:ASTROPY_VERSION -match "dev") {
-        $ASTROPY_OPTION = "Cython pip".Split(" ")
+        $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
