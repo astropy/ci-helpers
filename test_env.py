@@ -5,6 +5,7 @@ import sys
 # properly parsed hard-wire the latest stable branch version here
 
 LATEST_ASTROPY_STABLE = '1.0'
+LATEST_NUMPY_STABLE = '1.10'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
@@ -29,22 +30,26 @@ def test_python_version():
 def test_numpy():
     if 'NUMPY_VERSION' in os.environ:
         import numpy
-        try:
-            assert numpy.__version__.startswith(os.environ['NUMPY_VERSION'])
-        except AssertionError:
+        if 'dev' in os.environ['NUMPY_VERSION']:
             assert 'dev' in numpy.__version__
-
+        else:
+            if 'stable' in os.environ['NUMPY_VERSION']:
+                assert numpy.__version__.startswith(LATEST_NUMPY_STABLE)
+            else:
+                assert numpy.__version__.startswith(os.environ['NUMPY_VERSION'])
+            assert not 'dev' in numpy.__version__
 
 def test_astropy():
     if 'ASTROPY_VERSION' in os.environ:
         import astropy
-        try:
-            assert astropy.__version__.startswith(os.environ['ASTROPY_VERSION'])
-        except AssertionError:
-            if os.environ['ASTROPY_VERSION'] == 'stable':
+        if 'dev' in os.environ['ASTROPY_VERSION']:
+            assert 'dev' in astropy.__version__
+        else:
+            if 'stable' in os.environ['ASTROPY_VERSION']:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
             else:
-                assert 'dev' in astropy.__version__
+                assert astropy.__version__.startswith(os.environ['ASTROPY_VERSION'])
+            assert not 'dev' in astropy.__version__
 
 
 # Check whether everything is installed and importable
