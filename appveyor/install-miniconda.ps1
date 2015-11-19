@@ -87,20 +87,46 @@ $env:PATH = "C:\conda\envs\test;C:\conda\envs\test\Scripts;C:\conda\envs\test\Li
 # Check that we have the expected version of Python
 python --version
 
-# Install the specified versions of numpy and other dependencies
-if ($env:CONDA_DEPENDENCIES) {
-   conda install -n test -q pytest numpy=$env:NUMPY_VERSION $env:CONDA_DEPENDENCIES.Split(" ")
+# Check whether a specific version of Numpy is required
+if ($env:NUMPY_VERSION) {
+    if($env:NUMPY_VERSION -match "stable") {
+        $NUMPY_OPTION = "numpy"
+    } elseif($env:NUMPY_VERSION -match "dev") {
+        $NUMPY_OPTION = "Cython pip".Split(" ")
+    } else {
+        $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
+    }
 } else {
-   conda install -n test -q pytest numpy=$env:NUMPY_VERSION
+    $NUMPY_OPTION = ""
 }
 
-# Check whether astropy is required and if yes install it
+# Check whether a specific version of Astropy is required
+if ($env:ASTROPY_VERSION) {
+    if($env:ASTROPY_VERSION -match "stable") {
+        $ASTROPY_OPTION = "astropy"
+    } elseif($env:ASTROPY_VERSION -match "dev") {
+        $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
+    } else {
+        $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
+    }
+} else {
+    $ASTROPY_OPTION = ""
+}
+
+# Install the specified versions of numpy and other dependencies
+if ($env:CONDA_DEPENDENCIES) {
+    $CONDA_DEPENDENCIES = $env:CONDA_DEPENDENCIES.split(" ")
+} else {
+    $CONDA_DEPENDENCIES = ""
+}
+
+conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
+
+# Check whether the developer version of Numpy is required and if yes install it
+if ($env:NUMPY_VERSION -match "dev") {
+   pip install git+http://github.com/numpy/numpy.git#egg=numpy
+}
+# Check whether the developer version of Astropy is required and if yes install it
 if ($env:ASTROPY_VERSION -match "dev") {
-   # Install pip and Astropy core build dependencies first
-   conda install -n test -q numpy=$env:NUMPY_VERSION Cython jinja2 pip
    pip install git+http://github.com/astropy/astropy.git#egg=astropy
-} elseif ($env:ASTROPY_VERSION -match "stable") {
-   conda install -n test -q numpy=$env:NUMPY_VERSION astropy
-} elseif ($env:ASTROPY_VERSION) {
-   conda install -n test -q numpy=$env:NUMPY_VERSION astropy=$env:ASTROPY_VERSION
 }

@@ -14,6 +14,14 @@ environment:
 
   matrix:
 
+      - PYTHON_VERSION: "2.7"
+
+      - PYTHON_VERSION: "2.7"
+        NUMPY_VERSION: "stable"
+
+      - PYTHON_VERSION: "2.7"
+        NUMPY_VERSION: "development"
+
       - PYTHON_VERSION: "2.6"
         NUMPY_VERSION: "1.9"
 
@@ -34,6 +42,12 @@ environment:
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "1.10"
         ASTROPY_VERSION: "1.0"
+
+matrix:
+
+  allow_failures:
+    - PYTHON_VERSION: "2.7"
+      NUMPY_VERSION: "development"
 
 platform:
     -x64
