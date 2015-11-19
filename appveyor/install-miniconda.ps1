@@ -91,7 +91,7 @@ python --version
 if ($env:NUMPY_VERSION) {
     if($env:NUMPY_VERSION -match "stable") {
         $env:NUMPY_OPTION = "numpy"
-    elseif($env:NUMPY_VERSION -match "dev") {
+    } elseif($env:NUMPY_VERSION -match "dev") {
         $env:NUMPY_OPTION = "Cython pip"
     } else {
         $env:NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
@@ -104,7 +104,7 @@ if ($env:NUMPY_VERSION) {
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
         $env:ASTROPY_OPTION = "astropy"
-    elseif($env:ASTROPY_VERSION -match "dev") {
+    } elseif($env:ASTROPY_VERSION -match "dev") {
         $env:ASTROPY_OPTION = "Cython pip"
     } else {
         $env:ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
