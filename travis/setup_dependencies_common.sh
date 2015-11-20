@@ -49,6 +49,9 @@ if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
     conda install -q Cython
     $PIP_INSTALL git+http://github.com/numpy/numpy.git
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
+elif [[ $NUMPY_VERSION == stable ]]; then
+    conda install -q numpy
+    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
     conda install -q numpy=$NUMPY_VERSION
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
