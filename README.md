@@ -9,17 +9,21 @@ This repository contains a set of scripts that are used by the
 [Travis](http://travis-ci.org) and [AppVeyor](http://www.appveyor.com/)
 services respectively.
 
-The idea is to clone these at the last minute when the continuous integration is about to be run. This is better than including this repository as a sub-module, because this allows updates to this repository to take effect immediately, and not have to update the sub-module every time a change is made.
+The idea is to clone these at the last minute when the continuous
+integration is about to be run. This is better than including this
+repository as a sub-module, because this allows updates to this repository
+to take effect immediately, and not have to update the sub-module every time
+a change is made.
 
 How to use
 ----------
 
 ### Travis
 
-Include the following lines at the start of the ``before_install`` section in ``.travis.yml``:
+Include the following lines at the start of the ``install`` section in ``.travis.yml``:
 
 ```yaml
-before_install:
+install:
     - git clone git://github.com/astropy/ci-helpers.git
     - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
 ```
@@ -56,8 +60,9 @@ Following this, various dependencies are installed depending on the following en
     * ``--open-files``: the psutil package is installed
 
 * ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Numpy is installed. If set to a version number, that
-  version is installed.
+  developer version of Numpy is installed along with Cython. If set to a
+  version number, that version is installed. If set to ``stable``, install
+  the latest stable version of Numpy.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
@@ -74,7 +79,8 @@ Following this, various dependencies are installed depending on the following en
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
   channel names, and defaults to ``astropy-ci-extras``.
 
-The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is that the ``script`` section of the ``.travis.yml`` file can be set to:
+The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
+that the ``script`` section of the ``.travis.yml`` file can be set to:
 
 ```
 script:
@@ -94,7 +100,9 @@ script:
 
 and simply adjust ``$SETUP_CMD`` as needed.
 
-Following the set-up, if additional packages need to be installed, the ``$CONDA_INSTALL`` environment variable should be used to make sure that the Python and Numpy versions stay fixed to those requested, e.g.
+Following the set-up, if additional packages need to be installed, the
+``$CONDA_INSTALL`` environment variable should be used to make sure that the
+Python and Numpy versions stay fixed to those requested, e.g.
 
 ```
 - $CONDA_INSTALL another_package
@@ -122,7 +130,10 @@ This does the following:
 
 Following this, various dependencies are installed depending on the following environment variables
 
-* ``$NUMPY_VERSION``: Set the version number to be installed.
+* ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
+  developer version of Numpy is installed along with Cython. If set to a
+  version number, that version is installed.  If set to ``stable``, install
+  the latest stable version of Numpy.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
