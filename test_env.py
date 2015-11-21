@@ -72,3 +72,7 @@ def test_sphinx():
 def test_open_files():
     if 'open-files' in os.environ.get('SETUP_CMD', ''):
         import psutil
+
+if __name__ == '__main__':
+    import pytest
+    pytest.main(__file__)
