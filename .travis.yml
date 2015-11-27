@@ -56,6 +56,9 @@ matrix:
         - python: 3.5
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
 
+        - python: 3.5
+          env: SETUP_CMD='test' ASTROPY_VERSION=lts
+
         - python: 2.7
           env: SETUP_CMD='test'
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
