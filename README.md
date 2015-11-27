@@ -68,7 +68,9 @@ Following this, various dependencies are installed depending on the following en
   developer version of Astrop is installed, along with Cython and jinja2,
   which are compile-time dependencies. If set to a version number, that
   version is installed. If set to ``stable``, install the latest stable
-  version of Astropy.
+  version of Astropy. If set to ``lts`` the latest long term support (LTS)
+  version is installed (more info about LTS can be found
+  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.
@@ -139,7 +141,9 @@ Following this, various dependencies are installed depending on the following en
   developer version of Astrop is installed, along with Cython and jinja2,
   which are compile-time dependencies. If set to a version number, that
   version is installed. If set to ``stable``, install the latest stable
-  version of Astropy.
+  version of Astropy. If set to ``lts`` the latest long term support (LTS)
+  version is installed (more info about LTS can be found
+  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.
