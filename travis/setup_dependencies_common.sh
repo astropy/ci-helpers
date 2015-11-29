@@ -6,6 +6,7 @@ conda config --set always_yes yes --set changeps1 no
 
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
    ASTROPY_LTS_VERSION=1.0
+fi
 
 if [[ -z $CONDA_CHANNELS ]]; then
     CONDA_CHANNELS=astropy-ci-extras
