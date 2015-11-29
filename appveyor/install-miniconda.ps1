@@ -111,7 +111,7 @@ if ($env:ASTROPY_VERSION) {
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
     } elseif($env:ASTROPY_VERSION -match "lts") {
-        $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_LTS_VERSION
+        $ASTROPY_OPTION = "astropy=" + $ASTROPY_LTS_VERSION
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
