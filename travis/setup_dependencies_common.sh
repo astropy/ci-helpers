@@ -4,6 +4,8 @@ hash -r
 
 set -e
 
+set -x
+
 conda config --set always_yes yes --set changeps1 no
 
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
@@ -115,8 +117,8 @@ fi
 
 # NUMPY DEV
 
-# We now install Numpy dev - this has to be done last, otherwise conda might 
-# install a stable version of Numpy as a dependency to another package, which 
+# We now install Numpy dev - this has to be done last, otherwise conda might
+# install a stable version of Numpy as a dependency to another package, which
 # would override Numpy dev.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
@@ -126,12 +128,15 @@ fi
 
 # ASTROPY DEV
 
-# We now install Astropy dev - this has to be done last, otherwise conda might 
-# install a stable version of Astropy as a dependency to another package, which 
-# would override Astropy dev. Also, if we are installing Numpy dev, we need to 
+# We now install Astropy dev - this has to be done last, otherwise conda might
+# install a stable version of Astropy as a dependency to another package, which
+# would override Astropy dev. Also, if we are installing Numpy dev, we need to
 # compile Astropy dev against Numpy dev.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
 fi
+
+set +x
+
