@@ -4,6 +4,10 @@ hash -r
 
 conda config --set always_yes yes --set changeps1 no
 
+if [[ -z $ASTROPY_LTS_VERSION ]]; then
+   ASTROPY_LTS_VERSION=1.0
+fi
+
 if [[ -z $CONDA_CHANNELS ]]; then
     CONDA_CHANNELS=astropy-ci-extras
 fi
@@ -67,6 +71,8 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy
     elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
+    elif [[ $ASTROPY_VERSION == lts ]]; then
+        $CONDA_INSTALL astropy=$ASTROPY_LTS_VERSION
     else
         $CONDA_INSTALL astropy=$ASTROPY_VERSION
     fi

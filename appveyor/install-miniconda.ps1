@@ -5,6 +5,10 @@
 
 $MINICONDA_URL = "http://repo.continuum.io/miniconda/"
 
+if (! $env:ASTROPY_LTS_VERSION) {
+   $ASTROPY_LTS_VERSION=1.0
+}
+
 function DownloadMiniconda ($version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
     $filename = "Miniconda-" + $version + "-Windows-" + $platform_suffix + ".exe"
@@ -106,6 +110,8 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy"
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
+    } elseif($env:ASTROPY_VERSION -match "lts") {
+        $ASTROPY_OPTION = "astropy=" + $ASTROPY_LTS_VERSION
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
