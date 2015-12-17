@@ -67,3 +67,12 @@ def test_sphinx():
         if ('build_sphinx' in os.environ['SETUP_CMD'] or
             'build_docs' in os.environ['SETUP_CMD']):
             import sphinx
+
+
+def test_open_files():
+    if 'open-files' in os.environ.get('SETUP_CMD', ''):
+        import psutil
+
+if __name__ == '__main__':
+    import pytest
+    pytest.main(__file__)

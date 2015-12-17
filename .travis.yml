@@ -59,6 +59,17 @@ matrix:
         - python: 3.5
           env: SETUP_CMD='test' ASTROPY_VERSION=lts
 
+        - python: 3.5
+          env: SETUP_CMD='test --parallel'
+               TEST_CMD='py.test -n 4 test_env.py'
+
+        - python: 3.5
+          env: SETUP_CMD='test --open-files'
+
+        - python: 3.5
+          env: SETUP_CMD='test --coverage'
+               TEST_CMD='coverage run test_env.py'
+
         - python: 2.7
           env: SETUP_CMD='test'
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
@@ -71,3 +82,4 @@ before_install:
 
 script:
    - eval $TEST_CMD
+   - if [[ $SETUP_CMD == *coverage* ]]; then coveralls; fi
