@@ -60,7 +60,7 @@ function InstallMiniconda ($python_version, $architecture, $python_home) {
     Write-Host $filepath $args
     Start-Process -FilePath $filepath -ArgumentList $args -Wait -Passthru
     #Start-Sleep -s 15
-    if (Test-Path C:\conda) {
+    if (Test-Path $python_home) {
         Write-Host "Miniconda $python_version ($architecture) installation complete"
     } else {
         Write-Host "Failed to install Python in $python_home"
@@ -72,7 +72,7 @@ function InstallMiniconda ($python_version, $architecture, $python_home) {
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
 
 # Set environment variables
-$env:PATH = "C:\conda;C:\conda\Scripts;" + $env:PATH
+$env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
 conda config --set always_yes true
@@ -86,7 +86,7 @@ conda create -q -n test python=$env:PYTHON_VERSION
 activate test
 
 # Set environment variables for environment (activate test doesn't seem to do the trick)
-$env:PATH = "C:\conda\envs\test;C:\conda\envs\test\Scripts;C:\conda\envs\test\Library\bin;" + $env:PATH
+$env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHON}\envs\test\Library\bin;" + $env:PATH
 
 # Check that we have the expected version of Python
 python --version
