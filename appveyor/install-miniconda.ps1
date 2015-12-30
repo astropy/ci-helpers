@@ -130,9 +130,9 @@ conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIE
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
-   pip install git+http://github.com/numpy/numpy.git#egg=numpy
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy"
 }
 # Check whether the developer version of Astropy is required and if yes install it
 if ($env:ASTROPY_VERSION -match "dev") {
-   pip install git+http://github.com/astropy/astropy.git#egg=astropy
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy"
 }
