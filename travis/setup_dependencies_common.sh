@@ -4,7 +4,9 @@ hash -r
 
 set -e
 
-set -x
+if $DEBUG; then
+    set -x
+fi
 
 conda config --set always_yes yes --set changeps1 no
 
