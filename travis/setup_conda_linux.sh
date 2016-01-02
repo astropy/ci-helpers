@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [[ -z $DEBUG ]; then
+if [[ -z $DEBUG ]]; then
     DEBUG=False
 fi
 
-if $DEBUG; then
+if [[ $DEBUG ]]; then
     echo "==================== Starting executing ci-helpers scripts ====================="
 fi
 
