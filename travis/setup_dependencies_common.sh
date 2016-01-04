@@ -2,6 +2,8 @@
 
 hash -r
 
+set -e
+
 conda config --set always_yes yes --set changeps1 no
 
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
