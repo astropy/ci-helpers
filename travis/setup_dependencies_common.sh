@@ -104,10 +104,10 @@ fi
 
 # COVERAGE DEPENDENCIES
 if [[ $SETUP_CMD == *coverage* ]]; then
-  # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
-  # with the fix of https://github.com/astropy/astropy/issues/4175.
-  $CONDA_INSTALL coverage==3.7.1
-  $PIP_INSTALL coveralls
+    # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
+    # with the fix of https://github.com/astropy/astropy/issues/4175.
+    $CONDA_INSTALL coverage==3.7.1
+    $PIP_INSTALL coveralls
 fi
 
 # NUMPY DEV
