@@ -53,6 +53,7 @@ fi
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
     : # Install at the bottom of this script
+    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install -q numpy
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
