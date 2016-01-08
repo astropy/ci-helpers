@@ -50,12 +50,8 @@ if [[ $MAIN_CMD == pep8* ]]; then
     return  # no more dependencies needed
 fi
 
-# NUMPY
-if [[ $NUMPY_VERSION == dev ]] || [[ $NUMPY_VERSION == development ]]; then
-    conda install -q Cython
-    $PIP_INSTALL git+http://github.com/numpy/numpy.git
-    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
-elif [[ $NUMPY_VERSION == stable ]]; then
+# NUMPY (for Numpy dev see lower down)
+if [[ $NUMPY_VERSION == stable ]]; then
     conda install -q numpy
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -67,10 +63,8 @@ fi
 
 # ASTROPY
 if [[ ! -z $ASTROPY_VERSION ]]; then
-    if [[ $ASTROPY_VERSION == development ]] || [[ $ASTROPY_VERSION == dev ]]; then
-        # Install Astropy core dependencies first
-        $CONDA_INSTALL Cython jinja2
-        $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy
+    if [[ $ASTROPY_VERSION == dev* ]]; then
+        # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
     elif [[ $ASTROPY_VERSION == lts ]]; then
@@ -114,4 +108,27 @@ if [[ $SETUP_CMD == *coverage* ]]; then
   # with the fix of https://github.com/astropy/astropy/issues/4175.
   $CONDA_INSTALL coverage==3.7.1
   $PIP_INSTALL coveralls
+fi
+
+# NUMPY DEV
+
+# We now install Numpy dev - this has to be done last, otherwise conda might 
+# install a stable version of Numpy as a dependency to another package, which 
+# would override Numpy dev.
+
+if [[ $NUMPY_VERSION == dev* ]]; then
+    conda install -q Cython
+    $PIP_INSTALL git+http://github.com/numpy/numpy.git
+fi
+
+# ASTROPY DEV
+
+# We now install Astropy dev - this has to be done last, otherwise conda might 
+# install a stable version of Astropy as a dependency to another package, which 
+# would override Astropy dev. Also, if we are installing Numpy dev, we need to 
+# compile Astropy dev against Numpy dev.
+
+if [[ $ASTROPY_VERSION == dev* ]]; then
+    $CONDA_INSTALL Cython jinja2
+    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy
 fi
