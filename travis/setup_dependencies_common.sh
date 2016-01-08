@@ -121,7 +121,7 @@ fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
     conda install -q Cython
-    $PIP_INSTALL git+http://github.com/numpy/numpy.git
+    $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade
 fi
 
 # ASTROPY DEV
@@ -133,5 +133,5 @@ fi
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
-    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy
+    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
 fi
