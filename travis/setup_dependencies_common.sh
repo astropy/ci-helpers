@@ -50,8 +50,10 @@ if [[ $MAIN_CMD == pep8* ]]; then
     return  # no more dependencies needed
 fi
 
-# NUMPY (for Numpy dev see lower down)
-if [[ $NUMPY_VERSION == stable ]]; then
+# NUMPY
+if [[ $NUMPY_VERSION == dev* ]]; then
+    : # Install at the bottom of this script
+elif [[ $NUMPY_VERSION == stable ]]; then
     conda install -q numpy
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -64,7 +66,7 @@ fi
 # ASTROPY
 if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == dev* ]]; then
-        # Install at the bottom of this script
+        : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
     elif [[ $ASTROPY_VERSION == lts ]]; then
