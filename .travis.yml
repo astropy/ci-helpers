@@ -19,6 +19,8 @@ env:
     global:
         - SETUP_CMD='test'
         - TEST_CMD='py.test test_env.py'
+        - PYTHON_VERSION=3.5
+
     matrix:
         - SETUP_CMD='egg_info'
           TEST_CMD='python --version'
@@ -27,73 +29,75 @@ env:
 
 matrix:
     include:
-        - python: 3.5
+
+        - os: linux
           env: SETUP_CMD='build_sphinx'
 
-        - python: 2.7
-          env: SETUP_CMD='build_docs'
+        - os: linux
+          env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7
 
-        - python: 3.5
+        - os: linux
           env: MAIN_CMD='pep8'
                TEST_CMD='pep8 --version'
 
-        - python: 3.5
+        - os: osx
+          env: SETUP_CMD='test' ASTROPY_VERSION=LTS
+
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=1.0
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_DEPENDENCIES='requests'
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 ASTROPY_VERSION=1.0
-               CONDA_DEPENDENCIES='matplotlib h5py' PIP_DEPENDENCIES='astrodendro'
+               CONDA_DEPENDENCIES='matplotlib h5py'
+               PIP_DEPENDENCIES='astrodendro'
 
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable)
-        - python: 3.5
+
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=stable
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=lts
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test --parallel'
                TEST_CMD='py.test -n 4 test_env.py'
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test --open-files'
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test --coverage'
                TEST_CMD='coverage run test_env.py'
 
-        - python: 2.7
-          env: SETUP_CMD='test'
+        - os: linux
+          env: SETUP_CMD='test' PYTHON_VERSION=2.7
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
                CONDA_DEPENDENCIES='PyQt5'
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' DEBUG=True
 
-        - python: 3.5
+        - os: linux
           env: SETUP_CMD='test' DEBUG=False
-
-        - os: osx
-          python: 3.5
-          env: SETUP_CMD='test' ASTROPY_VERSION=LTS
 
 
 before_install:
