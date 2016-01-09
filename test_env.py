@@ -31,28 +31,30 @@ def test_python_version():
 def test_numpy():
     if 'NUMPY_VERSION' in os.environ:
         import numpy
-        if 'dev' in os.environ['NUMPY_VERSION']:
+        os_numpy_version = os.environ['NUMPY_VERSION'].lower()
+        if 'dev' in os_numpy_version:
             assert 'dev' in numpy.__version__
         else:
-            if 'stable' in os.environ['NUMPY_VERSION']:
+            if 'stable' in os_numpy_version:
                 assert numpy.__version__.startswith(LATEST_NUMPY_STABLE)
             else:
-                assert numpy.__version__.startswith(os.environ['NUMPY_VERSION'])
+                assert numpy.__version__.startswith(os_numpy_version)
             assert 'dev' not in numpy.__version__
 
 
 def test_astropy():
     if 'ASTROPY_VERSION' in os.environ:
         import astropy
-        if 'dev' in os.environ['ASTROPY_VERSION']:
+        os_astropy_version = os.environ['ASTROPY_VERSION'].lower()
+        if 'dev' in os_astropy_version:
             assert 'dev' in astropy.__version__
         else:
-            if 'stable' in os.environ['ASTROPY_VERSION']:
+            if 'stable' in os_astropy_version:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
-            elif 'lts' in os.environ['ASTROPY_VERSION']:
+            elif 'lts' in os_astropy_version:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)
             else:
-                assert astropy.__version__.startswith(os.environ['ASTROPY_VERSION'])
+                assert astropy.__version__.startswith(os_astropy_version)
             assert 'dev' not in astropy.__version__
 
 
@@ -65,7 +67,7 @@ def test_dependency_imports():
 def test_sphinx():
     if 'SETUP_CMD' in os.environ:
         if ('build_sphinx' in os.environ['SETUP_CMD'] or
-            'build_docs' in os.environ['SETUP_CMD']):
+                'build_docs' in os.environ['SETUP_CMD']):
             import sphinx
 
 
