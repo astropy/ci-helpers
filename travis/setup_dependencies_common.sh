@@ -6,6 +6,8 @@ set -e
 
 conda config --set always_yes yes --set changeps1 no
 
+shopt -s nocasematch
+
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
    ASTROPY_LTS_VERSION=1.0
 fi
@@ -52,7 +54,7 @@ fi
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
-    : # Install at the bottom of this script
+    # Install at the bottom of this script
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install -q numpy
