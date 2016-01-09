@@ -6,6 +6,8 @@ set -e
 
 conda config --set always_yes yes --set changeps1 no
 
+shopt -s nocasematch
+
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
    ASTROPY_LTS_VERSION=1.0
 fi
@@ -51,10 +53,10 @@ if [[ $MAIN_CMD == pep8* ]]; then
 fi
 
 # NUMPY
-if [[ ${NUMPY_VERSION,,} == dev* ]]; then
+if [[ $NUMPY_VERSION == dev* ]]; then
     # Install at the bottom of this script
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
-elif [[ ${NUMPY_VERSION,,} == stable ]]; then
+elif [[ $NUMPY_VERSION == stable ]]; then
     conda install -q numpy
     export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -66,11 +68,11 @@ fi
 
 # ASTROPY
 if [[ ! -z $ASTROPY_VERSION ]]; then
-    if [[ ${ASTROPY_VERSION,,} == dev* ]]; then
+    if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
-    elif [[ ${ASTROPY_VERSION,,} == stable ]]; then
+    elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
-    elif [[ ${ASTROPY_VERSION,,} == lts ]]; then
+    elif [[ $ASTROPY_VERSION == lts ]]; then
         $CONDA_INSTALL astropy=$ASTROPY_LTS_VERSION
     else
         $CONDA_INSTALL astropy=$ASTROPY_VERSION
@@ -119,7 +121,7 @@ fi
 # install a stable version of Numpy as a dependency to another package, which
 # would override Numpy dev.
 
-if [[ ${NUMPY_VERSION,,} == dev* ]]; then
+if [[ $NUMPY_VERSION == dev* ]]; then
     conda install -q Cython
     $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade
 fi
@@ -131,7 +133,7 @@ fi
 # would override Astropy dev. Also, if we are installing Numpy dev, we need to
 # compile Astropy dev against Numpy dev.
 
-if [[ ${ASTROPY_VERSION,,} == dev* ]]; then
+if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
 fi
