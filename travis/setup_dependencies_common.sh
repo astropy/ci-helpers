@@ -4,7 +4,7 @@ hash -r
 
 set -e
 
-if $DEBUG; then
+if [[ $DEBUG == True ]]; then
     set -x
 fi
 
@@ -141,4 +141,3 @@ if [[ $ASTROPY_VERSION == dev* ]]; then
 fi
 
 set +x
-
