@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ $DEBUG == True ]]; then
+    set -x
+fi
+
+echo "==================== Starting executing ci-helpers scripts ====================="
+
 # Install conda
 # http://conda.pydata.org/docs/travis.html#the-travis-yml-file
 wget http://repo.continuum.io/miniconda/Miniconda-3.7.3-MacOSX-x86_64.sh -O miniconda.sh
@@ -8,3 +14,5 @@ export PATH="$HOME/miniconda/bin:$PATH"
 
 # Install common Python dependencies
 source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
+
+echo "================= Returning executing local .travis.yml script ================="

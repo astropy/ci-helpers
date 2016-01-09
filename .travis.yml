@@ -80,6 +80,12 @@ matrix:
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
                CONDA_DEPENDENCIES='PyQt5'
 
+        - python: 3.5
+          env: SETUP_CMD='test' DEBUG=True
+
+        - python: 3.5
+          env: SETUP_CMD='test' DEBUG=False
+
 
 before_install:
     - ln -s . ci-helpers
