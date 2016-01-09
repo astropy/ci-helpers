@@ -4,10 +4,6 @@ hash -r
 
 set -e
 
-if [[ $DEBUG == True ]]; then
-    set -x
-fi
-
 conda config --set always_yes yes --set changeps1 no
 
 if [[ -z $ASTROPY_LTS_VERSION ]]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $DEBUG ]]; then
+if [[ $DEBUG == True ]]; then
     set -x
 fi
 
