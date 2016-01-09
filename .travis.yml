@@ -89,6 +89,10 @@ matrix:
         - python: 3.5
           env: SETUP_CMD='test' DEBUG=False
 
+        - os: osx
+          python: 3.5
+          env: SETUP_CMD='test' ASTROPY_VERSION=LTS
+
 
 before_install:
     - ln -s . ci-helpers
