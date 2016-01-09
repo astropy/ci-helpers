@@ -30,6 +30,18 @@ env:
 matrix:
     include:
 
+        # Starting with the dev versions as they take the longest to run
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
+
+        # For the Numpy dev build, we also specify a conda package that depends
+        # on Numpy to make sure that Numpy dev is used (because conda will also
+        # install Numpy stable)
+
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=dev
+               CONDA_DEPENDENCIES='scipy'
+
         - os: linux
           env: SETUP_CMD='build_sphinx'
 
@@ -47,7 +59,7 @@ matrix:
           env: SETUP_CMD='test' NUMPY_VERSION=1.10
 
         - os: linux
-          env: SETUP_CMD='test' ASTROPY_VERSION=1.0
+          env: SETUP_CMD='test' ASTROPY_VERSION=stable
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_DEPENDENCIES='requests'
@@ -57,22 +69,8 @@ matrix:
                CONDA_DEPENDENCIES='matplotlib h5py'
                PIP_DEPENDENCIES='astrodendro'
 
-        # For the Numpy dev build, we also specify a conda package that depends
-        # on Numpy to make sure that Numpy dev is used (because conda will also
-        # install Numpy stable)
-
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=dev
-               CONDA_DEPENDENCIES='scipy'
-
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=stable
-
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
-
-        - os: linux
-          env: SETUP_CMD='test' ASTROPY_VERSION=lts
 
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
@@ -87,6 +85,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='test --coverage'
                TEST_CMD='coverage run test_env.py'
+               NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
         - os: linux
           env: SETUP_CMD='test' PYTHON_VERSION=2.7
