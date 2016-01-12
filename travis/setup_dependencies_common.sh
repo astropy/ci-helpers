@@ -139,7 +139,7 @@ fi
 
 if [[ $DEBUG == True ]]; then
     # include debug information about the current conda install
-    $CONDA_INSTALL _license
+    conda install -n root _license
     conda info -a
 fi
 
