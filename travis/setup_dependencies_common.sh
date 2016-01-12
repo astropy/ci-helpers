@@ -22,7 +22,6 @@ do
 done
 
 conda update -q conda
-conda info -a
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
