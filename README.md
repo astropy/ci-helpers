@@ -82,7 +82,7 @@ Following this, various dependencies are installed depending on the following en
   channel names, and defaults to ``astropy-ci-extras``.
 
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
-  scripts
+  scripts, and provides information on the current conda install.
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:

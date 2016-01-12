@@ -22,7 +22,6 @@ do
 done
 
 conda update -q conda
-conda info -a
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
@@ -136,6 +135,12 @@ fi
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
+fi
+
+if [[ $DEBUG == True ]]; then
+    # include debug information about the current conda install
+    conda install -n root _license
+    conda info -a
 fi
 
 set +x
