@@ -137,4 +137,10 @@ if [[ $ASTROPY_VERSION == dev* ]]; then
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
 fi
 
+if [[ $DEBUG == True ]]; then
+    # include debug information about the current conda install
+    $CONDA_INSTALL _license
+    conda info -a
+fi
+
 set +x
