@@ -44,7 +44,7 @@ matrix:
 
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib=1.5.0'
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=='1.5.0'"
+               TEST_CMD="python -c 'import matplotlib; assert matplotlib.__version__==\"1.5.0\"'"
 
         - os: linux
           env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7
