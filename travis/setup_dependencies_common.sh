@@ -84,6 +84,8 @@ fi
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES
+    echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $HOME/miniconda/envs/test/conda-meta/pinned
+    cat $HOME/miniconda/envs/test/conda-meta/pinned
 fi
 
 if [[ ! -z $PIP_DEPENDENCIES ]]; then
