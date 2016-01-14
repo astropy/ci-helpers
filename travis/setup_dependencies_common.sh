@@ -51,6 +51,27 @@ if [[ $MAIN_CMD == pep8* ]]; then
     return  # no more dependencies needed
 fi
 
+# Pin required versions for dependencies
+if [[ ! -z $CONDA_DEPENDENCIES ]]; then
+    pin_file = $HOME/miniconda/envs/test/conda-meta/pinned
+    echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $pin_file
+
+    # Let env variable version number override this pinned version
+    for package in $(gawk '{print $1}' $pin_file); do
+        if [[ ! -z $(echo -e "\$${package}_VARIABLE") ]]; then
+            version=$(eval echo -e \$$(echo $pack | \
+                gawk '{print toupper($0)"_VERSION"}'))
+            gawk -v pack=$package -v version=$version \
+                '{if ($1 == pack) print pack" " version else print $0}' \
+                $pin_file > /tmp/pin_file_temp
+            mv /tmp/pin_file_temp $pin_file
+       fi
+
+    if [[ $DEBUG == True ]]; then
+        cat $pin_file
+    fi
+fi
+
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
     # Install at the bottom of this script
@@ -78,14 +99,9 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     fi
 fi
 
-# Now set up shortcut to conda install command to make sure the Python and Numpy
-# versions are always explicitly specified.
-
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES
-    echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $HOME/miniconda/envs/test/conda-meta/pinned
-    cat $HOME/miniconda/envs/test/conda-meta/pinned
 fi
 
 if [[ ! -z $PIP_DEPENDENCIES ]]; then
