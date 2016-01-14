@@ -54,7 +54,7 @@ fi
 # Pin required versions for dependencies, howto is in FAQ of conda
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    pin_file = $HOME/miniconda/envs/test/conda-meta/pinned
+    pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
     echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $pin_file
 
     # Let env variable version number override this pinned version
@@ -63,10 +63,11 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             version=$(eval echo -e \$$(echo $pack | \
                 gawk '{print toupper($0)"_VERSION"}'))
             gawk -v pack=$package -v version=$version \
-                '{if ($1 == pack) print pack" " version else print $0}' \
+                '{if ($1 == pack) print pack" " version; else print $0}' \
                 $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
        fi
+    done
 
     if [[ $DEBUG == True ]]; then
         cat $pin_file
