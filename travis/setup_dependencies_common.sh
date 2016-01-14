@@ -51,7 +51,8 @@ if [[ $MAIN_CMD == pep8* ]]; then
     return  # no more dependencies needed
 fi
 
-# Pin required versions for dependencies
+# Pin required versions for dependencies, howto is in FAQ of conda
+# http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     pin_file = $HOME/miniconda/envs/test/conda-meta/pinned
     echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $pin_file

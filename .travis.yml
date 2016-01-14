@@ -44,11 +44,12 @@ matrix:
 
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib=1.5.0'
+               DEBUG=True
                TEST_CMD="python -c 'import matplotlib; assert matplotlib.__version__==\"1.5.0\"'"
 
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib=1.5.0'
-               MATPLOTLIB_VERSION=1.5.1
+               MATPLOTLIB_VERSION=1.5.1 DEBUG=True
                TEST_CMD="python -c 'import matplotlib; assert matplotlib.__version__==\"1.5.1\"'"
 
         - os: linux
@@ -97,12 +98,6 @@ matrix:
           env: SETUP_CMD='test' PYTHON_VERSION=2.7
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
                CONDA_DEPENDENCIES='PyQt5'
-
-        - os: linux
-          env: SETUP_CMD='test' DEBUG=True
-
-        - os: linux
-          env: SETUP_CMD='test' DEBUG=False
 
 
 before_install:
