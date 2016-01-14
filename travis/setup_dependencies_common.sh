@@ -59,7 +59,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     # Let env variable version number override this pinned version
     for package in $(gawk '{print $1}' $pin_file); do
-        if [[ ! -z $(echo -e "\$${package}_VARIABLE") ]]; then
+        if [[ ! -z $(eval echo -e "\$${package}_VERSION") ]]; then
             version=$(eval echo -e \$$(echo $package | \
                 gawk '{print toupper($0)"_VERSION"}'))
             gawk -v package=$package -v version=$version \
