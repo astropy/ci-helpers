@@ -72,8 +72,10 @@ Following this, various dependencies are installed depending on the following en
   version is installed (more info about LTS can be found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
-* ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
-  names that will be installed with conda.
+* ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
+  package names that will be installed with conda. Version numbers of these
+  dependencies can be overriden/specified with the ``$${PACKAGENAME}_VERSION``
+  environmental variables.
 
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with pip.
