@@ -57,11 +57,15 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
     echo $CONDA_DEPENDENCIES | tr " " "\n" | sed -e 's|=| ==|g' > $pin_file
 
+    if [[ $DEBUG == True ]]; then
+        cat $pin_file
+    fi
+
     # Let env variable version number override this pinned version
     for package in $(gawk '{print $1}' $pin_file); do
-        if [[ ! -z $(eval echo -e "\$${package}_VERSION") ]]; then
-            version=$(eval echo -e \$$(echo $package | \
-                gawk '{print toupper($0)"_VERSION"}'))
+        version=$(eval echo -e \$$(echo $package | \
+            gawk '{print toupper($0)"_VERSION"}'))
+        if [[ ! -z $version ]]; then
             gawk -v package=$package -v version=$version \
                 '{if ($1 == package) print package" " version; else print $0}' \
                 $pin_file > /tmp/pin_file_temp
