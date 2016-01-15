@@ -103,7 +103,9 @@ fi
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
 if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
-    $CONDA_INSTALL Sphinx matplotlib
+    # TODO: remove pinned matplotlib version once
+    # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
+    $CONDA_INSTALL Sphinx matplotlib=1.5.0
 fi
 
 # COVERAGE DEPENDENCIES
