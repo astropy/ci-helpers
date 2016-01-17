@@ -105,7 +105,7 @@ fi
 if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     # TODO: remove pinned matplotlib version once
     # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
-    $CONDA_INSTALL Sphinx matplotlib=1.5.0
+    $CONDA_INSTALL Sphinx "matplotlib<=1.5.1"
 fi
 
 # COVERAGE DEPENDENCIES
