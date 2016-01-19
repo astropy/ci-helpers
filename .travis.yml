@@ -43,7 +43,7 @@ matrix:
                CONDA_DEPENDENCIES='scipy'
 
         - os: linux
-          env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib=1.5.0'
+          env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
                DEBUG=True
                TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=="\""1.5.0"\"'
 
@@ -90,15 +90,10 @@ matrix:
           env: SETUP_CMD='test --open-files'
 
         - os: linux
-          env: SETUP_CMD='test --coverage'
-               TEST_CMD='coverage run test_env.py'
-               NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
-
-        - os: linux
-          env: SETUP_CMD='test' PYTHON_VERSION=2.7
+          env: SETUP_CMD='test --coverage' PYTHON_VERSION=2.7
                CONDA_CHANNELS='astropy-ci-extras astrofrog'
                CONDA_DEPENDENCIES='pyqt5' DEBUG=True
-
+               NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
 before_install:
     - ln -s . ci-helpers
