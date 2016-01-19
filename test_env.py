@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
@@ -18,7 +19,13 @@ if os.environ.get('CONDA_DEPENDENCIES', None) is not None:
 else:
     CONDA_DEPENDENCIES = []
 
-dependency_list = PIP_DEPENDENCIES + CONDA_DEPENDENCIES
+
+# In this dependency list we should only store the package names,
+# not the required versions
+dependency_list = ([re.split('=|<|>', PIP_DEPENDENCIES[i])[0]
+                    for i in range(len(PIP_DEPENDENCIES))] +
+                   [re.split('=|<|>', CONDA_DEPENDENCIES[i])[0]
+                    for i in range(len(CONDA_DEPENDENCIES))])
 
 
 def test_python_version():
@@ -61,7 +68,10 @@ def test_astropy():
 # Check whether everything is installed and importable
 def test_dependency_imports():
     for package in dependency_list:
-        __import__(package)
+        if package == 'pyqt5':
+            __import__('PyQt5')
+        else:
+            __import__(package)
 
 
 def test_sphinx():
