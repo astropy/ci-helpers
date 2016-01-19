@@ -68,7 +68,10 @@ def test_astropy():
 # Check whether everything is installed and importable
 def test_dependency_imports():
     for package in dependency_list:
-        __import__(package)
+        if package == 'pyqt5':
+            __import__('PyQt5')
+        else:
+            __import__(package)
 
 
 def test_sphinx():
