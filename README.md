@@ -74,8 +74,9 @@ Following this, various dependencies are installed depending on the following en
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
-  dependencies can be overriden/specified with the ``$${PACKAGENAME}_VERSION``
-  environmental variables.
+  dependencies can be overriden/specified with the ``$PACKAGENAME_VERSION``
+  environment variables, where ``PACKAGENAME`` is the name of the package to
+  specify the version for (e.g. ``MATPLOTLIB_VERSION``).
 
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with pip.
