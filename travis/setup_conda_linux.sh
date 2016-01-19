@@ -15,9 +15,8 @@ export PATH="$HOME/miniconda/bin:$PATH"
 # Install common Python dependencies
 source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
 
-if [[ $SETUP_MPL == True ]]; then
-    export DISPLAY=:99.0
-    sh -e /etc/init.d/xvfb start
-fi
+# This makes sure that matplotlib backends work
+export DISPLAY=:99.0
+sh -e /etc/init.d/xvfb start
 
 echo "================= Returning executing local .travis.yml script ================="
