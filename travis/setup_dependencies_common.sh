@@ -55,7 +55,7 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
-    echo $CONDA_DEPENDENCIES | gawk '{print tolower($0)}' | tr " " "\n" | \
+    echo $CONDA_DEPENDENCIES | awk '{print tolower($0)}' | tr " " "\n" | \
         sed -E -e 's|([a-z]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' > $pin_file
 
     if [[ $DEBUG == True ]]; then
@@ -63,11 +63,11 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     fi
 
     # Let env variable version number override this pinned version
-    for package in $(gawk '{print $1}' $pin_file); do
-        version=$(eval echo -e \$$(echo $package | \
-            gawk '{print toupper($0)"_VERSION"}'))
+    for package in $(awk '{print $1}' $pin_file); do
+        version=$(eval echo -e \$$(echo $package | tr "-" "_" | \
+            awk '{print toupper($0)"_VERSION"}'))
         if [[ ! -z $version ]]; then
-            gawk -v package=$package -v version=$version \
+            awk -v package=$package -v version=$version \
                 '{if ($1 == package) print package" " version"*";
                   else print $0}' \
                 $pin_file > /tmp/pin_file_temp
@@ -77,7 +77,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     # We should remove the version numbers from CONDA_DEPENDENCIES to avoid
     # the conflict with the *_VERSION env variables
-    CONDA_DEPENDENCIES=$(gawk '{printf tolower($1)" "}' $pin_file)
+    CONDA_DEPENDENCIES=$(awk '{printf tolower($1)" "}' $pin_file)
     # Cutting off the trailing space
     CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES%?}
 

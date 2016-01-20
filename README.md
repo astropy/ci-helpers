@@ -75,8 +75,7 @@ Following this, various dependencies are installed depending on the following en
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
   dependencies can be overriden/specified with the ``$PACKAGENAME_VERSION``
-  environment variables, where ``PACKAGENAME`` is the name of the package to
-  specify the version for (e.g. ``MATPLOTLIB_VERSION``).
+  environment variables.
 
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with pip.
@@ -86,6 +85,14 @@ Following this, various dependencies are installed depending on the following en
 
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
   scripts, and provides information on the current conda install.
+
+* ``$PACKAGENAME_VERSION``: ``PACKAGENAME`` is the name of the package to
+  specify the version for (e.g. ``MATPLOTLIB_VERSION``). Due to shell
+  limitations, all hyphens in the conda package name should be changed to
+  underscores in ``$PACKAGENAME_VERSION`` (e.g. for scikit-image it should
+  be ``SCIKIT_IMAGE_VERSION``). If specified it will override any version
+  number limitations listed in ``$CONDA_DEPENDENCIES``.
+
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:

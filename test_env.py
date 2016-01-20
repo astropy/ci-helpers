@@ -70,6 +70,8 @@ def test_dependency_imports():
     for package in dependency_list:
         if package == 'pyqt5':
             __import__('PyQt5')
+        elif package == 'scikit-image':
+            __import__('skimage')
         else:
             __import__(package)
 
