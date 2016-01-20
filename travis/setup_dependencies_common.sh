@@ -64,7 +64,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     # Let env variable version number override this pinned version
     for package in $(awk '{print $1}' $pin_file); do
-        version=$(eval echo -e \$$(echo $package | \
+        version=$(eval echo -e \$$(echo $package | tr "-" "_" | \
             awk '{print toupper($0)"_VERSION"}'))
         if [[ ! -z $version ]]; then
             awk -v package=$package -v version=$version \
