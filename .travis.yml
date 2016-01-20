@@ -61,6 +61,7 @@ matrix:
 
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
+               CONDA_DEPENDENCIES='requests'
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10
