@@ -76,7 +76,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     # We should remove the version numbers from CONDA_DEPENDENCIES to avoid
     # the conflict with the *_VERSION env variables
-    CONDA_DEPENDENCIES=$(gawk '{printf $1" "}' $pin_file)
+    CONDA_DEPENDENCIES=$(gawk '{printf tolower($1)" "}' $pin_file)
     # Cutting off the trailing space
     CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES%?}
 
