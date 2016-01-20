@@ -64,8 +64,8 @@ matrix:
                CONDA_DEPENDENCIES='requests'
 
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.10
-               CONDA_DEPENDENCIES='Cython numpy'
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
+               CONDA_DEPENDENCIES='Cython numpy scikit-image'
 
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
