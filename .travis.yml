@@ -64,6 +64,7 @@ matrix:
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10
+               CONDA_DEPENDENCIES='Cython numpy'
 
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
