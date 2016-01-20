@@ -55,7 +55,7 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
-    echo $CONDA_DEPENDENCIES | tr " " "\n" | \
+    echo $CONDA_DEPENDENCIES | gawk '{print tolower($0)}' | tr " " "\n" | \
         sed -E -e 's|([a-z]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' > $pin_file
 
     if [[ $DEBUG == True ]]; then
