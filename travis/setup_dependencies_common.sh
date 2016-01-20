@@ -68,7 +68,8 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             gawk '{print toupper($0)"_VERSION"}'))
         if [[ ! -z $version ]]; then
             gawk -v package=$package -v version=$version \
-                '{if ($1 == package) print package" " version; else print $0}' \
+                '{if ($1 == package) print package" " version"*";
+                  else print $0}' \
                 $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
        fi
