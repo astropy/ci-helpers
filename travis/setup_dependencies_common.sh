@@ -16,6 +16,14 @@ if [[ -z $CONDA_CHANNELS ]]; then
     CONDA_CHANNELS=astropy-ci-extras
 fi
 
+if [[ -z $CONDA_DEPENDENCIES_FLAGS ]]; then
+   CONDA_DEPENDENCIES_FLAGS=''
+fi
+
+if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
+   PIP_DEPENDENCIES_FLAGS=''
+fi
+
 for channel in $CONDA_CHANNELS
 do
     conda config --add channels $channel
@@ -116,11 +124,11 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_DEPENDENCIES
+    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS
 fi
 
 if [[ ! -z $PIP_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_DEPENDENCIES
+    $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
 fi
 
 # PARALLEL BUILDS

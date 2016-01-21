@@ -87,6 +87,28 @@ def test_open_files():
     if 'open-files' in os.environ.get('SETUP_CMD', ''):
         import psutil
 
+
+def test_conda_flags():
+    if (os.environ.get('CONDA_DEPENDENCIES_FLAGS', None) == '--no-deps'
+        and os.environ.get('CONDA_DEPENDENCIES', None) == 'matplotlib'):
+        try:
+            import numpy
+        except:
+            pass
+        else:
+            raise Exception("Numpy should not be installed")
+    else:
+        pytest.skip()
+
+
+def test_pip_flags():
+    pip_flags = os.environ.get('PIP_DEPENDENCIES_FLAGS', None)
+    if pip_flags.startswith('--log'):
+        assert os.path.exists(pip_flags.split()[1])
+    else:
+        pytest.skip()
+
+
 if __name__ == '__main__':
     import pytest
     pytest.main(__file__)
