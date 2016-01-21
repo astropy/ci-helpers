@@ -103,7 +103,7 @@ matrix:
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib' CONDA_DEPENDENCIES_FLAGS='--no-deps'
 
         - os: linux
-          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing' PIP_DEPENDENCIES='--log pip_install.log'
+          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing' PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
 
 before_install:
     - ln -s . ci-helpers
