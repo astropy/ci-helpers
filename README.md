@@ -81,10 +81,10 @@ Following this, various dependencies are installed depending on the following en
   names that will be installed with pip.
 
 * ``CONDA_DEPENDENCIES_FLAGS``: additional flags to pass to conda when
-  instlaling ``CONDA_DEPENDENCIES``
+  installing ``CONDA_DEPENDENCIES``
 
 * ``PIP_DEPENDENCIES_FLAGS``: additional flags to pass to pip when
-  instlaling ``PIP_DEPENDENCIES``
+  installing ``PIP_DEPENDENCIES``
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
   channel names, and defaults to ``astropy-ci-extras``.
