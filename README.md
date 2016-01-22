@@ -90,7 +90,8 @@ Following this, various dependencies are installed depending on the following en
   channel names, and defaults to ``astropy-ci-extras``.
 
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
-  scripts, and provides information on the current conda install.
+  scripts, and provides information on the current conda install and
+  switches off the ``-q`` conda flag for verbose output.
 
 * ``$SETUP_XVFB``: if True this makes sure e.g., interactive matplotlib
   backends work by starting up a X virtual framebuffer.

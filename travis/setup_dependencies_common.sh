@@ -8,6 +8,12 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
+if [[ $DEBUG == True ]]; then
+    QUIET=''
+else
+    QUIET='-q'
+fi
+
 if [[ -z $ASTROPY_LTS_VERSION ]]; then
    ASTROPY_LTS_VERSION=1.0
 fi
@@ -29,7 +35,7 @@ do
     conda config --add channels $channel
 done
 
-conda update -q conda
+conda update $QUIET conda
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
@@ -40,7 +46,7 @@ if [[ -z $PYTHON_VERSION ]]; then
 fi
 
 # CONDA
-conda create -q -n test python=$PYTHON_VERSION
+conda create $QUIET -n test python=$PYTHON_VERSION
 source activate test
 
 # EGG_INFO
@@ -49,7 +55,7 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install -q pytest pip
+conda install $QUIET pytest pip
 
 export PIP_INSTALL='pip install'
 
@@ -104,15 +110,15 @@ fi
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
     # Install at the bottom of this script
-    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install -q numpy
-    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
+    conda install $QUIET numpy
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install -q numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    conda install $QUIET numpy=$NUMPY_VERSION
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
-    export CONDA_INSTALL="conda install -q python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 fi
 
 # ASTROPY
@@ -170,7 +176,7 @@ fi
 # would override Numpy dev.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
-    conda install -q Cython
+    conda install $QUIET Cython
     $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade
 fi
 
