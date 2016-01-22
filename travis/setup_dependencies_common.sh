@@ -83,6 +83,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
        fi
     done
 
+    # Do in the pin file what conda silently does on the command line, to
+    # extend the underspecified version numbers with *
+    awk -F == '{if (NF==1) print $0; else print $1, $2"*"}' \
+        $pin_file > /tmp/pin_file_temp
+    mv /tmp/pin_file_temp $pin_file
+
     # We should remove the version numbers from CONDA_DEPENDENCIES to avoid
     # the conflict with the *_VERSION env variables
     CONDA_DEPENDENCIES=$(awk '{printf tolower($1)" "}' $pin_file)
