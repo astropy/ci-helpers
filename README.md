@@ -93,7 +93,7 @@ Following this, various dependencies are installed depending on the following en
   scripts, and provides information on the current conda install.
 
 * ``$SETUP_XVFB``: if True this makes sure e.g., interactive matplotlib
-  backends work.
+  backends work by starting up a X virtual framebuffer.
 
 * ``$PACKAGENAME_VERSION``: ``PACKAGENAME`` is the name of the package to
   specify the version for (e.g. ``MATPLOTLIB_VERSION``). Due to shell
