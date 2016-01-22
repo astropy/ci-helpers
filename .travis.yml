@@ -99,6 +99,12 @@ matrix:
                CONDA_DEPENDENCIES='pyqt5' DEBUG=True
                NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
+        - os: linux
+          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib' CONDA_DEPENDENCIES_FLAGS='--no-deps'
+
+        - os: linux
+          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing' PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
+
 before_install:
     - ln -s . ci-helpers
     - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh

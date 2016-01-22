@@ -2,6 +2,8 @@ import os
 import re
 import sys
 
+import pytest
+
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
 
@@ -67,6 +69,12 @@ def test_astropy():
 
 # Check whether everything is installed and importable
 def test_dependency_imports():
+
+    # We have to ignore the special case where we are running with --no-deps
+    # because we don't expect that import to work.
+    if os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps':
+        pytest.skip()
+
     for package in dependency_list:
         if package == 'pyqt5':
             __import__('PyQt5')
@@ -86,6 +94,28 @@ def test_sphinx():
 def test_open_files():
     if 'open-files' in os.environ.get('SETUP_CMD', ''):
         import psutil
+
+
+def test_conda_flags():
+    if (os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps'
+        and os.environ.get('CONDA_DEPENDENCIES', '') == 'matplotlib'):
+        try:
+            import numpy
+        except:
+            pass
+        else:
+            raise Exception("Numpy should not be installed")
+    else:
+        pytest.skip()
+
+
+def test_pip_flags():
+    pip_flags = os.environ.get('PIP_DEPENDENCIES_FLAGS', '')
+    if pip_flags.startswith('--log'):
+        assert os.path.exists(pip_flags.split()[1])
+    else:
+        pytest.skip()
+
 
 if __name__ == '__main__':
     import pytest
