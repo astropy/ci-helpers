@@ -64,7 +64,7 @@ fi
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
     echo $CONDA_DEPENDENCIES | awk '{print tolower($0)}' | tr " " "\n" | \
-        sed -E -e 's|([a-z]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' > $pin_file
+        sed -E -e 's|([a-z0-9]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' > $pin_file
 
     if [[ $DEBUG == True ]]; then
         cat $pin_file
