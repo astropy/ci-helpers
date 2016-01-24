@@ -92,6 +92,9 @@ Following this, various dependencies are installed depending on the following en
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
   scripts, and provides information on the current conda install.
 
+* ``$SETUP_XVFB``: if True this makes sure e.g., interactive matplotlib
+  backends work by starting up a X virtual framebuffer.
+
 * ``$PACKAGENAME_VERSION``: ``PACKAGENAME`` is the name of the package to
   specify the version for (e.g. ``MATPLOTLIB_VERSION``). Due to shell
   limitations, all hyphens in the conda package name should be changed to
