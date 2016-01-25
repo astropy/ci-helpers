@@ -34,7 +34,7 @@ This does the following:
 - Set up the PATH appropriately
 - Set up a conda environment named 'test' and switch to it
 - Set the ``always_yes`` config option for conda to ``true`` so that you don't need to include ``--yes``
-- Register the ``astropy-ci-extras`` channel
+- Register the specified channels, or if not stated the ``astropy`` and ``astropy-ci-extras`` channels
 - ``export PYTHONIOENCODING=UTF8``
 
 Following this, various dependencies are installed depending on the following environment variables
@@ -87,7 +87,7 @@ Following this, various dependencies are installed depending on the following en
   installing ``PIP_DEPENDENCIES``
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
-  channel names, and defaults to ``astropy-ci-extras``.
+  channel names, and defaults to ``astropy`` and ``astropy-ci-extras``.
 
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
   scripts, and provides information on the current conda install and
