@@ -140,9 +140,13 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     # TODO: remove this pinned matplotlib version once
     # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
     if [[ ! -z $pin_file ]]; then
-        awk '{if ($1 == matplotlib) print "matplotlib <=1.5.0";
+        if [[ -z $(grep matplotlib $pin_file) ]]; then
+            echo "matplotlib <=1.5.0" >> $pin_file
+        else
+            awk '{if ($1 == "matplotlib") print "matplotlib <=1.5.0";
               else print $0}' $pin_file > /tmp/pin_file_temp
-        mv /tmp/pin_file_temp $pin_file
+            mv /tmp/pin_file_temp $pin_file
+        fi
     else
         echo "matplotlib <=1.5.0" > $HOME/miniconda/envs/test/conda-meta/pinned
     fi
