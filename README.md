@@ -62,7 +62,9 @@ Following this, various dependencies are installed depending on the following en
 * ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed along with Cython. If set to a
   version number, that version is installed. If set to ``stable``, install
-  the latest stable version of Numpy.
+  the latest stable version of Numpy. If set to ``prerelease``, the
+  pre-release version of Numpy gets installed if there is any, otherwise the
+  build exits and passes on travis without running the tests.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astrop is installed, along with Cython and jinja2,
