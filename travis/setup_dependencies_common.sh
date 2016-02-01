@@ -143,7 +143,7 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         if [[ -z $(grep matplotlib $pin_file) ]]; then
             echo "matplotlib !=1.5.1" >> $pin_file
         else
-            awk '{if ($1 == "matplotlib") print "matplotlib !=1.5.1";
+            awk '{if ($1 == "matplotlib") print "matplotlib "$2",!=1.5.1";
               else print $0}' $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
         fi
