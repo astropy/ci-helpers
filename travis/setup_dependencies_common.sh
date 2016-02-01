@@ -120,10 +120,11 @@ if [[ $NUMPY_VERSION == dev* ]]; then
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
-elif [[ $NUMPY_VERSION == pre ]]; then
+elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
-    if [[ -z $(pip list -o --pre | grep numpy | grep pre) ]]; then
+    if [[ -z $(pip list -o --pre | grep numpy | \
+        grep -E "pre|[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         exit
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -219,7 +220,7 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 
-if [[ $NUMPY_VERSION == pre ]]; then
+if [[ $NUMPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade numpy
 fi
 
