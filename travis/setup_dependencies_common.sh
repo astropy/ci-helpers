@@ -123,7 +123,7 @@ elif [[ $NUMPY_VERSION == stable ]]; then
 elif [[ $NUMPY_VERSION == pre ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
-    if [[ -z $(pip list -o --pre |grep numpy) ]]; then
+    if [[ -z $(pip list -o --pre | grep numpy | grep pre) ]]; then
         exit
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then

@@ -43,12 +43,15 @@ def test_numpy():
         os_numpy_version = os.environ['NUMPY_VERSION'].lower()
         if 'dev' in os_numpy_version:
             assert 'dev' in numpy.__version__
+        elif 'pre' in os_numpy_version:
+            assert 'pre' in numpy.__version__
         else:
             if 'stable' in os_numpy_version:
                 assert numpy.__version__.startswith(LATEST_NUMPY_STABLE)
             else:
                 assert numpy.__version__.startswith(os_numpy_version)
             assert 'dev' not in numpy.__version__
+            assert 'pre' not in numpy.__version__
 
 
 def test_astropy():
