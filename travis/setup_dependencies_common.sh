@@ -141,14 +141,14 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
     if [[ ! -z $pin_file ]]; then
         if [[ -z $(grep matplotlib $pin_file) ]]; then
-            echo "matplotlib <=1.5.0" >> $pin_file
+            echo "matplotlib !=1.5.1" >> $pin_file
         else
-            awk '{if ($1 == "matplotlib") print "matplotlib <=1.5.0";
+            awk '{if ($1 == "matplotlib") print "matplotlib !=1.5.1";
               else print $0}' $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
         fi
     else
-        echo "matplotlib <=1.5.0" > $HOME/miniconda/envs/test/conda-meta/pinned
+        echo "matplotlib !=1.5.1" > $HOME/miniconda/envs/test/conda-meta/pinned
     fi
 
     $CONDA_INSTALL Sphinx matplotlib
