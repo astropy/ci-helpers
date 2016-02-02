@@ -186,10 +186,6 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS
 fi
 
-if [[ ! -z $PIP_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
-fi
-
 # PARALLEL BUILDS
 if [[ $SETUP_CMD == *parallel* ]]; then
     $PIP_INSTALL pytest-xdist
@@ -238,5 +234,18 @@ if [[ $DEBUG == True ]]; then
     conda install -n root _license
     conda info -a
 fi
+
+# PIP DEPENDENCIES
+
+# We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
+# after installing the Numpy versions of Numpy or Astropy. If we didn't do this,
+# then calling pip earlier could result in the stable version of astropy getting
+# installed, and then overritten later by the dev version (which would waste
+# build time)
+
+if [[ ! -z $PIP_DEPENDENCIES ]]; then
+    $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
+fi
+
 
 set +x
