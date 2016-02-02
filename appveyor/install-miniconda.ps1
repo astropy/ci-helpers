@@ -145,6 +145,18 @@ if ($env:ASTROPY_VERSION -match "dev") {
 # installed, and then overritten later by the dev version (which would waste
 # build time)
 
+if ($env:PIP_FLAGS) {
+    $PIP_FLAGS = $env:PIP_FLAGS
+} else {
+    $PIP_FLAGS = ""
+}
+
+if ($env:PIP_DEPENDENCIES) {
+    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES
+} else {
+    $PIP_DEPENDENCIES = ""
+}
+
 if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
 }
