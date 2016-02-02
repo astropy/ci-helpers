@@ -137,21 +137,47 @@ fi
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
 if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
+    # Check whether there are any version setting env variables, pin them if
+    # there are (only need to deal with the case when they aren't listed in
+    # CONDA_DEPENDENCIES, otherwise this was already dealt with)
+
+    pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
+    if [[ ! -z $MATPLOTLIB_VERSION ]]; then
+        if [[ -z $(grep matplotlib $pin_file) ]]; then
+            echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $pin_file
+        fi
+    fi
+    if [[ ! -z $SPHINX_VERSION ]]; then
+        if [[ -z $(grep sphinx $pin_file) ]]; then
+            echo "matplotlib ${SPHINX_VERSION}*" >> $pin_file
+        fi
+    fi
+
     # TODO: remove this pinned matplotlib version once
     # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
+
     if [[ ! -z $pin_file ]]; then
         if [[ -z $(grep matplotlib $pin_file) ]]; then
-            echo "matplotlib <=1.5.0" >> $pin_file
+            echo "matplotlib !=1.5.1" >> $pin_file
         else
-            awk '{if ($1 == "matplotlib") print "matplotlib <=1.5.0";
-              else print $0}' $pin_file > /tmp/pin_file_temp
+            echo "Due to a matplotlib issue (#5836), the version for the
+            sphinx builds needs to be !=1.5.1. This may override the version
+            number specified in $MATPLOTLIB_VERSION"
+            awk  '{if ($1 == "matplotlib")
+                       if ($2 == "1.5.1*") print "matplotlib !=1.5.1";
+                       else print "matplotlib "$2",!=1.5.1";
+                   else print $0}' $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
         fi
     else
-        echo "matplotlib <=1.5.0" > $HOME/miniconda/envs/test/conda-meta/pinned
+        echo "matplotlib !=1.5.1" >> $pin_file
     fi
 
-    $CONDA_INSTALL Sphinx matplotlib
+    if [[ $DEBUG == True ]]; then
+        cat $pin_file
+    fi
+
+    $CONDA_INSTALL sphinx matplotlib
 fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
