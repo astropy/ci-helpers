@@ -164,7 +164,8 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
             sphinx builds needs to be !=1.5.1. This may override the version
             number specified in $MATPLOTLIB_VERSION"
             awk  '{if ($1 == "matplotlib")
-                       if ($2 == "1.5.1*") print "matplotlib !=1.5.1";
+                       if ($2 == "1.5.1*" || NF == 1)
+                           print "matplotlib !=1.5.1";
                        else print "matplotlib "$2",!=1.5.1";
                    else print $0}' $pin_file > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $pin_file
