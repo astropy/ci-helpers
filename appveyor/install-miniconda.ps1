@@ -130,9 +130,11 @@ conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIE
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
 }
-# Check whether the developer version of Astropy is required and if yes install it
+
+# Check whether the developer version of Astropy is required and if yes install
+# it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
 }

@@ -217,7 +217,7 @@ fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
     conda install $QUIET Cython
-    $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade
+    $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 
 # ASTROPY DEV
@@ -225,11 +225,12 @@ fi
 # We now install Astropy dev - this has to be done last, otherwise conda might
 # install a stable version of Astropy as a dependency to another package, which
 # would override Astropy dev. Also, if we are installing Numpy dev, we need to
-# compile Astropy dev against Numpy dev.
+# compile Astropy dev against Numpy dev. We need to include --no-deps to make
+# sure that Numpy doesn't get upgraded.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
-    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
+    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
 if [[ $DEBUG == True ]]; then
