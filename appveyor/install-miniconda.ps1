@@ -138,3 +138,15 @@ if ($env:NUMPY_VERSION -match "dev") {
 if ($env:ASTROPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
 }
+
+# We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
+# after installing the Numpy versions of Numpy or Astropy. If we didn't do this,
+# then calling pip earlier could result in the stable version of astropy getting
+# installed, and then overritten later by the dev version (which would waste
+# build time)
+
+if ($env:PIP_DEPENDENCIES) {
+    pip install $PIP_DEPENDENCIES $PIP_FLAGS
+}
+
+
