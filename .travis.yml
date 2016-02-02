@@ -30,9 +30,11 @@ env:
 matrix:
     include:
 
-        # Starting with the dev versions as they take the longest to run
+        # Starting with the dev versions as they take the longest to run. We 
+        # deliberately test with Numpy 1.9 to check that installing Astropy dev 
+        # doesn't upgrade Numpy.
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.10 ASTROPY_VERSION=dev
+          env: SETUP_CMD='test' NUMPY_VERSION=1.9 ASTROPY_VERSION=dev
 
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also
