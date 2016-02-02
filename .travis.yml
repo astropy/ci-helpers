@@ -49,7 +49,7 @@ matrix:
 
         # This is a broken test at the moment, as we manually require
         # mpl<=1.5.0 for sphinx. Once that requirement is gone this and the
-        # next three tests can be merged together.
+        # next four tests can be merged together.
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib=1.5.0 sphinx'
                MATPLOTLIB_VERSION=1.5.1 DEBUG=True
@@ -62,6 +62,10 @@ matrix:
 
         - os: linux
           env: SETUP_CMD='build_sphinx' DEBUG=True
+               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__!="\""1.5.1"\"'
+
+        - os: linux
+          env: SETUP_CMD='build_sphinx' DEBUG=True CONDA_DEPENDENCIES='matplotlib'
                TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__!="\""1.5.1"\"'
 
         - os: linux
