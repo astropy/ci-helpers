@@ -130,9 +130,35 @@ conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIE
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
 }
-# Check whether the developer version of Astropy is required and if yes install it
+
+# Check whether the developer version of Astropy is required and if yes install
+# it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
 }
+
+# We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
+# after installing the Numpy versions of Numpy or Astropy. If we didn't do this,
+# then calling pip earlier could result in the stable version of astropy getting
+# installed, and then overritten later by the dev version (which would waste
+# build time)
+
+if ($env:PIP_FLAGS) {
+    $PIP_FLAGS = $env:PIP_FLAGS
+} else {
+    $PIP_FLAGS = ""
+}
+
+if ($env:PIP_DEPENDENCIES) {
+    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES
+} else {
+    $PIP_DEPENDENCIES = ""
+}
+
+if ($env:PIP_DEPENDENCIES) {
+    pip install $PIP_DEPENDENCIES $PIP_FLAGS
+}
+
+

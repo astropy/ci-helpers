@@ -186,10 +186,6 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS
 fi
 
-if [[ ! -z $PIP_DEPENDENCIES ]]; then
-    $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
-fi
-
 # PARALLEL BUILDS
 if [[ $SETUP_CMD == *parallel* ]]; then
     $PIP_INSTALL pytest-xdist
@@ -217,7 +213,7 @@ fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
     conda install $QUIET Cython
-    $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade
+    $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 
 # ASTROPY DEV
@@ -225,11 +221,12 @@ fi
 # We now install Astropy dev - this has to be done last, otherwise conda might
 # install a stable version of Astropy as a dependency to another package, which
 # would override Astropy dev. Also, if we are installing Numpy dev, we need to
-# compile Astropy dev against Numpy dev.
+# compile Astropy dev against Numpy dev. We need to include --no-deps to make
+# sure that Numpy doesn't get upgraded.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
-    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade
+    $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
 if [[ $DEBUG == True ]]; then
@@ -237,5 +234,18 @@ if [[ $DEBUG == True ]]; then
     conda install -n root _license
     conda info -a
 fi
+
+# PIP DEPENDENCIES
+
+# We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
+# after installing the Numpy versions of Numpy or Astropy. If we didn't do this,
+# then calling pip earlier could result in the stable version of astropy getting
+# installed, and then overritten later by the dev version (which would waste
+# build time)
+
+if [[ ! -z $PIP_DEPENDENCIES ]]; then
+    $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
+fi
+
 
 set +x
