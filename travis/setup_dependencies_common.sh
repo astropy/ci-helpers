@@ -196,15 +196,6 @@ if [[ $SETUP_CMD == *open-files* ]]; then
     $CONDA_INSTALL psutil
 fi
 
-
-# COVERAGE DEPENDENCIES
-if [[ $SETUP_CMD == *coverage* ]]; then
-    # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
-    # with the fix of https://github.com/astropy/astropy/issues/4175.
-    $CONDA_INSTALL coverage==3.7.1
-    $PIP_INSTALL coveralls
-fi
-
 # NUMPY DEV
 
 # We now install Numpy dev - this has to be done last, otherwise conda might
@@ -229,12 +220,6 @@ if [[ $ASTROPY_VERSION == dev* ]]; then
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
-if [[ $DEBUG == True ]]; then
-    # include debug information about the current conda install
-    conda install -n root _license
-    conda info -a
-fi
-
 # PIP DEPENDENCIES
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
@@ -247,5 +232,27 @@ if [[ ! -z $PIP_DEPENDENCIES ]]; then
     $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
 fi
 
+
+# COVERAGE DEPENDENCIES
+
+# Both cpp-coveralls and coveralls install a 'coveralls' command, but we want
+# the one from the coveralls package to always take precedence, so we have to
+# install this now in case the user installs cpp-coveralls via PIP_DEPENDENCIES.
+
+if [[ $SETUP_CMD == *coverage* ]]; then
+    # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
+    # with the fix of https://github.com/astropy/astropy/issues/4175.
+    # We install requests with conda since it's required by coveralls.
+    $CONDA_INSTALL coverage==3.7.1 requests
+    $PIP_INSTALL coveralls
+fi
+
+# DEBUG INFO
+
+if [[ $DEBUG == True ]]; then
+    # include debug information about the current conda install
+    conda install -n root _license
+    conda info -a
+fi
 
 set +x
