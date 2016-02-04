@@ -196,15 +196,6 @@ if [[ $SETUP_CMD == *open-files* ]]; then
     $CONDA_INSTALL psutil
 fi
 
-
-# COVERAGE DEPENDENCIES
-if [[ $SETUP_CMD == *coverage* ]]; then
-    # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
-    # with the fix of https://github.com/astropy/astropy/issues/4175.
-    $CONDA_INSTALL coverage==3.7.1
-    $PIP_INSTALL coveralls
-fi
-
 # NUMPY DEV
 
 # We now install Numpy dev - this has to be done last, otherwise conda might
@@ -247,5 +238,17 @@ if [[ ! -z $PIP_DEPENDENCIES ]]; then
     $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
 fi
 
+
+# COVERAGE DEPENDENCIES
+
+# We install coverage and coveralls last, otherwise the coveralls command
+# doesn't work properly if cpp-coveralls is installed last via PIP_DEPENDENCIES.
+
+if [[ $SETUP_CMD == *coverage* ]]; then
+    # TODO can use latest version of coverage (4.0) once astropy 1.1 is out
+    # with the fix of https://github.com/astropy/astropy/issues/4175.
+    $CONDA_INSTALL coverage==3.7.1
+    $PIP_INSTALL coveralls
+fi
 
 set +x
