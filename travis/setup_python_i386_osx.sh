@@ -42,7 +42,7 @@ easy_install pip
 
 # Install pytest
 
-pip install pytest
+pip install pytest mock
 
 # Install pip dependencies
 
