@@ -40,6 +40,10 @@ python setup.py install
 
 easy_install pip
 
+# Install pytest
+
+pip install pytest
+
 # Install pip dependencies
 
 F90="gfortran -m32" F77="gfortran -m32" FC="gfortran -m32" CC="gcc -m32" pip install $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS --no-use-wheel
