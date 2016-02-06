@@ -11,21 +11,33 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     exit 100;
 fi
 
+# Remember start directory
+
+start=`pwd`
+
+# Go to temporary directory
+
+cd `mktemp -d -t test`
 
 # Install Python
 
 wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
-tar xvzf Python-2.7.11.tgz
+
+tar xvzf Python-2.7.11.tgz >& tar.log
+if [[ $DEBUG == True ]]; then cat tar.log; fi
+
 cd Python-2.7.11
 
 ./configure MACOSX_DEPLOYMENT_TARGET=10.6 CFLAGS="-arch i386" LDFLAGS="-arch i386" --prefix=$HOME/python_32bit >& configure.log
 if [[ $DEBUG == True ]]; then cat configure.log; fi
-  
+
 make >& make.log
 if [[ $DEBUG == True ]]; then cat make.log; fi
 
 make install >& make_install.log
 if [[ $DEBUG == True ]]; then cat make_install.log; fi
+
+cd ..
 
 export PATH=$HOME/python_32bit/bin:$PATH
 
@@ -35,6 +47,7 @@ wget https://pypi.python.org/packages/source/s/setuptools/setuptools-19.1.tar.gz
 tar xvzf setuptools-19.1.tar.gz
 cd setuptools-19.1
 python setup.py install
+cd ..
 
 # Install pip
 
@@ -47,5 +60,9 @@ pip install pytest mock
 # Install pip dependencies
 
 F90="gfortran -m32" F77="gfortran -m32" FC="gfortran -m32" CC="gcc -m32" pip install $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS --no-use-wheel
+
+# Go back to start directory
+
+cd $start
 
 echo "================= Returning executing local .travis.yml script ================="
