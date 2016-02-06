@@ -19,16 +19,40 @@ start=`pwd`
 
 cd `mktemp -d -t test`
 
+export PATH=$HOME/python_32bit/bin:$PATH
+
 # Install Python
 
-wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+case $PYTHON_VERSION in
+2.6)
+  FULL_PYTHON_VERSION=2.6.9
+  ;;
+2.7)
+  FULL_PYTHON_VERSION=2.7.10
+  ;;
+3.2)
+  FULL_PYTHON_VERSION=3.2.6
+  ;;
+3.3)
+  FULL_PYTHON_VERSION=3.3.6
+  ;;
+3.4)
+  FULL_PYTHON_VERSION=3.4.4
+  ;;
+3.5)
+  FULL_PYTHON_VERSION=3.5.1
+  ;;
+esac
 
-tar xvzf Python-2.7.11.tgz >& tar.log
+wget "https://www.python.org/ftp/python/"$FULL_PYTHON_VERSION"/Python-"$FULL_PYTHON_VERSION".tgz"
+
+tar xvzf "Python-"$FULL_PYTHON_VERSION".tgz" >& tar.log
 if [[ $DEBUG == True ]]; then cat tar.log; fi
 
-cd Python-2.7.11
+cd "Python-"$FULL_PYTHON_VERSION
 
-./configure MACOSX_DEPLOYMENT_TARGET=10.6 CFLAGS="-arch i386" LDFLAGS="-arch i386" --prefix=$HOME/python_32bit >& configure.log
+./configure MACOSX_DEPLOYMENT_TARGET=10.6 CFLAGS="-m32" LDFLAGS="-m32" --prefix=$HOME/python_32bit >& configure.log;
+
 if [[ $DEBUG == True ]]; then cat configure.log; fi
 
 make >& make.log
@@ -39,7 +63,14 @@ if [[ $DEBUG == True ]]; then cat make_install.log; fi
 
 cd ..
 
-export PATH=$HOME/python_32bit/bin:$PATH
+# Check path to Python
+
+which python
+
+if [[ `which python` != $HOME/python_32bit/bin/python ]]; then
+  echo "An error occurred when compiling Python"
+  exit 100
+fi
 
 # Install setuptools
 
