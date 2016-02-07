@@ -27,11 +27,7 @@ matrix:
 
 before_install:
     - ln -s . ci-helpers
-    - if [[ $CONDA == True ]]; then
-        source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh;
-      else
-        source "ci-helpers/travis/setup_python_"$ARCH".sh";
-      fi
+    - source "ci-helpers/travis/setup.sh"
 
 script:
    - eval $TEST_CMD
