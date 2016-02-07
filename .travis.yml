@@ -18,6 +18,7 @@ env:
         - TEST_CMD='py.test test_env.py'
         - PYTHON_VERSION=3.5
         - CONDA=True
+        - DEBUG=True
 
 matrix:
     include:
