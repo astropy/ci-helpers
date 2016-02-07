@@ -61,6 +61,13 @@ if [[ $DEBUG == True ]]; then cat make.log; fi
 make install >& make_install.log
 if [[ $DEBUG == True ]]; then cat make_install.log; fi
 
+if [[ $PYTHON_VERSION == 3.* ]]; then
+  ln -s $HOME/python_32bit/bin/python3 $HOME/python_32bit/bin/python;
+  ln -s $HOME/python_32bit/bin/python3-config $HOME/python_32bit/bin/python-config;
+  ln -s $HOME/python_32bit/bin/pydoc3 $HOME/python_32bit/bin/pydoc;
+  ln -s $HOME/python_32bit/bin/idle3 $HOME/python_32bit/bin/idle;
+fi
+
 cd ..
 
 # Check path to Python
