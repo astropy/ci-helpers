@@ -17,13 +17,13 @@ env:
         - SETUP_CMD='test'
         - TEST_CMD='py.test test_env.py'
         - PYTHON_VERSION=3.5
-        - CONDA=True
+        - USE_CONDA=True
         - DEBUG=True
 
 matrix:
     include:
         - os: osx
-          env: CONDA=False ARCH=i386 PIP_DEPENDENCIES="numpy scipy astropy"
+          env: USE_CONDA=False ARCH=i386 PIP_DEPENDENCIES="numpy scipy astropy"
 
 before_install:
     - ln -s . ci-helpers
