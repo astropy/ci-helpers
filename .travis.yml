@@ -31,5 +31,5 @@ before_install:
 
 script:
    - eval $TEST_CMD
-   - file /Users/travis/python_32bit/lib/python2.7/site-packages/scipy/special/_ufuncs.so
+   - file /Users/travis/python_32bit/lib/python3.5/site-packages/scipy/special/_ufuncs.cpython-35m-darwin.so
    - python -c 'from scipy.special.orthogonal import p_roots'
