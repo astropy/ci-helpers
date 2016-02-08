@@ -76,7 +76,15 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
 conda config --set always_yes true
-conda config --add channels astropy-ci-extras
+
+if (! $env:CONDA_CHANNELS) {
+   $CONDA_CHANNELS=@("astropy", "astropy-ci-extras")
+} else {
+   $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
+}
+foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
+   conda config --add channels $CONDA_CHANNEL
+}
 
 # Install the build and runtime dependencies of the project.
 conda update -q conda

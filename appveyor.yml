@@ -42,6 +42,13 @@ environment:
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
 
+      - PYTHON_VERSION: "2.7"
+        NUMPY_VERSION: "stable"
+        ASTROPY_VERSION: "stable"
+        CONDA_DEPENDENCIES: "glymur sunpy"
+        CONDA_CHANNELS: "astropy astropy-ci-extras sunpy"
+
+
 platform:
     -x64
 
