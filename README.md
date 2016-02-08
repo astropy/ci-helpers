@@ -151,7 +151,7 @@ This does the following:
 - Set up the PATH appropriately
 - Set up a conda environment named 'test' and switch to it
 - Set the ``always_yes`` config option for conda to ``true`` so that you don't need to include ``--yes``
-- Register the ``astropy-ci-extras`` channel
+- Register the specified channels, or if not stated the ``astropy`` and ``astropy-ci-extras`` channels
 
 Following this, various dependencies are installed depending on the following environment variables
 
@@ -170,6 +170,9 @@ Following this, various dependencies are installed depending on the following en
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.
+
+* ``$CONDA_CHANNELS``: this should be a space-separated string of conda
+  channel names, and defaults to ``astropy`` and ``astropy-ci-extras``.
 
 Details
 -------
