@@ -109,7 +109,13 @@ fi
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
-    # Install at the bottom of this script
+    # We install nomkl here to make sure that Numpy and Scipy versions 
+    # installed subsequently don't depend on the MKL. If we don't do this, then 
+    # we run into issues when we install the developer version of Numpy 
+    # because it is then not compiled against the MKL, and one runs into issues 
+    # if Scipy *is* still compiled against the MKL.
+    conda install $QUIET nomkl
+    # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET numpy
