@@ -38,7 +38,10 @@ matrix:
 
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also
-        # install Numpy stable)
+        # install Numpy stable). It's also important to include scipy here to
+        # make sure that scipy routines still work correctly, because if we
+        # aren't careful, we can end up with issues with the math kernel 
+        # library.
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=dev

@@ -117,6 +117,29 @@ def test_pip_flags():
         pytest.skip()
 
 
+def test_regression_mkl():
+
+    # Regression test to make sure that if the developer version of Numpy is
+    # used, scipy still works correctly. At some point, the conda packages for
+    # Numpy and Scipy were compiled with the MKL, and this then led to issues
+    # if installing Numpy dev with pip without making sure it was also using
+    # the MKL. The solution is to simply make sure that we install the
+    # ``nomkl`` conda pacakge when installing the developer version of Numpy.
+
+    if os.environ.get('NUMPY_VERSION', '') == 'dev':
+
+        try:
+            import scipy
+        except ImportError:
+            pytest.skip()
+
+        import numpy as np
+        from scipy.linalg import inv
+
+        x = np.random.random((3,3))
+        inv(x)
+
+
 if __name__ == '__main__':
     import pytest
     pytest.main(__file__)
