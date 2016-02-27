@@ -109,10 +109,10 @@ fi
 
 # NUMPY
 if [[ $NUMPY_VERSION == dev* ]]; then
-    # We install nomkl here to make sure that Numpy and Scipy versions 
-    # installed subsequently don't depend on the MKL. If we don't do this, then 
-    # we run into issues when we install the developer version of Numpy 
-    # because it is then not compiled against the MKL, and one runs into issues 
+    # We install nomkl here to make sure that Numpy and Scipy versions
+    # installed subsequently don't depend on the MKL. If we don't do this, then
+    # we run into issues when we install the developer version of Numpy
+    # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
     conda install $QUIET nomkl
     # We then install Numpy itself at the bottom of this script
@@ -120,6 +120,13 @@ if [[ $NUMPY_VERSION == dev* ]]; then
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+elif [[ $NUMPY_VERSION == pre* ]]; then
+    conda install $QUIET numpy
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    if [[ -z $(pip list -o --pre | grep numpy | \
+            grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
+        exit
+    fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
     conda install $QUIET numpy=$NUMPY_VERSION
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
@@ -202,15 +209,19 @@ if [[ $SETUP_CMD == *open-files* ]]; then
     $CONDA_INSTALL psutil
 fi
 
-# NUMPY DEV
+# NUMPY DEV and PRE
 
 # We now install Numpy dev - this has to be done last, otherwise conda might
 # install a stable version of Numpy as a dependency to another package, which
-# would override Numpy dev.
+# would override Numpy dev or pre.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
     conda install $QUIET Cython
     $PIP_INSTALL git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
+fi
+
+if [[ $NUMPY_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade numpy
 fi
 
 # ASTROPY DEV

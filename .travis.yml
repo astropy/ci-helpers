@@ -47,6 +47,12 @@ matrix:
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
 
+        # The pre build only should run to the testing phase if a pre
+        # release is available for numpy on pypi, otherwise it should pass
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=pre
+               CONDA_DEPENDENCIES='scipy' DEBUG=True
+
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
                DEBUG=True

@@ -40,15 +40,18 @@ def test_python_version():
 def test_numpy():
     if 'NUMPY_VERSION' in os.environ:
         import numpy
+        np_version = numpy.__version__
         os_numpy_version = os.environ['NUMPY_VERSION'].lower()
         if 'dev' in os_numpy_version:
-            assert 'dev' in numpy.__version__
+            assert 'dev' in np_version
+        elif 'pre' in os_numpy_version:
+            assert re.match("[0-9.]*[0-9](a[0-9]|b[0-9]|rc[0-9])", np_version)
         else:
             if 'stable' in os_numpy_version:
-                assert numpy.__version__.startswith(LATEST_NUMPY_STABLE)
+                assert np_version.startswith(LATEST_NUMPY_STABLE)
             else:
-                assert numpy.__version__.startswith(os_numpy_version)
-            assert 'dev' not in numpy.__version__
+                assert np_version.startswith(os_numpy_version)
+            assert re.match("^[0-9]+\.[0-9]+\.[0-9]", np_version)
 
 
 def test_astropy():
