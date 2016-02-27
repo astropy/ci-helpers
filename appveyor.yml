@@ -21,7 +21,8 @@ environment:
         # install Numpy stable)
       - PYTHON_VERSION: "2.7"
         NUMPY_VERSION: "development"
-        CONDA_DEPENDENCIES: "scipy"
+        CONDA_DEPENDENCIES: "scipy glymur"
+        CONDA_CHANNELS: "sunpy"
 
       - PYTHON_VERSION: "3.4"
         NUMPY_VERSION: "1.9"
@@ -39,9 +40,9 @@ environment:
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "stable"
         ASTROPY_VERSION: "stable"
-        CONDA_DEPENDENCIES: "matplotlib h5py pyqt5"
+        CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
-        CONDA_CHANNELS: "astropy-ci-extras astrofrog"
+
 
 
 platform:
