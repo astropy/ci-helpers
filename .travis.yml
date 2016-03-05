@@ -30,8 +30,8 @@ env:
 matrix:
     include:
 
-        # Starting with the dev versions as they take the longest to run. We 
-        # deliberately test with Numpy 1.9 to check that installing Astropy dev 
+        # Starting with the dev versions as they take the longest to run. We
+        # deliberately test with Numpy 1.9 to check that installing Astropy dev
         # doesn't upgrade Numpy.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 ASTROPY_VERSION=dev
@@ -40,7 +40,7 @@ matrix:
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable). It's also important to include scipy here to
         # make sure that scipy routines still work correctly, because if we
-        # aren't careful, we can end up with issues with the math kernel 
+        # aren't careful, we can end up with issues with the math kernel
         # library.
 
         - os: linux
@@ -52,6 +52,11 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=pre
                CONDA_DEPENDENCIES='scipy' DEBUG=True
+
+        # The pre build only should run to the testing phase if a pre
+        # release is available for astropy on pypi, otherwise it should pass
+        - os: linux
+          env: SETUP_CMD='test' ASTROPY_VERSION=pre DEBUG=True
 
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
