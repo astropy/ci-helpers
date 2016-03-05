@@ -125,6 +125,9 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
+        # We want to stop the script if there isn't a pre-release available,
+        # as in that case it would be just another build using the stable
+        # version.
         exit
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -138,10 +141,13 @@ fi
 if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
-    elif [[ $NUMPY_VERSION == pre* ]]; then
+    elif [[ $ASTROPY_VERSION == pre* ]]; then
         conda install astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
+            # We want to stop the script if there isn't a pre-release available,
+            # as in that case it would be just another build using the stable
+            # version.
             exit
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
