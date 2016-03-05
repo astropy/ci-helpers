@@ -145,7 +145,7 @@ if ($env:NUMPY_VERSION -match "dev") {
 
 # Check whether a pre-release version of Numpy is required check whether a pre-release is available, and upgrade to it from the stable version:
 if ($env:NUMPY_VERSION -match "pre") {
-   if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep numpy | grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") {
+   if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep numpy | grep -E '[0-9]rc[0-9]|[0-9][ab][0-9]'") {
       Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
    }
    else { EXIT 1 }
