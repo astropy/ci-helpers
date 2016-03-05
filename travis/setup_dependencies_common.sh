@@ -138,6 +138,12 @@ fi
 if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
+    elif [[ $NUMPY_VERSION == pre* ]]; then
+        conda install astropy
+        if [[ -z $(pip list -o --pre | grep astropy | \
+            grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
+            exit
+        fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
     elif [[ $ASTROPY_VERSION == lts ]]; then
@@ -224,7 +230,7 @@ if [[ $NUMPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade numpy
 fi
 
-# ASTROPY DEV
+# ASTROPY DEV and PRE
 
 # We now install Astropy dev - this has to be done last, otherwise conda might
 # install a stable version of Astropy as a dependency to another package, which
@@ -235,6 +241,10 @@ fi
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
     $PIP_INSTALL git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
+fi
+
+if [[ $ASTROPY_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade astropy
 fi
 
 # PIP DEPENDENCIES
