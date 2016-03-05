@@ -105,6 +105,8 @@ if ($env:NUMPY_VERSION) {
         $NUMPY_OPTION = "numpy"
     } elseif($env:NUMPY_VERSION -match "dev") {
         $NUMPY_OPTION = "Cython pip".Split(" ")
+    } elseif ($env:NUMPY_VERSION -match "pre") {
+        $NUMPY_OPTION = "numpy"
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
@@ -139,6 +141,14 @@ conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIE
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
+}
+
+# Check whether a pre-release version of Numpy is required check whether a pre-release is available, and upgrade to it from the stable version:
+if ($env:NUMPY_VERSION -match "pre") {
+   if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep numpy | grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") {
+      Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
+   }
+   else { EXIT 1 }
 }
 
 # Check whether the developer version of Astropy is required and if yes install
