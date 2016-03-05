@@ -67,16 +67,19 @@ Following this, various dependencies are installed depending on the following en
   build exits and passes on travis without running the tests.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Astrop is installed, along with Cython and jinja2,
+  developer version of Astropy is installed, along with Cython and jinja2,
   which are compile-time dependencies. If set to a version number, that
   version is installed. If set to ``stable``, install the latest stable
-  version of Astropy. If set to ``lts`` the latest long term support (LTS)
-  version is installed (more info about LTS can be found
+  version of Astropy. If set to ``prerelease``, the pre-release version of
+  Astropy gets installed if there is any, otherwise the build exits and
+  passes on travis without running the tests. If set to ``lts`` the latest
+  long term support (LTS) version is installed (more info about LTS can be
+  found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
-  dependencies can be overriden/specified with the ``$PACKAGENAME_VERSION``
+  dependencies can be overridden/specified with the ``$PACKAGENAME_VERSION``
   environment variables.
 
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
@@ -163,7 +166,7 @@ Following this, various dependencies are installed depending on the following en
   the latest stable version of Numpy.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Astrop is installed, along with Cython and jinja2,
+  developer version of Astropy is installed, along with Cython and jinja2,
   which are compile-time dependencies. If set to a version number, that
   version is installed. If set to ``stable``, install the latest stable
   version of Astropy. If set to ``lts`` the latest long term support (LTS)
