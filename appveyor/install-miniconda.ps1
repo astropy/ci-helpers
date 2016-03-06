@@ -120,6 +120,8 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy"
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
+    } elseif ($env:ASTROPY_VERSION -match "pre") {
+        $ASTROPY_OPTION = "astropy"
     } elseif($env:ASTROPY_VERSION -match "lts") {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_LTS_VERSION
     } else {
@@ -143,7 +145,11 @@ if ($env:NUMPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
 }
 
-# Check whether a pre-release version of Numpy is required check whether a pre-release is available, and upgrade to it from the stable version:
+# Check whether a pre-release version of Numpy is required check whether a
+# pre-release is available, and upgrade to it from the stable version. If
+# there is no pre-release we should exit the script without running the
+# tests:
+
 if ($env:NUMPY_VERSION -match "pre") {
    if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep numpy | grep -E '[0-9]rc[0-9]|[0-9][ab][0-9]'") {
       Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
@@ -153,8 +159,21 @@ if ($env:NUMPY_VERSION -match "pre") {
 
 # Check whether the developer version of Astropy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
+
 if ($env:ASTROPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
+}
+
+# Check whether a pre-release version of Astropy is required check whether a
+# pre-release is available, and upgrade to it from the stable version. If
+# there is no pre-release we should exit the script without running the
+# tests:
+
+if ($env:ASTROPY_VERSION -match "pre") {
+   if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep astropy | grep -E '[0-9]rc[0-9]|[0-9][ab][0-9]'") {
+      Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
+   }
+   else { EXIT 1 }
 }
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
