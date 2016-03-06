@@ -14,34 +14,34 @@ environment:
 
   matrix:
 
-      - PYTHON_VERSION: "2.7"
+#      - PYTHON_VERSION: "2.7"
 
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable)
-      - PYTHON_VERSION: "2.7"
-        NUMPY_VERSION: "development"
-        CONDA_DEPENDENCIES: "scipy glymur"
-        CONDA_CHANNELS: "sunpy"
+#      - PYTHON_VERSION: "2.7"
+#        NUMPY_VERSION: "development"
+#        CONDA_DEPENDENCIES: "scipy glymur"
+#        CONDA_CHANNELS: "sunpy"
 
         # We deliberately test with Numpy 1.9 to check that installing Astropy
         # dev doesn't upgrade Numpy.
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.9"
-        ASTROPY_VERSION: "development"
+#      - PYTHON_VERSION: "3.5"
+#        NUMPY_VERSION: "1.9"
+#        ASTROPY_VERSION: "development"
 
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.10"
-        ASTROPY_VERSION: "lts"
+#      - PYTHON_VERSION: "3.5"
+#        NUMPY_VERSION: "1.10"
+#        ASTROPY_VERSION: "lts"
 
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "stable"
-        ASTROPY_VERSION: "stable"
-        CONDA_DEPENDENCIES: "matplotlib h5py"
-        PIP_DEPENDENCIES: "astrodendro"
+#      - PYTHON_VERSION: "3.5"
+#        NUMPY_VERSION: "stable"
+#        ASTROPY_VERSION: "stable"
+#        CONDA_DEPENDENCIES: "matplotlib h5py"
+#        PIP_DEPENDENCIES: "astrodendro"
 
-      - PYTHON_VERSION: "3.4"
-        NUMPY_VERSION: "prerelease"
+#      - PYTHON_VERSION: "3.4"
+#        NUMPY_VERSION: "prerelease"
 
       - PYTHON_VERSION: "3.5"
         ASTROPY_VERSION: "prerelease"
