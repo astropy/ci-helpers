@@ -57,17 +57,21 @@ def test_numpy():
 def test_astropy():
     if 'ASTROPY_VERSION' in os.environ:
         import astropy
+        astropy_version = astropy.__version__
         os_astropy_version = os.environ['ASTROPY_VERSION'].lower()
         if 'dev' in os_astropy_version:
-            assert 'dev' in astropy.__version__
+            assert 'dev' in astropy_version
+        elif 'pre' in os_astropy_version:
+            assert re.match("[0-9.]*[0-9](a[0-9]|b[0-9]|rc[0-9])",
+                            astropy_version)
         else:
             if 'stable' in os_astropy_version:
-                assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
+                assert astropy_version.startswith(LATEST_ASTROPY_STABLE)
             elif 'lts' in os_astropy_version:
-                assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)
+                assert astropy_version.startswith(LATEST_ASTROPY_LTS)
             else:
-                assert astropy.__version__.startswith(os_astropy_version)
-            assert 'dev' not in astropy.__version__
+                assert astropy_version.startswith(os_astropy_version)
+            assert re.match("^[0-9]+\.[0-9]+\.[0-9]", astropy_version)
 
 
 # Check whether everything is installed and importable
