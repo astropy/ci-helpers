@@ -154,7 +154,7 @@ if ($env:NUMPY_VERSION -match "pre") {
    if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep numpy | grep -E '[0-9]rc[0-9]|[0-9][ab][0-9]'") {
       Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
    }
-   else { EXIT 1 }
+   else { EXIT 0 }
 }
 
 # Check whether the developer version of Astropy is required and if yes install
@@ -173,7 +173,7 @@ if ($env:ASTROPY_VERSION -match "pre") {
    if (Invoke-Expression "${env:CMD_IN_ENV} pip list -o --pre | grep astropy | grep -E '[0-9]rc[0-9]|[0-9][ab][0-9]'") {
       Invoke-Expression "${env:CMD_IN_ENV} pip install --pre --upgrade --no-deps numpy"
    }
-   else { EXIT 1 }
+   else { EXIT 0 }
 }
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
