@@ -81,8 +81,9 @@ matrix:
                TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__!="\""1.5.1"\"'
 
         - os: linux
-          env: SETUP_CMD='build_sphinx' DEBUG=True CONDA_DEPENDENCIES='matplotlib'
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__!="\""1.5.1"\"'
+          env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True
+               CONDA_DEPENDENCIES='matplotlib'
+               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.4.1\"; import matplotlib; assert matplotlib.__version__!="\""1.5.1"\"'
 
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5.0 sphinx'
