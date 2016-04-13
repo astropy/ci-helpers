@@ -174,7 +174,7 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     fi
     if [[ ! -z $SPHINX_VERSION ]]; then
         if [[ -z $(grep sphinx $pin_file) ]]; then
-            echo "matplotlib ${SPHINX_VERSION}*" >> $pin_file
+            echo "sphinx ${SPHINX_VERSION}*" >> $pin_file
         fi
     fi
 
