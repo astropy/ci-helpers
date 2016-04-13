@@ -9,7 +9,7 @@ import pytest
 
 LATEST_ASTROPY_STABLE = '1.1'
 LATEST_ASTROPY_LTS = '1.0'
-LATEST_NUMPY_STABLE = '1.10'
+LATEST_NUMPY_STABLE = '1.11'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
