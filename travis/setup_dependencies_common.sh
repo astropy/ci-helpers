@@ -172,9 +172,18 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
             echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $pin_file
         fi
     fi
+
+    # This is a temporary workaround of 2 warnings that appeared in the new
+    # 1.4 sphinx version, and that should be dealt with in
+    # astropy-helpers. This was we allow to override this version
+    # restriction by setting this variable in .travis.yml
+    if [[ -z $SPHINX_VERSION ]]; then
+        SPHINX_VERSION='<1.4'
+    fi
+
     if [[ ! -z $SPHINX_VERSION ]]; then
         if [[ -z $(grep sphinx $pin_file) ]]; then
-            echo "matplotlib ${SPHINX_VERSION}*" >> $pin_file
+            echo "sphinx ${SPHINX_VERSION}*" >> $pin_file
         fi
     fi
 
