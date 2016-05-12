@@ -304,8 +304,9 @@ fi
 # cache before starting the tests/docs build. See details in
 # https://github.com/matplotlib/matplotlib/issues/5836
 
-python -c "import matplotlib.pyplot"
-
+if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
+    python -c "import matplotlib.pyplot"
+fi
 
 # DEBUG INFO
 
