@@ -317,6 +317,17 @@ if [[ $SETUP_CMD == *coverage* ]]; then
     $PIP_INSTALL coveralls
 fi
 
+
+# SPHINX BUILD MPL FONT CACHING WORKAROUND
+
+# This is required to avoid Sphinx build failures due to a warning that
+# comes from the mpl FontManager(). The workaround is to initialize the
+# cache before starting the tests/docs build. See details in
+# https://github.com/matplotlib/matplotlib/issues/5836
+
+python -c "import matplotlib.pyplot"
+
+
 # DEBUG INFO
 
 if [[ $DEBUG == True ]]; then
