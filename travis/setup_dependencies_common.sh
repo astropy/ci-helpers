@@ -201,27 +201,6 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
     fi
 
-    # TODO: remove this pinned matplotlib version once
-    # https://github.com/matplotlib/matplotlib/issues/5836 is fixed
-
-    if [[ ! -z $pin_file ]]; then
-        if [[ -z $(grep matplotlib $pin_file) ]]; then
-            echo "matplotlib !=1.5.1" >> $pin_file
-        else
-            echo "Due to a matplotlib issue (#5836), the version for the
-            sphinx builds needs to be !=1.5.1. This may override the version
-            number specified in $MATPLOTLIB_VERSION"
-            awk  '{if ($1 == "matplotlib")
-                       if ($2 == "1.5.1*" || NF == 1)
-                           print "matplotlib !=1.5.1";
-                       else print "matplotlib "$2",!=1.5.1";
-                   else print $0}' $pin_file > /tmp/pin_file_temp
-            mv /tmp/pin_file_temp $pin_file
-        fi
-    else
-        echo "matplotlib !=1.5.1" >> $pin_file
-    fi
-
     if [[ $DEBUG == True ]]; then
         cat $pin_file
     fi
