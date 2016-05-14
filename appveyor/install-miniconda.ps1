@@ -134,11 +134,14 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-# Due to scipy DLL issues with mkl 11.3.3, we should not depend on mkl for now
-# as a workaround see discussion in
-# https://github.com/astropy/astropy/pull/4907#issuecomment-219200964
+# Due to scipy DLL issues with mkl 11.3.3, and as there is no nomkl option
+# for windows, we should use mkl 11.3.1 for now as a workaround see discussion
+# in https://github.com/astropy/astropy/pull/4907#issuecomment-219200964
 
-conda install -n test -q nomkl
+if ($NUMPY_OPTION -ne "") {
+   $NUMPY_OPTION_mkl = "mkl=11.3.1 " + $NUMPY_OPTION
+   $NUMPY_OPTION = $NUMPY_OPTION_mkl
+}
 
 conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
