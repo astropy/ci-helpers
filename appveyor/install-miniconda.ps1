@@ -140,7 +140,8 @@ if ($env:CONDA_DEPENDENCIES) {
 
 if ($NUMPY_OPTION -ne "") {
    $NUMPY_OPTION_mkl = "mkl=11.3.1 " + $NUMPY_OPTION
-   $NUMPY_OPTION = $NUMPY_OPTION_mkl
+   echo $NUMPY_OPTION_mkl
+   $NUMPY_OPTION = $NUMPY_OPTION_mkl.Split(" ")
 }
 
 conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
