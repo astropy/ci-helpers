@@ -134,6 +134,12 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
+# Due to scipy DLL issues with mkl 11.3.3, we should not depend on mkl for now
+# as a workaround see discussion in
+# https://github.com/astropy/astropy/pull/4907#issuecomment-219200964
+
+conda install -n test -q nomkl
+
 conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
