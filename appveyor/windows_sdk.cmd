@@ -16,10 +16,10 @@
 ::
 :: More details at:
 :: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
-:: http://stackoverflow.com/a/13751649/163740
+:: https://stackoverflow.com/a/13751649/163740
 ::
 :: Original Author: Olivier Grisel
-:: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+:: License: CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
 :: This version based on updates for python 3.5 by Phil Elson at:
 ::     https://github.com/pelson/Obvious-CI/tree/master/scripts
 
