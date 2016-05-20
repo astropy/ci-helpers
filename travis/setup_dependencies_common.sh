@@ -50,7 +50,7 @@ conda create $QUIET -n test python=$PYTHON_VERSION
 source activate test
 
 # EGG_INFO
-if [[ $SETUP_CMD == egg_info ]]; then
+if [ $SETUP_CMD == 'egg_info' ] && [ -z $FORCE_DEPENDENCIES_INSTALL ]; then
     return  # no more dependencies needed
 fi
 
