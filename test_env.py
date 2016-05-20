@@ -4,6 +4,18 @@ import sys
 
 import pytest
 
+# If we are on Travis or AppVeyor, we should check if we are running the tests
+# in the ci-helpers repository, or whether for example someone else is running
+# 'py.test' without arguments after having cloned ci-helpers.
+
+if 'APPVEYOR_PROJECT_SLUG' in os.environ:
+    if os.environ['APPVEYOR_PROJECT_SLUG'] != 'ci-helpers':
+        pytest.skip()
+
+if 'TRAVIS_REPO_SLUG' in os.environ:
+    if os.environ['TRAVIS_REPO_SLUG'] != 'astropy/ci-helpers':
+        pytest.skip()
+
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
 
