@@ -3,7 +3,7 @@
 # Borrwed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
-$MINICONDA_URL = "http://repo.continuum.io/miniconda/"
+$MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 if (! $env:ASTROPY_LTS_VERSION) {
    $env:ASTROPY_LTS_VERSION = "1.0"
@@ -152,13 +152,13 @@ conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIE
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
 }
 
 # Check whether the developer version of Astropy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install git+http://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
 }
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this

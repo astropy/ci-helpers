@@ -6,7 +6,7 @@ About
 
 This repository contains a set of scripts that are used by the
 ``.travis.yml`` and ``appveyor.yml`` files of astropy packages for the
-[Travis](http://travis-ci.org) and [AppVeyor](http://www.appveyor.com/)
+[Travis](https://travis-ci.org) and [AppVeyor](https://www.appveyor.com/)
 services respectively.
 
 The idea is to clone these at the last minute when the continuous
