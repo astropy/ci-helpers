@@ -60,8 +60,14 @@ conda install $QUIET pytest pip
 export PIP_INSTALL='pip install'
 
 # PEP8
+# PEP8 has been renamed to pycodestyle, keep both here for now
 if [[ $MAIN_CMD == pep8* ]]; then
     $PIP_INSTALL pep8
+    return  # no more dependencies needed
+fi
+
+if [[ $MAIN_CMD == pycodestyle* ]]; then
+    $PIP_INSTALL pycodestyle
     return  # no more dependencies needed
 fi
 
