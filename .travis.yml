@@ -97,6 +97,10 @@ matrix:
           env: MAIN_CMD='pep8'
                TEST_CMD='pep8 --version'
 
+        - os: linux
+          env: MAIN_CMD='pycodestyle'
+               TEST_CMD='pycodestyle --version'
+
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
                CONDA_DEPENDENCIES='requests'

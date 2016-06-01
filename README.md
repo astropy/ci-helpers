@@ -39,8 +39,10 @@ This does the following:
 
 Following this, various dependencies are installed depending on the following environment variables
 
-* ``MAIN_CMD``: if this starts with ``pep8``, then the only package that gets
-  installed is the ``pep8`` package.
+* ``MAIN_CMD``: if this starts with ``pycodestyle``, then the only package
+  that gets installed is the ``pycodestyle`` package. Please note that the
+  former name of the ``pycodestyle`` package is ``pep8``, and ci-helpers
+  still accepts it, too.
 
 * ``SETUP_CMD``: this can be set to various values:
 
@@ -120,9 +122,10 @@ script:
 
 The typical usage will then be to set ``$MAIN_CMD`` to default to ``python
 setup.py`` and then set ``$SETUP_CMD='test'``, and this then allows special
-builds that have ``$MAIN_CMD='pep8'`` and ``$SETUP_CMD=''``.
+builds that have ``$MAIN_CMD='pycodestyle'`` and ``$SETUP_CMD=''``.
 
-Packages can also choose to not use the ``$MAIN_CMD`` variable and instead to set the ``script`` section to:
+Packages can also choose to not use the ``$MAIN_CMD`` variable and instead
+to set the ``script`` section to:
 
 ```
 script:
