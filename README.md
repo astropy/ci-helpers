@@ -42,7 +42,7 @@ Following this, various dependencies are installed depending on the following en
 * ``MAIN_CMD``: if this starts with ``pycodestyle``, then the only package
   that gets installed is the ``pycodestyle`` package. Please note that the
   former name of the ``pycodestyle`` package is ``pep8``, and ci-helpers
-  still excepts it, too.
+  still accepts it, too.
 
 * ``SETUP_CMD``: this can be set to various values:
 
