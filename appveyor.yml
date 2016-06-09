@@ -32,6 +32,7 @@ environment:
         CONDA_CHANNEL_PRIORITY: "True"
 
       - PYTHON_VERSION: "2.7"
+        DEBUG: "True"
 
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also

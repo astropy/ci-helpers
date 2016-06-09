@@ -3,6 +3,18 @@
 # Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
+if ($env:DEBUG) {
+    if($env:DEBUG -match "True") {
+
+        # Show all commands
+        Set-PSDebug -Trace 1
+
+        # Print out environment variables
+        Get-ChildItem Env:
+
+    }
+}
+
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 $env:ASTROPY_LTS_VERSION = "2.0"
