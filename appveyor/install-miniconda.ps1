@@ -1,6 +1,6 @@
 ﻿# Sample script to install anaconda under windows
 # Authors: Stuart Mumford
-# Borrwed from: Olivier Grisel and Kyle Kastner
+# Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
@@ -80,9 +80,10 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
 conda config --set always_yes true
+conda config --add channels defaults
 
 if (! $env:CONDA_CHANNELS) {
-   $CONDA_CHANNELS=@("astropy", "astropy-ci-extras", "openastronomy")
+   $CONDA_CHANNELS=@("astropy", "openastronomy")
 } else {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
 }

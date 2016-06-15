@@ -73,7 +73,9 @@ def test_astropy():
         if 'dev' in os_astropy_version:
             assert 'dev' in astropy.__version__
         else:
-            if 'stable' in os_astropy_version:
+            if 'pre' in os_astropy_version:
+                assert re.match("[0-9.]*[0-9](rc[0-9])", astropy.__version__)
+            elif 'stable' in os_astropy_version:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
             elif 'lts' in os_astropy_version:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)

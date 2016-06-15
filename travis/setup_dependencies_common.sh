@@ -5,6 +5,7 @@ hash -r
 set -e
 
 conda config --set always_yes yes --set changeps1 no
+conda config --add channels defaults
 
 shopt -s nocasematch
 
@@ -19,7 +20,7 @@ if [[ -z $ASTROPY_LTS_VERSION ]]; then
 fi
 
 if [[ -z $CONDA_CHANNELS ]]; then
-    CONDA_CHANNELS='astropy-ci-extras astropy openastronomy'
+    CONDA_CHANNELS='astropy openastronomy'
 fi
 
 if [[ -z $CONDA_DEPENDENCIES_FLAGS ]]; then
