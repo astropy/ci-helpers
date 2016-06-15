@@ -82,7 +82,7 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 conda config --set always_yes true
 
 if (! $env:CONDA_CHANNELS) {
-   $CONDA_CHANNELS=@("astropy", "astropy-ci-extras", "openastronomy")
+   $CONDA_CHANNELS=@("astropy", "openastronomy")
 } else {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
 }
