@@ -83,7 +83,7 @@ conda config --set always_yes true
 conda config --add channels defaults
 
 if (! $env:CONDA_CHANNELS) {
-   $CONDA_CHANNELS=@("astropy", "openastronomy")
+   $CONDA_CHANNELS=@("astropy", "openastronomy", "astropy-ci-extras")
 } else {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
 }
