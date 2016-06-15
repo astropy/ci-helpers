@@ -20,7 +20,7 @@ if [[ -z $ASTROPY_LTS_VERSION ]]; then
 fi
 
 if [[ -z $CONDA_CHANNELS ]]; then
-    CONDA_CHANNELS='astropy openastronomy'
+    CONDA_CHANNELS='astropy openastronomy astropy-ci-extras'
 fi
 
 if [[ -z $CONDA_DEPENDENCIES_FLAGS ]]; then
