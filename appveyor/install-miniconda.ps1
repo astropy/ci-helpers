@@ -80,6 +80,7 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
 conda config --set always_yes true
+conda config --add channels defaults
 
 if (! $env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=@("astropy", "openastronomy")

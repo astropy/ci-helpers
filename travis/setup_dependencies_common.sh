@@ -5,6 +5,7 @@ hash -r
 set -e
 
 conda config --set always_yes yes --set changeps1 no
+conda config --add channels defaults
 
 shopt -s nocasematch
 
