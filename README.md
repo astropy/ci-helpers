@@ -1,6 +1,8 @@
 About
 -----
 
+[![Join the chat at https://gitter.im/astropy/ci-helpers](https://badges.gitter.im/astropy/ci-helpers.svg)](https://gitter.im/astropy/ci-helpers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/astropy/ci-helpers.svg?branch=master)](https://travis-ci.org/astropy/ci-helpers)
 [![Build status](https://ci.appveyor.com/api/projects/status/4mqtucv6ks4peakf/branch/master?svg=true)](https://ci.appveyor.com/project/Astropy/ci-helpers/branch/master)
 
