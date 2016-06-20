@@ -6,7 +6,6 @@ set -e
 
 conda config --set always_yes yes --set changeps1 no
 conda config --add channels defaults
-conda config  --set channel_priority false
 
 shopt -s nocasematch
 
@@ -41,6 +40,10 @@ do
 done
 
 conda update $QUIET conda
+
+# We need to add this after the update, otherwise the ``channel_priority``
+# key may not yet exists
+conda config  --set channel_priority false
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
