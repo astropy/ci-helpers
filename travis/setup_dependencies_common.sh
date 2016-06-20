@@ -9,6 +9,10 @@ conda config --add channels defaults
 
 shopt -s nocasematch
 
+LATEST_ASTROPY_STABLE=1.1
+LATEST_ASTROPY_LTS=1.0
+LATEST_NUMPY_STABLE=1.11
+
 if [[ $DEBUG == True ]]; then
     QUIET=''
 else
@@ -266,7 +270,17 @@ if [[ $ASTROPY_VERSION == dev* ]]; then
 fi
 
 if [[ $ASTROPY_VERSION == pre* ]]; then
-    $PIP_INSTALL --pre --upgrade astropy
+    $PIP_INSTALL --pre --upgrade --no-deps astropy
+fi
+
+# ASTROPY STABLE
+
+# Due to recent instability in conda, and as new releases are not built in
+# astropy-ci-extras, this workaround ensures that we use the latest stable
+# version of astropy.
+
+if [[ $ASTROPY_VERSION == stable ]]; then
+    $PIP_INSTALL --upgrade --no-deps astropy==$LATEST_ASTROPY_STABLE
 fi
 
 # PIP DEPENDENCIES
