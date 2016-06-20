@@ -9,7 +9,7 @@ conda config --add channels defaults
 
 shopt -s nocasematch
 
-export LATEST_ASTROPY_STABLE=1.1
+export LATEST_ASTROPY_STABLE=1.2
 LATEST_NUMPY_STABLE=1.11
 
 if [[ $DEBUG == True ]]; then
@@ -129,7 +129,7 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET numpy=$LATEST_NUMPY_STABLE
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_VERSION"
+    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION"
