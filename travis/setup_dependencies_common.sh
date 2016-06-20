@@ -6,6 +6,7 @@ set -e
 
 conda config --set always_yes yes --set changeps1 no
 conda config --add channels defaults
+conda config  --set channel_priority false
 
 shopt -s nocasematch
 
@@ -59,7 +60,7 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
-conda install --no-channel-priority $QUIET pytest pip
+conda install $QUIET pytest pip
 
 export PIP_INSTALL='pip install'
 
@@ -126,13 +127,13 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # if Scipy *is* still compiled against the MKL.
     conda install $QUIET nomkl
     # We then install Numpy itself at the bottom of this script
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET numpy=$LATEST_NUMPY_STABLE
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET numpy
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         # We want to stop the script if there isn't a pre-release available,
@@ -141,10 +142,10 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         exit
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install --no-channel-priority $QUIET numpy=$NUMPY_VERSION
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    conda install $QUIET numpy=$NUMPY_VERSION
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
-    export CONDA_INSTALL="conda install --no-channel-priority $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 fi
 
 # ASTROPY
@@ -152,7 +153,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
-        conda install --no-channel-priority astropy
+        conda install astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -247,7 +248,7 @@ fi
 # would override Numpy dev or pre.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
-    conda install --no-channel-priority $QUIET Cython
+    conda install $QUIET Cython
     $PIP_INSTALL git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 
@@ -318,7 +319,7 @@ fi
 
 if [[ $DEBUG == True ]]; then
     # include debug information about the current conda install
-    conda install --no-channel-priority -n root _license
+    conda install -n root _license
     conda info -a
 fi
 
