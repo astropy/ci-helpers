@@ -10,7 +10,6 @@ conda config --add channels defaults
 shopt -s nocasematch
 
 LATEST_ASTROPY_STABLE=1.1
-LATEST_ASTROPY_LTS=1.0
 LATEST_NUMPY_STABLE=1.11
 
 if [[ $DEBUG == True ]]; then
@@ -255,6 +254,17 @@ fi
 if [[ $NUMPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade numpy
 fi
+
+# NUMPY STABLE
+
+# Due to recent instability in conda, sometimes very old versions are picked
+# up for the "stable" numpy alias. We should revise and possibly remove this
+# once (https://github.com/conda/conda/issues/2777) is solved.
+
+if [[ $NUMPY_VERSION == stable ]]; then
+    $PIP_INSTALL --upgrade --no-deps numpy==$LATEST_NUMPY_STABLE
+fi
+
 
 # ASTROPY DEV and PRE
 
