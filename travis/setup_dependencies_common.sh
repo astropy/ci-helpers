@@ -7,6 +7,8 @@ set -e
 conda config --set always_yes yes --set changeps1 no
 conda config --add channels defaults
 
+conda --no-channel-priority
+
 shopt -s nocasematch
 
 LATEST_ASTROPY_STABLE=1.1
