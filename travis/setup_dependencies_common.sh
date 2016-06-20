@@ -128,8 +128,8 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install $QUIET numpy
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    conda install $QUIET numpy=$LATEST_NUMPY_STABLE
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_VERSION"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
@@ -254,17 +254,6 @@ fi
 if [[ $NUMPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade numpy
 fi
-
-# NUMPY STABLE
-
-# Due to recent instability in conda, sometimes very old versions are picked
-# up for the "stable" numpy alias. We should revise and possibly remove this
-# once (https://github.com/conda/conda/issues/2777) is solved.
-
-if [[ $NUMPY_VERSION == stable ]]; then
-    $PIP_INSTALL --upgrade --no-deps numpy==$LATEST_NUMPY_STABLE
-fi
-
 
 # ASTROPY DEV and PRE
 
