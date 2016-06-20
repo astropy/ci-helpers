@@ -284,9 +284,8 @@ fi
 
 if [[ $ASTROPY_VERSION == stable ]]; then
     if $(python -c "from distutils.version import LooseVersion; import astropy;\
-                    import os;\
-                    print(LooseVersion(astropy.__version__)) <\
-                    LooseVersion(os.environ['LATEST_ASTROPY_STABLE'])"); then
+                    import os; print(LooseVersion(astropy.__version__) <\
+                    LooseVersion(os.environ['LATEST_ASTROPY_STABLE']))"); then
         $PIP_INSTALL --upgrade --no-deps astropy==$LATEST_ASTROPY_STABLE
     fi
 fi
