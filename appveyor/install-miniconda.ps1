@@ -156,7 +156,7 @@ if ($env:PYTHON_VERSION -match "3.5") {
    conda install -n test -q vs2015_runtime=14.00.23026.0=0
 }
 
-conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
+conda install -n test -q pytest --no-channel-priority $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
