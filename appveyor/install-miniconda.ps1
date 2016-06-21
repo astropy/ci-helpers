@@ -94,6 +94,10 @@ foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
 # Install the build and runtime dependencies of the project.
 conda update -q conda
 
+# We need to add this after the update, otherwise the ``channel_priority``
+# key may not yet exists
+conda config  --set channel_priority false
+
 # Create a conda environment using the astropy bonus packages
 conda create -q -n test python=$env:PYTHON_VERSION
 activate test
@@ -156,7 +160,7 @@ if ($env:PYTHON_VERSION -match "3.5") {
    conda install -n test -q vs2015_runtime=14.00.23026.0=0
 }
 
-conda install -n test -q pytest --no-channel-priority $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
+conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
