@@ -94,6 +94,10 @@ foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
 # Install the build and runtime dependencies of the project.
 conda update -q conda
 
+# We need to add this after the update, otherwise the ``channel_priority``
+# key may not yet exists
+conda config  --set channel_priority false
+
 # Create a conda environment using the astropy bonus packages
 conda create -q -n test python=$env:PYTHON_VERSION
 activate test

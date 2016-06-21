@@ -9,6 +9,9 @@ conda config --add channels defaults
 
 shopt -s nocasematch
 
+export LATEST_ASTROPY_STABLE=1.2
+LATEST_NUMPY_STABLE=1.11
+
 if [[ $DEBUG == True ]]; then
     QUIET=''
 else
@@ -37,6 +40,10 @@ do
 done
 
 conda update $QUIET conda
+
+# We need to add this after the update, otherwise the ``channel_priority``
+# key may not yet exists
+conda config  --set channel_priority false
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
@@ -125,8 +132,8 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install $QUIET numpy
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    conda install $QUIET numpy=$LATEST_NUMPY_STABLE
+    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
@@ -266,7 +273,21 @@ if [[ $ASTROPY_VERSION == dev* ]]; then
 fi
 
 if [[ $ASTROPY_VERSION == pre* ]]; then
-    $PIP_INSTALL --pre --upgrade astropy
+    $PIP_INSTALL --pre --upgrade --no-deps astropy
+fi
+
+# ASTROPY STABLE
+
+# Due to recent instability in conda, and as new releases are not built in
+# astropy-ci-extras, this workaround ensures that we use the latest stable
+# version of astropy.
+
+if [[ $ASTROPY_VERSION == stable ]]; then
+    if $(python -c "from distutils.version import LooseVersion; import astropy;\
+                    import os; print(LooseVersion(astropy.__version__) <\
+                    LooseVersion(os.environ['LATEST_ASTROPY_STABLE']))"); then
+        $PIP_INSTALL --upgrade --no-deps astropy==$LATEST_ASTROPY_STABLE
+    fi
 fi
 
 # PIP DEPENDENCIES

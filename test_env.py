@@ -19,7 +19,8 @@ if 'TRAVIS_REPO_SLUG' in os.environ:
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
 
-LATEST_ASTROPY_STABLE = '1.1'
+LATEST_ASTROPY_STABLE = '1.2'
+LATEST_ASTROPY_STABLE_WIN = '1.2'
 LATEST_ASTROPY_LTS = '1.0'
 LATEST_NUMPY_STABLE = '1.11'
 
@@ -76,7 +77,10 @@ def test_astropy():
             if 'pre' in os_astropy_version:
                 assert re.match("[0-9.]*[0-9](rc[0-9])", astropy.__version__)
             elif 'stable' in os_astropy_version:
-                assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
+                if 'APPVEYOR' in os.environ:
+                    assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE_WIN)
+                else:
+                    assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
             elif 'lts' in os_astropy_version:
                 assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)
             else:
