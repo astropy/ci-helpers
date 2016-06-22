@@ -118,8 +118,8 @@ def test_open_files():
 
 
 def test_conda_flags():
-    if (os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps'
-        and os.environ.get('CONDA_DEPENDENCIES', '') == 'matplotlib'):
+    if (os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps' and
+            os.environ.get('CONDA_DEPENDENCIES', '') == 'matplotlib'):
         try:
             import numpy
         except:
@@ -157,10 +157,9 @@ def test_regression_mkl():
         import numpy as np
         from scipy.linalg import inv
 
-        x = np.random.random((3,3))
+        x = np.random.random((3, 3))
         inv(x)
 
 
 if __name__ == '__main__':
-    import pytest
     pytest.main(__file__)
