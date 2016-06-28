@@ -34,12 +34,11 @@ if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
    PIP_DEPENDENCIES_FLAGS=''
 fi
 
-for channel in $CONDA_CHANNELS
-do
+conda update $QUIET conda
+
+for channel in $CONDA_CHANNELS; do
     conda config --add channels $channel
 done
-
-conda update $QUIET conda
 
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
