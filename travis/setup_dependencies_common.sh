@@ -34,6 +34,13 @@ if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
    PIP_DEPENDENCIES_FLAGS=''
 fi
 
+if [[ -z $CONDA_VERSION ]]; then
+    CONDA_VERSION=4.1.3
+fi
+
+PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+echo "conda ${CONDA_VERSION}" > $PIN_FILE
+
 conda update $QUIET conda
 
 for channel in $CONDA_CHANNELS; do
@@ -81,41 +88,40 @@ fi
 # Pin required versions for dependencies, howto is in FAQ of conda
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
     echo $CONDA_DEPENDENCIES | awk '{print tolower($0)}' | tr " " "\n" | \
-        sed -E -e 's|([a-z0-9]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' > $pin_file
+        sed -E -e 's|([a-z0-9]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' >> $PIN_FILE
 
     if [[ $DEBUG == True ]]; then
-        cat $pin_file
+        cat $PIN_FILE
     fi
 
     # Let env variable version number override this pinned version
-    for package in $(awk '{print $1}' $pin_file); do
+    for package in $(awk '{print $1}' $PIN_FILE); do
         version=$(eval echo -e \$$(echo $package | tr "-" "_" | \
             awk '{print toupper($0)"_VERSION"}'))
         if [[ ! -z $version ]]; then
             awk -v package=$package -v version=$version \
                 '{if ($1 == package) print package" " version"*";
                   else print $0}' \
-                $pin_file > /tmp/pin_file_temp
-            mv /tmp/pin_file_temp $pin_file
+                $PIN_FILE > /tmp/pin_file_temp
+            mv /tmp/pin_file_temp $PIN_FILE
        fi
     done
 
     # Do in the pin file what conda silently does on the command line, to
     # extend the underspecified version numbers with *
     awk -F == '{if (NF==1) print $0; else print $1, $2"*"}' \
-        $pin_file > /tmp/pin_file_temp
-    mv /tmp/pin_file_temp $pin_file
+        $PIN_FILE > /tmp/pin_file_temp
+    mv /tmp/pin_file_temp $PIN_FILE
 
     # We should remove the version numbers from CONDA_DEPENDENCIES to avoid
     # the conflict with the *_VERSION env variables
-    CONDA_DEPENDENCIES=$(awk '{printf tolower($1)" "}' $pin_file)
+    CONDA_DEPENDENCIES=$(awk '{printf tolower($1)" "}' $PIN_FILE)
     # Cutting off the trailing space
     CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES%?}
 
     if [[ $DEBUG == True ]]; then
-        cat $pin_file
+        cat $PIN_FILE
         echo $CONDA_DEPENDENCIES
     fi
 fi
@@ -179,10 +185,9 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
 
-    pin_file=$HOME/miniconda/envs/test/conda-meta/pinned
     if [[ ! -z $MATPLOTLIB_VERSION ]]; then
-        if [[ -z $(grep matplotlib $pin_file) ]]; then
-            echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $pin_file
+        if [[ -z $(grep matplotlib $PIN_FILE) ]]; then
+            echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $PIN_FILE
         fi
     fi
 
@@ -195,13 +200,13 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     fi
 
     if [[ ! -z $SPHINX_VERSION ]]; then
-        if [[ -z $(grep sphinx $pin_file) ]]; then
-            echo "sphinx ${SPHINX_VERSION}*" >> $pin_file
+        if [[ -z $(grep sphinx $PIN_FILE) ]]; then
+            echo "sphinx ${SPHINX_VERSION}*" >> $PIN_FILE
         fi
     fi
 
     if [[ $DEBUG == True ]]; then
-        cat $pin_file
+        cat $PIN_FILE
     fi
 
     $CONDA_INSTALL sphinx matplotlib
