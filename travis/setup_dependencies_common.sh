@@ -38,8 +38,9 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.1.3
 fi
 
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
-echo "conda ${CONDA_VERSION}" > $PIN_FILE
+PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+
+echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
 conda update $QUIET conda
 
@@ -62,6 +63,9 @@ fi
 # CONDA
 conda create $QUIET -n test python=$PYTHON_VERSION
 source activate test
+
+# PIN FILE
+PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
 
 # EGG_INFO
 if [[ $SETUP_CMD == egg_info ]]; then
