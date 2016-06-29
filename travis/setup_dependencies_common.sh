@@ -42,7 +42,7 @@ PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
-conda update $QUIET conda
+conda install $QUIET conda
 
 for channel in $CONDA_CHANNELS; do
     conda config --add channels $channel

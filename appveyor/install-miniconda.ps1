@@ -87,7 +87,7 @@ conda config --set always_yes true
 conda config --add channels defaults
 
 # Install the build and runtime dependencies of the project.
-conda update -q conda=$env:CONDA_VERSION
+conda install -q conda=$env:CONDA_VERSION
 
 if (! $env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=@("astropy", "openastronomy", "astropy-ci-extras")
