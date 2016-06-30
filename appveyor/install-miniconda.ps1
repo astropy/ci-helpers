@@ -156,9 +156,9 @@ if ($NUMPY_OPTION -ne "") {
 # We have to fix the version of the vs2015_runtime on Python 3.5 to avoid
 # issues. See https://github.com/astropy/ci-helpers/issues/92 for more details.
 
-if ($env:PYTHON_VERSION -match "3.5") {
-   conda install -n test -q vs2015_runtime=14.00.23026.0=0
-}
+#if ($env:PYTHON_VERSION -match "3.5") {
+#   conda install -n test -q vs2015_runtime=14.00.23026.0=0
+#}
 
 conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
 
