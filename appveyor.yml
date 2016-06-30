@@ -21,12 +21,9 @@ environment:
         ASTROPY_VERSION: "development"
 
 
-
-
 platform:
     -x64
 
-os: Previous Visual Studio 2015
 
 install:
 
