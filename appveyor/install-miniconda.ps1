@@ -9,6 +9,10 @@ if (! $env:ASTROPY_LTS_VERSION) {
    $env:ASTROPY_LTS_VERSION = "1.0"
 }
 
+if (! $env:CONDA_VERSION) {
+   $env:CONDA_VERSION = "4.1.3"
+}
+
 function DownloadMiniconda ($version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
     $filename = "Miniconda-" + $version + "-Windows-" + $platform_suffix + ".exe"
@@ -82,6 +86,9 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 conda config --set always_yes true
 conda config --add channels defaults
 
+# Install the build and runtime dependencies of the project.
+conda install -q conda=$env:CONDA_VERSION
+
 if (! $env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=@("astropy", "openastronomy", "astropy-ci-extras")
 } else {
@@ -90,9 +97,6 @@ if (! $env:CONDA_CHANNELS) {
 foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
    conda config --add channels $CONDA_CHANNEL
 }
-
-# Install the build and runtime dependencies of the project.
-conda update -q conda
 
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
