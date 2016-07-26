@@ -90,7 +90,7 @@ conda config --add channels defaults
 conda install -q conda=$env:CONDA_VERSION
 
 if (! $env:CONDA_CHANNELS) {
-   $CONDA_CHANNELS=@("astropy", "openastronomy", "astropy-ci-extras")
+   $CONDA_CHANNELS=@("openastronomy", "astropy-ci-extras", "astropy")
 } else {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
 }
