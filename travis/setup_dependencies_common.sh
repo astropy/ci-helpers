@@ -48,6 +48,10 @@ for channel in $CONDA_CHANNELS; do
     conda config --add channels $channel
 done
 
+# Make defaults channel the highest priority install packages from there
+# if available rather than from e.g. conda-forge
+conda config --add channels defaults
+
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
 conda config  --set channel_priority false

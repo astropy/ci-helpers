@@ -98,6 +98,10 @@ foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
    conda config --add channels $CONDA_CHANNEL
 }
 
+# Make defaults channel the highest priority install packages from there
+# if available rather than from e.g. conda-forge
+conda config --add channels defaults
+
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
 conda config  --set channel_priority false
