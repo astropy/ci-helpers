@@ -13,7 +13,6 @@ environment:
       TEST_CMD: "py.test test_env.py"
 
   matrix:
-      fast_finish: true
 
       - PYTHON_VERSION: "2.7"
 
@@ -46,6 +45,8 @@ environment:
         CONDA_CHANNELS: "sunpy"
         PIP_DEPENDENCIES: "requests pyparsing"
 
+matrix:
+   fast_finish: true
 
 platform:
     -x64
