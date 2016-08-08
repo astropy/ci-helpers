@@ -135,20 +135,22 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 fi
 
 # NUMPY
+# We use --no-pin to avoid installing other dependencies just yet.
+
 if [[ $NUMPY_VERSION == dev* ]]; then
     # We install nomkl here to make sure that Numpy and Scipy versions
     # installed subsequently don't depend on the MKL. If we don't do this, then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    conda install $QUIET nomkl
+    conda install $QUIET --no-pin nomkl
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install $QUIET numpy=$LATEST_NUMPY_STABLE
+    conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
-    conda install $QUIET numpy
+    conda install $QUIET --no-pin numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
@@ -158,7 +160,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         exit
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install $QUIET numpy=$NUMPY_VERSION
+    conda install $QUIET --no-pin numpy=$NUMPY_VERSION
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
@@ -169,7 +171,8 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
-        conda install astropy
+        # We use --no-pin to avoid installing other dependencies just yet
+        conda install --no-pin astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
