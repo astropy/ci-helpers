@@ -19,10 +19,6 @@ environment:
         # For the Numpy dev build, we also specify a conda package that depends
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable)
-      - PYTHON_VERSION: "2.7"
-        NUMPY_VERSION: "development"
-        CONDA_DEPENDENCIES: "scipy glymur"
-        CONDA_CHANNELS: "sunpy"
 
       - PYTHON_VERSION: "3.4"
         NUMPY_VERSION: "1.9"
@@ -43,7 +39,14 @@ environment:
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
 
+      - PYTHON_VERSION: "2.7"
+        NUMPY_VERSION: "development"
+        CONDA_DEPENDENCIES: "scipy glymur"
+        CONDA_CHANNELS: "sunpy"
+        PIP_DEPENDENCIES: "requests pyparsing"
 
+matrix:
+   fast_finish: true
 
 platform:
     -x64

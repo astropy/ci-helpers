@@ -181,13 +181,13 @@ if ($env:ASTROPY_VERSION -match "dev") {
 # build time)
 
 if ($env:PIP_FLAGS) {
-    $PIP_FLAGS = $env:PIP_FLAGS
+    $PIP_FLAGS = $env:PIP_FLAGS.split(" ")
 } else {
     $PIP_FLAGS = ""
 }
 
 if ($env:PIP_DEPENDENCIES) {
-    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES
+    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES.split(" ")
 } else {
     $PIP_DEPENDENCIES = ""
 }
