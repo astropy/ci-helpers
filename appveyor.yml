@@ -44,7 +44,7 @@ environment:
         NUMPY_VERSION: "development"
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "sunpy"
-        PIP_DEPENDENCIES: "requests astrodendro"
+        PIP_DEPENDENCIES: "requests pyparsing"
 
 
 platform:
