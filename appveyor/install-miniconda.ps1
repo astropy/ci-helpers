@@ -187,7 +187,7 @@ if ($env:PIP_FLAGS) {
 }
 
 if ($env:PIP_DEPENDENCIES) {
-    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES
+    $PIP_DEPENDENCIES = $env:PIP_DEPENDENCIES.split(" ")
 } else {
     $PIP_DEPENDENCIES = ""
 }
