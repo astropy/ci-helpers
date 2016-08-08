@@ -280,7 +280,7 @@ if [[ $ASTROPY_VERSION == stable ]]; then
                   LooseVersion(os.environ['LATEST_ASTROPY_STABLE']))")
 
     if [[ $old_astropy == True ]]; then
-        $PIP_INSTALL --upgrade --no-deps astropy==$LATEST_ASTROPY_STABLE
+        $PIP_INSTALL --upgrade --no-deps --ignore-installed astropy==$LATEST_ASTROPY_STABLE
     fi
 fi
 
