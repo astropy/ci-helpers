@@ -183,8 +183,12 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     elif [[ $ASTROPY_VERSION == stable ]]; then
         $CONDA_INSTALL astropy
     elif [[ $ASTROPY_VERSION == lts ]]; then
+        # We add astropy to the pin file to make sure it won't get updated
+        echo "astropy ${ASTROPY_LTS_VERSION}*" >> $PIN_FILE
         $CONDA_INSTALL astropy=$ASTROPY_LTS_VERSION
     else
+        # We add astropy to the pin file to make sure it won't get updated
+        echo "astropy ${ASTROPY_VERSION}*" >> $PIN_FILE
         $CONDA_INSTALL astropy=$ASTROPY_VERSION
     fi
 fi
