@@ -97,8 +97,7 @@ environment variables
   installing ``PIP_DEPENDENCIES``
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
-  channel names, and defaults to ``astropy``, ``astropy-ci-extras``, and
-  ``openastronomy``.
+  channel names. We don't add any channel by default.
 
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
   scripts, and provides information on the current conda install and
@@ -188,8 +187,7 @@ Following this, various dependencies are installed depending on the following en
   names that will be installed with conda.
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
-  channel names, and defaults to ``astropy``, ``astropy-ci-extras``, and
-  ``openastronomy``.
+  channel names. We don't add any channel by default.
 
 Details
 -------
