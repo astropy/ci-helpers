@@ -27,7 +27,7 @@ Include the following lines at the start of the ``install`` section in ``.travis
 ```yaml
 install:
     - git clone git://github.com/astropy/ci-helpers.git
-    - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+    - source ci-helpers/travis/setup_conda.sh
 ```
 
 This does the following:
@@ -196,6 +196,7 @@ The scripts include:
 * ``travis/setup_dependencies_common.sh`` - set up conda packages on Linux and MacOS X
 * ``travis/setup_conda_linux.sh`` - set up conda on Linux
 * ``travis/setup_conda_osx.sh`` - set up conda on MacOS X
+* ``travis/setup_conda.sh`` - set up conda on MacOS X or Linux
 
 This repository can be cloned directly from the ``.travis.yml`` and
 ``appveyor.yml`` files when about to run tests and does not need to be
