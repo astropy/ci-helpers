@@ -88,16 +88,22 @@ matrix:
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
                CONDA_DEPENDENCIES='requests'
 
+        # Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
+        # to the rest of the build and won't change anything, except that we can
+        # make sure the conda config was correctly updated.
         - os: osx
-          env: SETUP_CMD='test' CONDA_DEPENDENCIES='astroquery'
+          env: SETUP_CMD='test' CONDA_DEPENDENCIES='astroquery' CONDA_CHANNEL_PRIORITY=False
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
                SCIKIT_IMAGE_VERSION=0.11
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
 
+        # Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
+        # to the rest of the build and won't change anything, except that we can
+        # make sure the conda config was correctly updated.
         - os: linux
-          env: SETUP_CMD='test' ASTROPY_VERSION=stable
+          env: SETUP_CMD='test' ASTROPY_VERSION=stable CONDA_CHANNEL_PRIORITY=True
 
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=stable

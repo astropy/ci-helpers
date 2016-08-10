@@ -5,7 +5,6 @@ hash -r
 set -e
 
 conda config --set always_yes yes --set changeps1 no
-conda config --add channels defaults
 
 shopt -s nocasematch
 
@@ -48,13 +47,16 @@ for channel in $CONDA_CHANNELS; do
     conda config --add channels $channel
 done
 
-# Make defaults channel the highest priority install packages from there
-# if available rather than from e.g. conda-forge
-conda config --add channels defaults
+if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
+    CONDA_CHANNEL_PRIORITY=false
+else
+    # Make lowercase
+    CONDA_CHANNEL_PRIORITY=$(echo $CONDA_CHANNEL_PRIORITY | awk '{print tolower($0)}')
+fi
 
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
-conda config  --set channel_priority false
+conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes

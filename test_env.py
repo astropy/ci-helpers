@@ -161,5 +161,15 @@ def test_regression_mkl():
         inv(x)
 
 
+def test_conda_channel_priority():
+
+    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'False')
+
+    with open(os.path.expanduser('~/.condarc'), 'r') as f:
+        content = f.read()
+
+    assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
+
+
 if __name__ == '__main__':
     pytest.main(__file__)

@@ -39,7 +39,8 @@ This does the following:
 - Register the specified channels, or if not stated the ``astropy``, ``astropy-ci-extras``, and ``openastronomy`` channels.
 - ``export PYTHONIOENCODING=UTF8``
 
-Following this, various dependencies are installed depending on the following environment variables
+Following this, various dependencies are installed depending on the following
+environment variables
 
 * ``MAIN_CMD``: if this starts with ``pycodestyle``, then the only package
   that gets installed is the ``pycodestyle`` package. Please note that the
@@ -113,6 +114,10 @@ Following this, various dependencies are installed depending on the following en
   be ``SCIKIT_IMAGE_VERSION``). If specified it will override any version
   number limitations listed in ``$CONDA_DEPENDENCIES``.
 
+* ``$CONDA_CHANNEL_PRIORITY``: can be set to ``True`` or ``False``, and affects the
+  ``channel_priority`` conda setting (as discussed
+  `here <http://conda.pydata.org/docs/channels.html>`_). The default is
+  ``False``.
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:
