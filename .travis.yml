@@ -137,7 +137,7 @@ matrix:
 
 before_install:
     - ln -s . ci-helpers
-    - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+    - source ci-helpers/travis/setup_conda.sh
 
 script:
    - eval $TEST_CMD
