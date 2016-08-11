@@ -98,13 +98,15 @@ foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
    conda config --add channels $CONDA_CHANNEL
 }
 
-# Make defaults channel the highest priority install packages from there
-# if available rather than from e.g. conda-forge
-conda config --add channels defaults
+if (! $env:CONDA_CHANNEL_PRIORITY) {
+   $CONDA_CHANNEL_PRIORITY="false"
+} else {
+   $CONDA_CHANNEL_PRIORITY=$env:CONDA_CHANNEL_PRIORITY.ToLower()
+}
 
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
-conda config  --set channel_priority false
+conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 
 # Create a conda environment using the astropy bonus packages
 conda create -q -n test python=$env:PYTHON_VERSION
