@@ -21,10 +21,6 @@ if [[ -z $ASTROPY_LTS_VERSION ]]; then
    ASTROPY_LTS_VERSION=1.0
 fi
 
-if [[ -z $CONDA_CHANNELS ]]; then
-    CONDA_CHANNELS='openastronomy astropy-ci-extras astropy'
-fi
-
 if [[ -z $CONDA_DEPENDENCIES_FLAGS ]]; then
    CONDA_DEPENDENCIES_FLAGS=''
 fi
@@ -43,9 +39,11 @@ echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
 conda install $QUIET conda
 
-for channel in $CONDA_CHANNELS; do
-    conda config --add channels $channel
-done
+if [[ ! -z $CONDA_CHANNELS ]]; then
+    for channel in $CONDA_CHANNELS; do
+        conda config --add channels $channel
+    done
+fi
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
     CONDA_CHANNEL_PRIORITY=false
