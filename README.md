@@ -90,10 +90,10 @@ environment variables
 * ``$PIP_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with pip.
 
-* ``CONDA_DEPENDENCIES_FLAGS``: additional flags to pass to conda when
+* ``$CONDA_DEPENDENCIES_FLAGS``: additional flags to pass to conda when
   installing ``CONDA_DEPENDENCIES``
 
-* ``PIP_DEPENDENCIES_FLAGS``: additional flags to pass to pip when
+* ``$PIP_DEPENDENCIES_FLAGS``: additional flags to pass to pip when
   installing ``PIP_DEPENDENCIES``
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
@@ -115,7 +115,7 @@ environment variables
 
 * ``$CONDA_CHANNEL_PRIORITY``: can be set to ``True`` or ``False``, and affects the
   ``channel_priority`` conda setting (as discussed
-  `here <http://conda.pydata.org/docs/channels.html>`_). The default is
+  [here](http://conda.pydata.org/docs/channels.html). The default is
   ``False``.
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
@@ -181,7 +181,7 @@ Following this, various dependencies are installed depending on the following en
   version is installed. If set to ``stable``, install the latest stable
   version of Astropy. If set to ``lts`` the latest long term support (LTS)
   version is installed (more info about LTS can be found
-  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
+  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering)).
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.
