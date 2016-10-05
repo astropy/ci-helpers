@@ -4,6 +4,13 @@ if [[ $DEBUG == True ]]; then
     set -x
 fi
 
+# Workaround for https://github.com/travis-ci/travis-ci/issues/6307, which
+# caused the following error on MacOS X workers:
+#
+# /Users/travis/build.sh: line 109: shell_session_update: command not found
+#
+rvm get head
+
 echo "==================== Starting executing ci-helpers scripts ====================="
 
 # Install conda
