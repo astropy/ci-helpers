@@ -3,7 +3,7 @@
 # Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
-$MINICONDA_URL = "http://repo.continuum.io/miniconda/"
+$MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 if (! $env:ASTROPY_LTS_VERSION) {
    $env:ASTROPY_LTS_VERSION = "1.0"
