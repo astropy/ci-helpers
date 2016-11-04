@@ -287,6 +287,9 @@ if [[ $ASTROPY_VERSION == stable ]]; then
                   LooseVersion(os.environ['LATEST_ASTROPY_STABLE']))")
 
     if [[ $old_astropy == True ]]; then
+        # First remove astropy from conda to make sure the version installed
+        # by pip will be used
+        conda remove astropy
         $PIP_INSTALL --upgrade --no-deps --ignore-installed astropy==$LATEST_ASTROPY_STABLE
     fi
 fi
