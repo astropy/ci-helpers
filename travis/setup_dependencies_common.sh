@@ -288,8 +288,9 @@ if [[ $ASTROPY_VERSION == stable ]]; then
 
     if [[ $old_astropy == True ]]; then
         # First remove astropy from conda to make sure the version installed
-        # by pip will be used
-        conda remove astropy
+        # by pip will be used. We use --force to make sure things that depend
+        # on astropy don't cause issues or get uninstalled.
+        conda remove astropy --force
         $PIP_INSTALL --upgrade --no-deps --ignore-installed astropy==$LATEST_ASTROPY_STABLE
     fi
 fi
