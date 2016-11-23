@@ -1,8 +1,11 @@
 import os
 import re
 import sys
+from distutils.version import LooseVersion
 
 import pytest
+
+PYTEST_LT_3 = LooseVersion(pytest.__version__) < LooseVersion('3')
 
 # If we are on Travis or AppVeyor, we should check if we are running the tests
 # in the ci-helpers repository, or whether for example someone else is running
@@ -10,11 +13,17 @@ import pytest
 
 if 'APPVEYOR_PROJECT_SLUG' in os.environ:
     if os.environ['APPVEYOR_PROJECT_SLUG'] != 'ci-helpers':
-        pytest.skip()
+        if PYTEST_LT_3:
+            pytest.skip()
+        else:
+            pytestmark = pytest.mark.skip()
 
 if 'TRAVIS_REPO_SLUG' in os.environ:
     if os.environ['TRAVIS_REPO_SLUG'] != 'astropy/ci-helpers':
-        pytest.skip()
+        if PYTEST_LT_3:
+            pytest.skip()
+        else:
+            pytestmark = pytest.mark.skip()
 
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
@@ -94,7 +103,7 @@ def test_dependency_imports():
     # We have to ignore the special case where we are running with --no-deps
     # because we don't expect that import to work.
     if os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps':
-        pytest.skip()
+        return
 
     for package in dependency_list:
         if package == 'pyqt5':
@@ -127,7 +136,7 @@ def test_conda_flags():
         else:
             raise Exception("Numpy should not be installed")
     else:
-        pytest.skip()
+        pass
 
 
 def test_pip_flags():
@@ -135,7 +144,7 @@ def test_pip_flags():
     if pip_flags.startswith('--log'):
         assert os.path.exists(pip_flags.split()[1])
     else:
-        pytest.skip()
+        pass
 
 
 def test_regression_mkl():
@@ -152,7 +161,7 @@ def test_regression_mkl():
         try:
             import scipy
         except ImportError:
-            pytest.skip()
+            return
 
         import numpy as np
         from scipy.linalg import inv
