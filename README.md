@@ -69,7 +69,7 @@ environment variables
   version number, that version is installed. If set to ``stable``, install
   the latest stable version of Numpy. If set to ``prerelease``, the
   pre-release version of Numpy gets installed if there is any, otherwise the
-  build exits and passes on travis without running the tests.
+  build exits and passes on Travis without running the tests.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astropy is installed, along with Cython and jinja2,
@@ -77,7 +77,7 @@ environment variables
   version is installed. If set to ``stable``, install the latest stable
   version of Astropy. If set to ``prerelease``, the pre-release version of
   Astropy gets installed if there is any, otherwise the build exits and
-  passes on travis without running the tests. If set to ``lts`` the latest
+  passes on Travis without running the tests. If set to ``lts`` the latest
   long term support (LTS) version is installed (more info about LTS can be
   found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
@@ -113,10 +113,18 @@ environment variables
   be ``SCIKIT_IMAGE_VERSION``). If specified it will override any version
   number limitations listed in ``$CONDA_DEPENDENCIES``.
 
-* ``$CONDA_CHANNEL_PRIORITY``: can be set to ``True`` or ``False``, and affects the
-  ``channel_priority`` conda setting (as discussed
+* ``$CONDA_CHANNEL_PRIORITY``: can be set to ``True`` or ``False``, and
+  affects the ``channel_priority`` conda setting (as discussed
   [here](http://conda.pydata.org/docs/channels.html). The default is
   ``False``.
+
+* ``$EVENT_TYPE``: this should be a space-separated string of event
+  types. If given, the build will only run only if the ``TRAVIS_EVENT_TYPE``
+  matches with any of the listed ones. Otherwise the build exits and passes
+  on Travis without running the tests. This is a way to control builds to be
+  run only on master, or for Travis cron jobs. Valid event types are:
+  ``push``, ``pull_request``, ``api`` or ``cron``.
+
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:
