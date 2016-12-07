@@ -206,6 +206,14 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
     fi
 
+    # This is a temporary workaround until astropy_helpers 1.3 is out with the
+    # fix from https://github.com/astropy/astropy-helpers/pull/275
+    # We allow to override this version
+    # restriction by setting this variable in .travis.yml
+    if [[ -z $SPHINX_VERSION ]]; then
+        SPHINX_VERSION='<1.5'
+    fi
+
     if [[ ! -z $SPHINX_VERSION ]]; then
         if [[ -z $(grep sphinx $PIN_FILE) ]]; then
             echo "sphinx ${SPHINX_VERSION}*" >> $PIN_FILE
