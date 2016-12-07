@@ -4,6 +4,17 @@ hash -r
 
 set -e
 
+if [[ ! -z $EVENT_TYPE ]]; then
+    for event in $EVENT_TYPE; do
+        if [[ $TRAVIS_EVENT_TYPE = event ]]; then
+            allow_to_build=True
+        fi
+    done
+    if [[ $allow_to_build != True ]]; then
+        exit
+    fi
+fi
+
 conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
