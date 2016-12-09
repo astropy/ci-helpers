@@ -6,7 +6,7 @@ set -e
 
 if [[ ! -z $EVENT_TYPE ]]; then
     for event in $EVENT_TYPE; do
-        if [[ $TRAVIS_EVENT_TYPE = event ]]; then
+        if [[ $TRAVIS_EVENT_TYPE = $event ]]; then
             allow_to_build=True
         fi
     done
