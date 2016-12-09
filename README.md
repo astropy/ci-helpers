@@ -119,11 +119,11 @@ environment variables
   ``False``.
 
 * ``$EVENT_TYPE``: this should be a space-separated string of event
-  types. If given, the build will only run only if the ``TRAVIS_EVENT_TYPE``
+  types. If given, the build will run only if the ``TRAVIS_EVENT_TYPE``
   matches with any of the listed ones. Otherwise the build exits and passes
-  on Travis without running the tests. This is a way to control builds to be
-  run only on master, or for Travis cron jobs. Valid event types are:
-  ``push``, ``pull_request``, ``api`` or ``cron``.
+  on Travis without running the tests. This is a way to control builds to
+  run only on pushes to master, or for Travis cron jobs. Valid event types
+  are: ``push``, ``pull_request``, ``api`` or ``cron``.
 
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
