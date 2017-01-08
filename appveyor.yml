@@ -37,7 +37,7 @@ environment:
         # unrelated to the rest of the builds and won't change anything, except
         # that we can make sure the conda config was correctly updated.
 
-      - PYTHON_VERSION: "3.5"
+      - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "stable"
         ASTROPY_VERSION: "stable"
         CONDA_DEPENDENCIES: "matplotlib h5py"
