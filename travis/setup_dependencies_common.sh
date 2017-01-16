@@ -84,7 +84,7 @@ source activate test
 # PIN FILE
 PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
 
-if [[ $DEBUG == True ]];, then
+if [[ $DEBUG == True ]]; then
     conda config --show
 fi
 
