@@ -40,8 +40,11 @@ if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
    PIP_DEPENDENCIES_FLAGS=''
 fi
 
+# We pin the version for conda as it's not the most stable package from
+# release to release. Add note here if version is pinned due to a bug upstream.
+# Pin to 4.1.12 (most recent 4.3.4): https://github.com/conda/conda/issues/4324
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.3.4
+    CONDA_VERSION=4.1.12
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
