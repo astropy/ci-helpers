@@ -40,6 +40,8 @@ if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
    PIP_DEPENDENCIES_FLAGS=''
 fi
 
+# We pin the version for conda as it's not the most stable package from
+# release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.3.4
 fi

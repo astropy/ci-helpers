@@ -9,6 +9,8 @@ if (! $env:ASTROPY_LTS_VERSION) {
    $env:ASTROPY_LTS_VERSION = "1.0"
 }
 
+# We pin the version for conda as it's not the most stable package from
+# release to release. Add note here if version is pinned due to a bug upstream.
 if (! $env:CONDA_VERSION) {
    $env:CONDA_VERSION = "4.3.4"
 }
