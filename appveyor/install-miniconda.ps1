@@ -10,7 +10,7 @@ if (! $env:ASTROPY_LTS_VERSION) {
 }
 
 if (! $env:CONDA_VERSION) {
-   $env:CONDA_VERSION = "4.1.3"
+   $env:CONDA_VERSION = "4.3.4"
 }
 
 function DownloadMiniconda ($version, $platform_suffix) {

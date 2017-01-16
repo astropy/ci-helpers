@@ -41,7 +41,7 @@ if [[ -z $PIP_DEPENDENCIES_FLAGS ]]; then
 fi
 
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.1.3
+    CONDA_VERSION=4.3.4
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
