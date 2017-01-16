@@ -11,8 +11,9 @@ if (! $env:ASTROPY_LTS_VERSION) {
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
+# Pin to 4.1.12 (most recent 4.3.4): https://github.com/conda/conda/issues/4324
 if (! $env:CONDA_VERSION) {
-   $env:CONDA_VERSION = "4.3.4"
+   $env:CONDA_VERSION = "4.1.12"
 }
 
 function DownloadMiniconda ($version, $platform_suffix) {
