@@ -172,7 +172,7 @@ elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
-    conda install $QUIET --no-pin numpy
+    conda install $QUIET --no-pin nomkl numpy
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
