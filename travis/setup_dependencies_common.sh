@@ -84,6 +84,10 @@ source activate test
 # PIN FILE
 PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
 
+if [[ $DEBUG == True ]]; then
+    conda config --show
+fi
+
 # EGG_INFO
 if [[ $SETUP_CMD == egg_info ]]; then
     return  # no more dependencies needed
