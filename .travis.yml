@@ -84,6 +84,10 @@ matrix:
           env: MAIN_CMD='pycodestyle'
                TEST_CMD='pycodestyle --version'
 
+        - os: linux
+          env: MAIN_CMD='flake8'
+               TEST_CMD='flake8 --version'
+
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=LTS
                CONDA_DEPENDENCIES='requests'
