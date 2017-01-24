@@ -110,6 +110,11 @@ if [[ $MAIN_CMD == pycodestyle* ]]; then
     return  # no more dependencies needed
 fi
 
+if [[ $MAIN_CMD == flake8* ]]; then
+    $PIP_INSTALL flake8
+    return  # no more dependencies needed
+fi
+
 # Pin required versions for dependencies, howto is in FAQ of conda
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
