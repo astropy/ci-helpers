@@ -107,10 +107,7 @@ matrix:
         # to the rest of the build and won't change anything, except that we can
         # make sure the conda config was correctly updated.
         - os: linux
-          env: SETUP_CMD='test' ASTROPY_VERSION=LTS CONDA_CHANNEL_PRIORITY=True
-
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=stable
+          env: SETUP_CMD='test' NUMPY_VERSION=stable CONDA_CHANNEL_PRIORITY=True
                CONDA_DEPENDENCIES='jinja2=2.8' DEBUG=True
 
         - os: linux
