@@ -17,7 +17,7 @@ if (! $env:CONDA_VERSION) {
 
 function DownloadMiniconda ($version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
-    $filename = "Miniconda-" + $version + "-Windows-" + $platform_suffix + ".exe"
+    $filename = "Miniconda3-" + $version + "-Windows-" + $platform_suffix + ".exe"
 
     $url = $MINICONDA_URL + $filename
 
@@ -187,5 +187,3 @@ if ($env:PIP_DEPENDENCIES) {
 if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
 }
-
-
