@@ -88,15 +88,17 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 conda config --set always_yes true
 conda config --add channels defaults
 
-# Install the build and runtime dependencies of the project.
-conda install -q conda=$env:CONDA_VERSION
-
 if ($env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
    foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
            conda config --add channels $CONDA_CHANNEL
    }
+   Remove-Variable CONDA_CHANNELS
+   rm env:CONDA_CHANNELS
 }
+
+# Install the build and runtime dependencies of the project.
+conda install -q conda=$env:CONDA_VERSION
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
