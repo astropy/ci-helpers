@@ -13,6 +13,12 @@ environment:
       TEST_CMD: "py.test test_env.py"
 
   matrix:
+      - PYTHON_VERSION: "2.7"
+        NUMPY_VERSION: "development"
+        CONDA_DEPENDENCIES: "scipy glymur"
+        CONDA_CHANNELS: "sunpy astrofrog"
+        PIP_DEPENDENCIES: "requests pyparsing"
+        CONDA_CHANNEL_PRIORITY: "True"
 
       - PYTHON_VERSION: "2.7"
 
@@ -43,13 +49,6 @@ environment:
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
         CONDA_CHANNEL_PRIORITY: "False"
-
-      - PYTHON_VERSION: "2.7"
-        NUMPY_VERSION: "development"
-        CONDA_DEPENDENCIES: "scipy glymur"
-        CONDA_CHANNELS: "sunpy"
-        PIP_DEPENDENCIES: "requests pyparsing"
-        CONDA_CHANNEL_PRIORITY: "True"
 
 matrix:
    fast_finish: true

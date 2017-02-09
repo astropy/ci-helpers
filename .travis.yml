@@ -25,8 +25,6 @@ env:
         - SETUP_CMD='egg_info'
           TEST_CMD='python --version'
 
-        - SETUP_CMD='test'
-
 matrix:
     include:
 
@@ -47,6 +45,13 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
+
+        - os: linux
+          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
+               TEST_CMD='coverage run test_env.py'
+               CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
+               CONDA_DEPENDENCIES='pyqt5' DEBUG=True
+               NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
         # The pre build only should run to the testing phase if a pre
         # release is available for numpy on pypi, otherwise it should pass
@@ -126,13 +131,6 @@ matrix:
 
         - os: linux
           env: SETUP_CMD='test --open-files'
-
-        - os: linux
-          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
-               TEST_CMD='coverage run test_env.py'
-               CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5' DEBUG=True
-               NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib' CONDA_DEPENDENCIES_FLAGS='--no-deps'

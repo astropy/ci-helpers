@@ -15,6 +15,16 @@ if [[ ! -z $EVENT_TYPE ]]; then
     fi
 fi
 
+# We need to do this before updating conda, as $CONDA_CHANNELS may be a
+# conda environment variable for some Miniconda versions, too that needs to
+# be coma separated.
+if [[ ! -z $CONDA_CHANNELS ]]; then
+    for channel in $CONDA_CHANNELS; do
+        conda config --add channels $channel
+    done
+    unset CONDA_CHANNELS
+fi
+
 conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
@@ -51,12 +61,6 @@ PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
 conda install $QUIET conda
-
-if [[ ! -z $CONDA_CHANNELS ]]; then
-    for channel in $CONDA_CHANNELS; do
-        conda config --add channels $channel
-    done
-fi
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
     CONDA_CHANNEL_PRIORITY=false
