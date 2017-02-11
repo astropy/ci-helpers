@@ -98,7 +98,7 @@ if ($env:CONDA_CHANNELS) {
 }
 
 # Install the build and runtime dependencies of the project.
-conda install -q conda=$env:CONDA_VERSION pytest pip
+conda install -q conda=$env:CONDA_VERSION
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
@@ -119,6 +119,9 @@ $env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHO
 
 # Check that we have the expected version of Python
 python --version
+
+# CORE DEPENDENCIES
+conda install -q -n test pytest pip
 
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
