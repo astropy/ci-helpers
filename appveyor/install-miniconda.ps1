@@ -98,7 +98,7 @@ if ($env:CONDA_CHANNELS) {
 }
 
 # Install the build and runtime dependencies of the project.
-conda install -q conda=$env:CONDA_VERSION
+conda install -q conda=$env:CONDA_VERSION pytest pip
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
@@ -129,6 +129,7 @@ if ($env:NUMPY_VERSION) {
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
+    conda install -n test -q $NUMPY_OPTION
 } else {
     $NUMPY_OPTION = ""
 }
@@ -144,6 +145,7 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
+    conda install -n test -q $ASTROPY_OPTION
 } else {
     $ASTROPY_OPTION = ""
 }
@@ -155,7 +157,7 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
+conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
