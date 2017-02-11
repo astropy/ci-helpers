@@ -145,7 +145,10 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
-    conda install -n test -q $ASTROPY_OPTION
+    conda install -n test -vv $ASTROPY_OPTION
+    if ($LastExitCode -ne 0) {
+       pip install $ASTROPY_OPTION
+    }
 } else {
     $ASTROPY_OPTION = ""
 }
