@@ -123,7 +123,7 @@ python --version
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
     if($env:NUMPY_VERSION -match "stable") {
-        $NUMPY_OPTION = "numpy" + $env:LATEST_NUMPY_STABLE
+        $NUMPY_OPTION = "numpy=" + $env:LATEST_NUMPY_STABLE
     } elseif($env:NUMPY_VERSION -match "dev") {
         $NUMPY_OPTION = "Cython pip".Split(" ")
     } else {
