@@ -30,16 +30,13 @@ conda config --set always_yes yes --set changeps1 no
 shopt -s nocasematch
 
 export LATEST_ASTROPY_STABLE=1.3
+ASTROPY_LTS_VERSION=1.0
 LATEST_NUMPY_STABLE=1.12
 
 if [[ $DEBUG == True ]]; then
     QUIET=''
 else
     QUIET='-q'
-fi
-
-if [[ -z $ASTROPY_LTS_VERSION ]]; then
-   ASTROPY_LTS_VERSION=1.0
 fi
 
 if [[ -z $CONDA_DEPENDENCIES_FLAGS ]]; then

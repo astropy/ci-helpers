@@ -5,9 +5,9 @@
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
-if (! $env:ASTROPY_LTS_VERSION) {
-   $env:ASTROPY_LTS_VERSION = "1.0"
-}
+$env:ASTROPY_LTS_VERSION = "1.0"
+$env:LATEST_ASTROPY_STABLE = "1.3"
+$env:LATEST_NUMPY_STABLE = "1.12"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
