@@ -5,9 +5,9 @@
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
-if (! $env:ASTROPY_LTS_VERSION) {
-   $env:ASTROPY_LTS_VERSION = "1.0"
-}
+$env:ASTROPY_LTS_VERSION = "1.0"
+$env:LATEST_ASTROPY_STABLE = "1.3"
+$env:LATEST_NUMPY_STABLE = "1.12"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
@@ -120,15 +120,19 @@ $env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHO
 # Check that we have the expected version of Python
 python --version
 
+# CORE DEPENDENCIES
+conda install -q -n test pytest pip
+
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
     if($env:NUMPY_VERSION -match "stable") {
-        $NUMPY_OPTION = "numpy"
+        $NUMPY_OPTION = "numpy=" + $env:LATEST_NUMPY_STABLE
     } elseif($env:NUMPY_VERSION -match "dev") {
         $NUMPY_OPTION = "Cython pip".Split(" ")
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
+    conda install -n test -q $NUMPY_OPTION
 } else {
     $NUMPY_OPTION = ""
 }
@@ -144,6 +148,10 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
+    $output = cmd /c conda install -n test -q $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    if ($output | select-string UnsatisfiableError) {
+       pip install $ASTROPY_OPTION
+    }
 } else {
     $ASTROPY_OPTION = ""
 }
@@ -155,7 +163,7 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-conda install -n test -q pytest $NUMPY_OPTION $ASTROPY_OPTION $CONDA_DEPENDENCIES
+conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
