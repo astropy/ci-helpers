@@ -204,16 +204,21 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             exit
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
-        $CONDA_INSTALL astropy
+        ASTROPY_OPTION='LATEST_ASTROPY_STABLE'
     elif [[ $ASTROPY_VERSION == lts ]]; then
         # We add astropy to the pin file to make sure it won't get updated
         echo "astropy ${ASTROPY_LTS_VERSION}*" >> $PIN_FILE
-        $CONDA_INSTALL astropy=$ASTROPY_LTS_VERSION
+        ASTROPY_OPTION=$ASTROPY_LTS_VERSION
     else
         # We add astropy to the pin file to make sure it won't get updated
         echo "astropy ${ASTROPY_VERSION}*" >> $PIN_FILE
-        $CONDA_INSTALL astropy=$ASTROPY_VERSION
+        ASTROPY_OPTION=$ASTROPY_VERSION
     fi
+    if [[ ! -z $ASTROPY_OPTION ]]; then
+        $CONDA_INSTALL astropy=$ASTROPY_OPTION || \
+        $PIP_INSTALL astropy==$astropy_OPTION
+    fi
+
 fi
 
 # DOCUMENTATION DEPENDENCIES
