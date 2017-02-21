@@ -217,6 +217,8 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     if [[ ! -z $ASTROPY_OPTION ]]; then
         conda install --no-pin astropy=$ASTROPY_OPTION || \
         $PIP_INSTALL astropy==$ASTROPY_OPTION
+        grep -v astropy $PIN_FILE > /tmp/pin_file_temp
+        mv /tmp/pin_file_temp $PIN_FILE
     fi
 
 fi
