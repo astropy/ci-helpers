@@ -215,7 +215,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         ASTROPY_OPTION=$ASTROPY_VERSION
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        $CONDA_INSTALL astropy=$ASTROPY_OPTION || \
+        conda install --no-pin astropy=$ASTROPY_OPTION || \
         $PIP_INSTALL astropy==$ASTROPY_OPTION
     fi
 
