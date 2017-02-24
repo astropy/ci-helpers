@@ -163,7 +163,11 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES
+# Check whether the installation is successful, if not abort the build
+$output = cmd /c conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+   $host.SetShouldExit()
+}
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
