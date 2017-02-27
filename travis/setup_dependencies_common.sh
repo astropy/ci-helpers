@@ -171,9 +171,11 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
     conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
+    export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET --no-pin nomkl numpy
+    export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
@@ -184,8 +186,10 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
     conda install $QUIET --no-pin numpy=$NUMPY_VERSION
+    export NUMPY_OPTION="numpy=$NUMPY_VERSION"
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
 else
+    export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 fi
 
@@ -215,8 +219,10 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         ASTROPY_OPTION=$ASTROPY_VERSION
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        $CONDA_INSTALL astropy=$ASTROPY_OPTION || \
+        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || \
         $PIP_INSTALL astropy==$ASTROPY_OPTION
+        grep -v astropy $PIN_FILE > /tmp/pin_file_temp
+        mv /tmp/pin_file_temp $PIN_FILE
     fi
 
 fi
@@ -249,7 +255,8 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS
+    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || \
+        $PIP_INSTALL $CONDA_DEPENDENCIES
 fi
 
 # PARALLEL BUILDS
