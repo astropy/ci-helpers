@@ -219,10 +219,11 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         ASTROPY_OPTION=$ASTROPY_VERSION
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || \
-        $PIP_INSTALL astropy==$ASTROPY_OPTION
-        grep -v astropy $PIN_FILE > /tmp/pin_file_temp
-        mv /tmp/pin_file_temp $PIN_FILE
+        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
+            echo "Installing astropy with conda was unsuccessful, using pip instead"
+            $PIP_INSTALL astropy==$ASTROPY_OPTION
+            grep -v astropy $PIN_FILE > /tmp/pin_file_temp
+            mv /tmp/pin_file_temp $PIN_FILE)
     fi
 
 fi
@@ -255,8 +256,9 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || \
-        $PIP_INSTALL $CONDA_DEPENDENCIES
+    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
+        echo "Installing the dependencies with conda was unsuccessful, using pip instead"
+        $PIP_INSTALL $CONDA_DEPENDENCIES)
 fi
 
 # PARALLEL BUILDS
