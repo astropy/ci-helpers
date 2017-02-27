@@ -149,7 +149,9 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
     $output = cmd /c conda install -n test -q $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    echo $output
     if ($output | select-string UnsatisfiableError) {
+       echo "Installing astropy with conda was unsuccessful, using pip instead"
        pip install $ASTROPY_OPTION
     }
 } else {
@@ -163,7 +165,13 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES
+# Check whether the installation is successful, if not abort the build
+$output = cmd /c conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+
+echo $output
+if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+   $host.SetShouldExit(1)
+}
 
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
