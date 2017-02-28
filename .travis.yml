@@ -99,7 +99,7 @@ matrix:
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
                CONDA_DEPENDENCIES='requests'
 
-        # Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
         # to the rest of the build and won't change anything, except that we can
         # make sure the conda config was correctly updated.
         - os: linux
@@ -108,14 +108,16 @@ matrix:
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
                CONDA_CHANNEL_PRIORITY=False
 
-        # Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
         # to the rest of the build and won't change anything, except that we can
         # make sure the conda config was correctly updated.
+        # -> Have a package dependency with alphanumerical name
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_CHANNEL_PRIORITY=True
-               CONDA_DEPENDENCIES='photutils jinja2=2.8 h5py matplotlib' DEBUG=True ASTROPY_VERSION=1.0
+               CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True ASTROPY_VERSION=1.0
                CONDA_CHANNELS='astropy astrodendro' PYTHON_VERSION='3.5'
 
+        # -> Have empty string as dependency list when falling back on pip
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=stable
                CONDA_DEPENDENCIES=''
