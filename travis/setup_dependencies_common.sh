@@ -222,8 +222,10 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
-            grep -v astropy $PIN_FILE > /tmp/pin_file_temp
-            mv /tmp/pin_file_temp $PIN_FILE)
+            if [[ -f $PIN_FILE ]]; then
+                grep -v astropy $PIN_FILE > /tmp/pin_file_temp
+                mv /tmp/pin_file_temp $PIN_FILE
+            fi)
     fi
 
 fi
