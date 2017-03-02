@@ -170,7 +170,12 @@ $output = cmd /c conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
 
 echo $output
 if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
-   $host.SetShouldExit(1)
+   echo "Installing dependencies with conda was unsuccessful, using pip instead"
+   $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
+   echo $output
+   if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+      $host.SetShouldExit(1)
+   }
 }
 
 # Check whether the developer version of Numpy is required and if yes install it
