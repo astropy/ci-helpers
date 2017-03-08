@@ -259,8 +259,11 @@ fi
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
-        echo "Installing the dependencies with conda was unsuccessful, using pip instead"
-        $PIP_INSTALL $CONDA_DEPENDENCIES)
+        # If there is a problem with conda install, try pip install one-by-one
+        for package in $(echo $CONDA_DEPENDENCIES); do
+            $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
+                echo "Installing the dependency $package with conda was unsuccessful, using pip instead"
+                $PIP_INSTALL $package))
 fi
 
 # PARALLEL BUILDS
