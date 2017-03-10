@@ -263,7 +263,8 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         for package in $(echo $CONDA_DEPENDENCIES); do
             $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead"
-                $PIP_INSTALL $package))
+                $PIP_INSTALL $package);
+        done)
 fi
 
 # PARALLEL BUILDS
