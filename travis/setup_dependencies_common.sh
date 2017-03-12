@@ -265,11 +265,14 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             # We need to avoid other dependencies picked up from the ping file
             echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -v $package > /tmp/dependency_subset
             grep -vf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
+            if [[ $DEBUG == True ]]; then
+                cat $PIN_FILE
+            fi
             $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead"
                 $PIP_INSTALL $package);
-        done)
-        mv /tmp/pin_copy $PIN_FILE
+        done
+        mv /tmp/pin_copy $PIN_FILE)
 fi
 
 # PARALLEL BUILDS
