@@ -28,39 +28,41 @@ env:
 matrix:
     include:
 
-        # Starting with the dev versions as they take the longest to run. We
-        # deliberately test with Numpy 1.9 to check that installing Astropy dev
-        # doesn't upgrade Numpy.
+        # -> Starting with the dev versions as they take the longest to run. We
+        #    deliberately test with Numpy 1.9 to check that installing Astropy
+        #    dev doesn't upgrade Numpy.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.5
 
-        # For the Numpy dev build, we also specify a conda package that depends
-        # on Numpy to make sure that Numpy dev is used (because conda will also
-        # install Numpy stable). It's also important to include scipy here to
-        # make sure that scipy routines still work correctly, because if we
-        # aren't careful, we can end up with issues with the math kernel
-        # library.
-
+        # -> For the Numpy dev build, we also specify a conda package that
+        #    depends on Numpy to make sure that Numpy dev is used (because
+        #    conda will also install Numpy stable). It's also important to
+        #    include scipy here to make sure that scipy routines still work
+        #    correctly, because if we aren't careful, we can end up with issues
+        #    with the math kernel library.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
 
+        # -> Have non Python package in dependency list when falling back on
+        #    pip installing the dependencies to test whether test the
+        #    install one-by-one.
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
                TEST_CMD='coverage run test_env.py'
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5' DEBUG=True
+               CONDA_DEPENDENCIES='pyqt5 openjpeg photutils' DEBUG=True
                NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
-        # The pre build only should run to the testing phase if a pre
-        # release is available for numpy on pypi, otherwise it should pass
+        # -> The pre build only should run to the testing phase if a pre
+        #    release is available for numpy on pypi, otherwise it should pass
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=pre
                CONDA_DEPENDENCIES='scipy' DEBUG=True
 
-        # The pre build only should run to the testing phase if a pre
-        # release is available for astropy on pypi, otherwise it should pass
+        # -> The pre build only should run to the testing phase if a pre
+        #    release is available for astropy on pypi, otherwise it should pass
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=pre DEBUG=True
 
@@ -94,14 +96,14 @@ matrix:
           env: MAIN_CMD='flake8'
                TEST_CMD='flake8 --version'
 
-        # Don't test osx with LTS as we currently build LTS only for linux.
+        # -> Don't test osx with LTS as we currently build LTS only for linux.
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
                CONDA_DEPENDENCIES='requests'
 
         # -> Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
-        # to the rest of the build and won't change anything, except that we can
-        # make sure the conda config was correctly updated.
+        #    to the rest of the build and won't change anything, except that we
+        #    can make sure the conda config was correctly updated.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
                SCIKIT_IMAGE_VERSION=0.11 PYTHON_VERSION=3.5
@@ -109,13 +111,14 @@ matrix:
                CONDA_CHANNEL_PRIORITY=False
 
         # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
-        # to the rest of the build and won't change anything, except that we can
-        # make sure the conda config was correctly updated.
+        #    to the rest of the build and won't change anything, except that we
+        #    can make sure the conda config was correctly updated.
         # -> Have a package dependency with alphanumerical name
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_CHANNEL_PRIORITY=True
-               CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True ASTROPY_VERSION=1.0
-               CONDA_CHANNELS='astropy astrodendro' PYTHON_VERSION='3.5'
+               CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
+               ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy astrodendro'
+               PYTHON_VERSION='3.5'
 
         # -> Have empty string as dependency list when falling back on pip
         - os: linux
@@ -134,10 +137,12 @@ matrix:
           env: SETUP_CMD='test --open-files'
 
         - os: linux
-          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib' CONDA_DEPENDENCIES_FLAGS='--no-deps'
+          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib'
+               CONDA_DEPENDENCIES_FLAGS='--no-deps'
 
         - os: linux
-          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing requests' PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
+          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing requests'
+               PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
 
 before_install:
     - ln -s . ci-helpers
