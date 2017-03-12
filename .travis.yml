@@ -150,4 +150,6 @@ before_install:
 
 script:
    - eval $TEST_CMD
+
+after_success:
    - if [[ $SETUP_CMD == *coverage* ]]; then coveralls; fi
