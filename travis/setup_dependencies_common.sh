@@ -262,14 +262,19 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
-            # We need to avoid other dependencies picked up from the ping file
+            # We need to avoid other dependencies picked up from the pin file
             echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -v $package > /tmp/dependency_subset
             grep -vf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
             $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
-                echo "Installing the dependency $package with conda was unsuccessful, using pip instead"
+                echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
+                # We need to remove the problematic package from the pin
+                # file, otherwise further conda install commands may fail,
+                # too.
+                grep -v $package /tmp/pin_copy > /tmp/pin_copy_temp
+                mv /tmp/pin_copy_temp /tmp/pin_copy
                 $PIP_INSTALL $package);
         done
         mv /tmp/pin_copy $PIN_FILE)
