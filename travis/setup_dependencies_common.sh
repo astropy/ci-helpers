@@ -260,11 +260,16 @@ fi
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
         # If there is a problem with conda install, try pip install one-by-one
+        cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
+            # We need to avoid other dependencies picked up from the ping file
+            echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -v $package > /tmp/dependency_subset
+            grep -vf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
             $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead"
                 $PIP_INSTALL $package);
         done)
+        mv /tmp/pin_copy $PIN_FILE
 fi
 
 # PARALLEL BUILDS
