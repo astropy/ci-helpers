@@ -46,11 +46,14 @@ matrix:
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
 
+        # -> Have non Python package in dependency list when falling back on
+        #    pip installing the dependencies to test whether test the
+        #    install one-by-one.
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
                TEST_CMD='coverage run test_env.py'
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5' DEBUG=True
+               CONDA_DEPENDENCIES='pyqt5 openjpeg photutils' DEBUG=True
                NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
 
         # The pre build only should run to the testing phase if a pre
