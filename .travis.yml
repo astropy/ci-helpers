@@ -52,7 +52,7 @@ matrix:
         #    (pytest vs pytest-cov) when falling back to pip install
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
-               TEST_CMD='coverage run test_env.py'
+               TEST_CMD='py.test test_env.py && coverage run test_env.py'
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
                CONDA_DEPENDENCIES='pyqt5 openjpeg photutils pytest pytest-cov'
                DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
