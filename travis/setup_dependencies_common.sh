@@ -223,7 +223,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
-                grep -v astropy $PIN_FILE > /tmp/pin_file_temp
+                grep -vx astropy $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
             fi)
     fi
@@ -263,8 +263,8 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
             # We need to avoid other dependencies picked up from the pin file
-            echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -v $package > /tmp/dependency_subset
-            grep -vf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
+            echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -vx $package > /tmp/dependency_subset
+            grep -vxf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
@@ -273,7 +273,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
                 # too.
-                grep -v $package /tmp/pin_copy > /tmp/pin_copy_temp
+                grep -vx $package /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
                 $PIP_INSTALL $package);
         done
