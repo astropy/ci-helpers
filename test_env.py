@@ -112,6 +112,8 @@ def test_dependency_imports():
             __import__('skimage')
         elif package == 'openjpeg':
             continue
+        elif package == 'pytest-cov':
+            __import__('pytest_cov')
         elif package == '':
             continue
         else:
