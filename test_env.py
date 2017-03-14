@@ -19,7 +19,7 @@ if 'APPVEYOR_PROJECT_SLUG' in os.environ:
             pytestmark = pytest.mark.skip()
 
 if 'TRAVIS_REPO_SLUG' in os.environ:
-    if os.environ['TRAVIS_REPO_SLUG'] != 'astropy/ci-helpers':
+    if os.environ['TRAVIS_REPO_SLUG'].split('/')[1] != 'ci-helpers':
         if PYTEST_LT_3:
             pytest.skip()
         else:
@@ -110,6 +110,10 @@ def test_dependency_imports():
             __import__('PyQt5')
         elif package == 'scikit-image':
             __import__('skimage')
+        elif package == 'openjpeg':
+            continue
+        elif package == 'pytest-cov':
+            __import__('pytest_cov')
         elif package == '':
             continue
         else:
