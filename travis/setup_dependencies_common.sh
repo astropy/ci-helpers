@@ -29,7 +29,7 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
-export LATEST_ASTROPY_STABLE=1.3
+export LATEST_ASTROPY_STABLE=1.3.1
 ASTROPY_LTS_VERSION=1.0
 LATEST_NUMPY_STABLE=1.12
 
