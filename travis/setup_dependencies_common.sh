@@ -116,6 +116,11 @@ if [[ $MAIN_CMD == flake8* ]]; then
     return  # no more dependencies needed
 fi
 
+if [[ $MAIN_CMD == pylint* ]]; then
+    $PIP_INSTALL pylint
+    return  # no more dependencies needed
+fi
+
 # Pin required versions for dependencies, howto is in FAQ of conda
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then

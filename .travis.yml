@@ -98,6 +98,10 @@ matrix:
           env: MAIN_CMD='flake8'
                TEST_CMD='flake8 --version'
 
+        - os: linux
+          env: MAIN_CMD='pylint'
+               TEST_CMD='pylint --version'
+
         # -> Don't test osx with LTS as we currently build LTS only for linux.
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=stable

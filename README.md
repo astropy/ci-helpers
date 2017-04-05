@@ -42,8 +42,9 @@ This does the following:
 Following this, various dependencies are installed depending on the following
 environment variables
 
-* ``MAIN_CMD``: if this starts with ``pycodestyle``, then the only package
-  that gets installed is the ``pycodestyle`` package. Please note that the
+* ``MAIN_CMD``: if this starts with ``pycodestyle``, ``flake``, or
+  ``pylint`` then the only package that gets installed is the
+  ``pycodestyle``, ``flake``, or ``pylint`` package. Please note that the
   former name of the ``pycodestyle`` package is ``pep8``, and ci-helpers
   still accepts it, too.
 
