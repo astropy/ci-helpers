@@ -17,7 +17,7 @@ fi
 
 # We need to do this before updating conda, as $CONDA_CHANNELS may be a
 # conda environment variable for some Miniconda versions, too that needs to
-# be coma separated.
+# be space separated.
 if [[ ! -z $CONDA_CHANNELS ]]; then
     for channel in $CONDA_CHANNELS; do
         conda config --add channels $channel
