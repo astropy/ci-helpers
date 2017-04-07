@@ -118,6 +118,13 @@ fi
 
 if [[ $MAIN_CMD == pylint* ]]; then
     $PIP_INSTALL pylint
+
+    # Installing backports when using python 2.7. Add required backports to
+    # the list
+    if [[ $PYTHON_VERSION == 2.7 ]]; then
+        $PIP_INSTALL backports.functools_lru_cache
+    fi
+
     return  # no more dependencies needed
 fi
 
