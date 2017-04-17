@@ -97,7 +97,7 @@ fi
 # CORE DEPENDENCIES
 conda install $QUIET pytest pip
 
-export PIP_INSTALL='pip install'
+export PIP_INSTALL='pip install -q'
 
 # PEP8
 # PEP8 has been renamed to pycodestyle, keep both here for now
