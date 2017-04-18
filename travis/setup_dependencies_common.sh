@@ -90,7 +90,7 @@ if [[ $DEBUG == True ]]; then
 fi
 
 # EGG_INFO
-if [[ $SETUP_CMD == egg_info ]]; then
+if [ $SETUP_CMD == 'egg_info' ] && [ -z $FORCE_DEPENDENCIES_INSTALL ]; then
     return  # no more dependencies needed
 fi
 
