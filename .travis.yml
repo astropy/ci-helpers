@@ -68,15 +68,16 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=pre DEBUG=True
 
+        # -> Setting pytest version should be recognized in the next two jobs
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
-               DEBUG=True PYTHON_VERSION=2.7
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=="\""1.5.0"\"'
+               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.8
+               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswidth("\""2.8")\"'
 
         - os: linux
           env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True
-               MATPLOTLIB_VERSION=1.4 DEBUG=True PYTHON_VERSION=3.5
-               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.4.1\"; import matplotlib; assert matplotlib.__version__=="\""1.4.3"\"'
+               MATPLOTLIB_VERSION=1.4 DEBUG=True PYTHON_VERSION=3.5 PYTEST_VERSION=3.0
+               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.4.1\"; import pytest; pytest.__version__.startswidth(\"3.0\"); import matplotlib; assert matplotlib.__version__=="\""1.4.3"\"'
 
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5.0 sphinx'
