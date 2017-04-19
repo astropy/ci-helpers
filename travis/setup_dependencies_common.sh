@@ -95,6 +95,15 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
+
+if [[ ! -z $PYTEST_VERSION ]]; then
+    echo "pytest ${PYTEST_VERSION}*" >> $PIN_FILE
+fi
+
+if [[ ! -z $PIP_VERSION ]]; then
+    echo "pip ${PIP_VERSION}*" >> $PIN_FILE
+fi
+
 conda install $QUIET pytest pip
 
 export PIP_INSTALL='pip install'
