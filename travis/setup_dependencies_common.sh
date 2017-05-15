@@ -11,7 +11,7 @@ if [[ ! -z $EVENT_TYPE ]]; then
         fi
     done
     if [[ $allow_to_build != True ]]; then
-        exit
+        travis_terminate 0
     fi
 fi
 
@@ -203,7 +203,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         # We want to stop the script if there isn't a pre-release available,
         # as in that case it would be just another build using the stable
         # version.
-        exit
+        travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
     conda install $QUIET --no-pin numpy=$NUMPY_VERSION
@@ -226,7 +226,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             # We want to stop the script if there isn't a pre-release available,
             # as in that case it would be just another build using the stable
             # version.
-            exit
+            travis_terminate 0
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
         ASTROPY_OPTION=$LATEST_ASTROPY_STABLE
