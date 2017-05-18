@@ -27,6 +27,19 @@ env:
 
 matrix:
     include:
+        # -> 2 Temporary tests, should be removed once
+        #    https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
+        #    addressed and workaround is removed
+        - os: linux
+          env: SETUP_CMD='build_docs'
+               PIP_DEPENDENCIES='sphinx-gallery requests'
+               CONDA_CHANNELS='conda-forge' PYTHON_VERSION=3.5
+               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])<6"'
+        - os: linux
+          env: SETUP_CMD='build_docs'
+               PIP_DEPENDENCIES='requests' CONDA_DEPENDENCIES='pytest'
+               CONDA_CHANNELS='conda-forge' PYTHON_VERSION=3.5
+               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>=6"'
 
         # -> Starting with the dev versions as they take the longest to run. We
         #    deliberately test with Numpy 1.9 to check that installing Astropy
