@@ -265,9 +265,10 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     fi
 
     # Temporary version limitation until
-    # https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is addressed
-    if [[ -z $SPHINX_VERSION ]] && [[ ! -z $(echo $PIP_DEPENDENCIES $CONDA_DEPENDENCIES | \
-            grep sphinx-gallery) ]]; then
+    # https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
+    # addressed as well as packages are using astropy-helpers v2.0 that uses
+    # a fixed sphinx-automodapi version
+    if [[ -z $SPHINX_VERSION ]]; then
         SPHINX_VERSION='<1.6'
     fi
 
