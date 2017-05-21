@@ -78,8 +78,8 @@ matrix:
         # -> Setting pytest version should be recognized in the next two jobs
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
-               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.8
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.8\")"'
+               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.7.3
+               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.7.3\")"'
 
         - os: linux
           env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True

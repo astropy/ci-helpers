@@ -104,7 +104,9 @@ if [[ ! -z $PIP_VERSION ]]; then
     echo "pip ${PIP_VERSION}*" >> $PIN_FILE
 fi
 
-conda install $QUIET pytest pip
+# We use the channel astropy-ci-extras to host pytest 2.7.3 that is
+# compatible with LTS 1.0.x astropy
+conda install -c astropy-ci-extras $QUIET pytest pip
 
 export PIP_INSTALL='pip install'
 
