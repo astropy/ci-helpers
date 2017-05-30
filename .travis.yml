@@ -35,6 +35,12 @@ matrix:
                CONDA_CHANNELS='conda-forge' PYTHON_VERSION=3.5
                TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])<6"'
 
+        # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
+        - os: linux
+          env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
+               PYTHON_VERSION=3.5
+               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5"'
+
         # -> Starting with the dev versions as they take the longest to run. We
         #    deliberately test with Numpy 1.9 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
