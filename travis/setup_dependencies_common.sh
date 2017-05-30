@@ -260,11 +260,28 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
 
+    is_number='[0-9]'
+    is_eq_number='=[0-9]'
+
     if [[ ! -z $MATPLOTLIB_VERSION ]]; then
         if [[ -z $(grep matplotlib $PIN_FILE) ]]; then
             echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $PIN_FILE
         fi
     fi
+
+    $CONDA_INSTALL matplotlib || ( \
+        echo "Installing matplotlib with conda was unsuccessful, using pip instead."
+        $PIP_MATPLOTLIB_VERSION=$MATPLOTLIB_VERSION
+        if [[ $(echo $MATPLOTLIB_VERSION | cut -c 1) =~ $is_number ]]; then
+            PIP_MATPLOTLIB_VERSION='=='${MATPLOTLIB_VERSION}
+        elif [[ $(echo $MATPLOTLIB_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+            PIP_MATPLOTLIB_VERSION='='${MATPLOTLIB_VERSION}
+        fi
+        $PIP_INSTALL matplotlib${PIP_MATPLOTLIB_VERSION}
+        if [[ -f $PIN_FILE ]]; then
+            grep -vx matplotlib $PIN_FILE > /tmp/pin_file_temp
+            mv /tmp/pin_file_temp $PIN_FILE
+        fi)
 
     # Temporary version limitation until
     # https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
@@ -284,7 +301,19 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         cat $PIN_FILE
     fi
 
-    $CONDA_INSTALL sphinx matplotlib
+    $CONDA_INSTALL sphinx || ( \
+        echo "Installing sphinx with conda was unsuccessful, using pip instead."
+        PIP_SPHINX_VERSION=$SPHINX_VERSION
+        if [[ $(echo $SPHINX_VERSION | cut -c 1) =~ $is_number ]]; then
+            PIP_SPHINX_VERSION='=='${SPHINX_VERSION}
+        elif [[ $(echo $SPHINX_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+            PIP_SPHINX_VERSION='='${SPHINX_VERSION}
+        fi
+        $PIP_INSTALL sphinx${PIP_SPHINX_VERSION}
+        if [[ -f $PIN_FILE ]]; then
+            grep -vx sphinx $PIN_FILE > /tmp/pin_file_temp
+            mv /tmp/pin_file_temp $PIN_FILE
+        fi)
 fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
