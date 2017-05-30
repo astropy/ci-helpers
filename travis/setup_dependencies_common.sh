@@ -246,7 +246,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
-                grep -vx astropy $PIN_FILE > /tmp/pin_file_temp
+                awk '{if ($1 != "astropy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
             fi)
     fi
@@ -279,7 +279,7 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
         $PIP_INSTALL matplotlib${PIP_MATPLOTLIB_VERSION}
         if [[ -f $PIN_FILE ]]; then
-            grep -vx matplotlib $PIN_FILE > /tmp/pin_file_temp
+            awk '{if ($1 != "matplotlib") print $0}' $PIN_FILE > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $PIN_FILE
         fi)
 
@@ -297,10 +297,6 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
     fi
 
-    if [[ $DEBUG == True ]]; then
-        cat $PIN_FILE
-    fi
-
     $CONDA_INSTALL sphinx || ( \
         echo "Installing sphinx with conda was unsuccessful, using pip instead."
         PIP_SPHINX_VERSION=$SPHINX_VERSION
@@ -311,9 +307,14 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
         $PIP_INSTALL sphinx${PIP_SPHINX_VERSION}
         if [[ -f $PIN_FILE ]]; then
-            grep -vx sphinx $PIN_FILE > /tmp/pin_file_temp
+            awk '{if ($1 != "sphinx") print $0}' $PIN_FILE > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $PIN_FILE
         fi)
+
+    if [[ $DEBUG == True ]]; then
+        cat $PIN_FILE
+    fi
+
 fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
@@ -333,7 +334,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
                 # too.
-                grep -vx $package /tmp/pin_copy > /tmp/pin_copy_temp
+                awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
                 $PIP_INSTALL $package);
         done
