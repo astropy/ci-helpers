@@ -302,7 +302,7 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
     fi
 
     $CONDA_INSTALL sphinx || ( \
-        echo "Installing matplotlib with conda was unsuccessful, using pip instead."
+        echo "Installing sphinx with conda was unsuccessful, using pip instead."
         PIP_SPHINX_VERSION=$SPHINX_VERSION
         if [[ $(echo $SPHINX_VERSION | cut -c 1) =~ $is_number ]]; then
             PIP_SPHINX_VERSION='=='${SPHINX_VERSION}
