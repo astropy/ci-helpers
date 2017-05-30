@@ -27,6 +27,12 @@ env:
 
 matrix:
     include:
+        # -> Test falling back on pip when conda install is not working.
+        # Here healpy is not available with numpy 1.13
+        - os: linux
+          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy'
+               CONDA_CHANNELS='conda-forge' DEBUG=True
+
         # -> Temporary test, should be removed once
         #    https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
         #    addressed and workaround is removed
