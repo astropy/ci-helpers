@@ -299,7 +299,7 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
-            awk -v package=$package'{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
+            awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         )
     done
 
@@ -316,8 +316,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
             # We need to avoid other dependencies picked up from the pin file
-            echo $CONDA_DEPENDENCIES | tr " " "\n" | grep -vx $package > /tmp/dependency_subset
-            grep -vxf /tmp/dependency_subset /tmp/pin_copy > $PIN_FILE
+            awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_copy > $PIN_FILE
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
