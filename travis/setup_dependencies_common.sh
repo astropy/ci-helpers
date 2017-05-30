@@ -269,20 +269,6 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
     fi
 
-    $CONDA_INSTALL matplotlib || ( \
-        echo "Installing matplotlib with conda was unsuccessful, using pip instead."
-        $PIP_MATPLOTLIB_VERSION=$MATPLOTLIB_VERSION
-        if [[ $(echo $MATPLOTLIB_VERSION | cut -c 1) =~ $is_number ]]; then
-            PIP_MATPLOTLIB_VERSION='=='${MATPLOTLIB_VERSION}
-        elif [[ $(echo $MATPLOTLIB_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
-            PIP_MATPLOTLIB_VERSION='='${MATPLOTLIB_VERSION}
-        fi
-        $PIP_INSTALL matplotlib${PIP_MATPLOTLIB_VERSION}
-        if [[ -f $PIN_FILE ]]; then
-            awk '{if ($1 != "matplotlib") print $0}' $PIN_FILE > /tmp/pin_file_temp
-            mv /tmp/pin_file_temp $PIN_FILE
-        fi)
-
     # Temporary version limitation until
     # https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
     # addressed as well as packages are using astropy-helpers v2.0 that uses
@@ -297,19 +283,25 @@ if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
         fi
     fi
 
-    $CONDA_INSTALL sphinx || ( \
-        echo "Installing sphinx with conda was unsuccessful, using pip instead."
-        PIP_SPHINX_VERSION=$SPHINX_VERSION
-        if [[ $(echo $SPHINX_VERSION | cut -c 1) =~ $is_number ]]; then
-            PIP_SPHINX_VERSION='=='${SPHINX_VERSION}
-        elif [[ $(echo $SPHINX_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
-            PIP_SPHINX_VERSION='='${SPHINX_VERSION}
-        fi
-        $PIP_INSTALL sphinx${PIP_SPHINX_VERSION}
-        if [[ -f $PIN_FILE ]]; then
-            awk '{if ($1 != "sphinx") print $0}' $PIN_FILE > /tmp/pin_file_temp
-            mv /tmp/pin_file_temp $PIN_FILE
-        fi)
+    # We don't want to install everything listed in the PIN_FILE in this section
+
+    for package in matplotlib sphinx; do
+        mv $PIN_FILE /tmp/pin_file_copy
+
+        awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
+
+        $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
+            echo "Installing $package with conda was unsuccessful, using pip instead."
+            PIP_${package}_VERSION=$(awk '{print $2}' $PIN_FILE)
+            if [[ $(echo $PIP_${package}_VERSION | cut -c 1) =~ $is_number ]]; then
+                PIP_${package}_VERSION='=='${PIP_${package}_VERSION}
+            elif [[ $(echo $PIP_${package}_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+                PIP_${package}_VERSION='='${PIP_${package}_VERSION}
+            fi
+            $PIP_INSTALL ${package}${PIP_${package}_VERSION}
+            awk -v package=$package'{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
+        )
+    done
 
     if [[ $DEBUG == True ]]; then
         cat $PIN_FILE
