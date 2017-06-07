@@ -256,7 +256,7 @@ fi
 
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
-if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
+if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     # Check whether there are any version setting env variables, pin them if
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
