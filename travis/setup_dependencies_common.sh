@@ -10,9 +10,25 @@ if [[ ! -z $EVENT_TYPE ]]; then
             allow_to_build=True
         fi
     done
-    if [[ $allow_to_build != True ]]; then
-        travis_terminate 0
+fi
+
+# We first check if any of the custom tags are used
+
+if [[ $CUSTOM_TAGS != False ]]; then
+    TR_SKIP="\[(skip travis|travis skip)\]"
+    DOCS_ONLY="\[docs only|build docs\]"
+
+    if [[ ! -z $(echo $TRAVIS_COMMIT_MESSAGE | grep -E $TR_SKIP) ]]; then
+        allow_to_build=False
+    elif [[ ! -z $(echo $TRAVIS_COMMIT_MESSAGE | grep -E $DOCS_ONLY) ]]; then
+        if [[ $SETUP_CMD != *build_docs* ]] || [[ $SETUP_CMD != *build_sphinx* ]]; then
+            allow_to_build=False
+        fi
     fi
+fi
+
+if [[ $allow_to_build != True ]]; then
+    travis_terminate 0
 fi
 
 # We need to do this before updating conda, as $CONDA_CHANNELS may be a
