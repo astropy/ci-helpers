@@ -22,8 +22,7 @@ env:
         - PYTHON_VERSION=3.6
 
     matrix:
-        - SETUP_CMD='egg_info'
-          TEST_CMD='python --version'
+        - SETUP_CMD='egg_info' TEST_CMD='python --version'
 
 matrix:
     include:
