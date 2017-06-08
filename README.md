@@ -35,9 +35,15 @@ This does the following:
 - Set up Miniconda.
 - Set up the PATH appropriately.
 - Set up a conda environment named 'test' and switch to it.
-- Set the ``always_yes`` config option for conda to ``true`` so that you don't need to include ``--yes``.
-- Register the specified channels, or if not stated the ``astropy``, ``astropy-ci-extras``, and ``openastronomy`` channels.
+- Set the ``always_yes`` config option for conda to ``true`` so that you
+  don't need to include ``--yes``.
+- Register the specified channels.
 - ``export PYTHONIOENCODING=UTF8``
+- Supports custom skip tags included in the commit message that are not yet
+  natively provided by Travis. To skip the travis build: [skip travis] or
+  [travis skip]. To run only the docs build: [build docs] or [docs
+  only]. The latter requires ``SETUP_CMD`` (see below) to be set to
+  "build_docs" or "build_sphinx".
 
 Following this, various dependencies are installed depending on the following
 environment variables
@@ -53,7 +59,7 @@ environment variables
     * ``egg_info``: no dependencies are installed once the conda environment
       has been created and any other environment variables are ignored.
 
-    * ``build_sphinx`` or ``build_docs``: the Sphinx and matplotlib packages
+    * ``build_docs`` or ``build_sphinx``: the Sphinx and matplotlib packages
       are installed in addition to other packages that might be requested
       via other environment variables.
 
@@ -206,9 +212,10 @@ The scripts include:
 * ``appveyor/install-miniconda.ps1`` - set up conda on Windows
 * ``appveyor/windows_sdk.cmd`` - set up the compiler environment on Windows
 * ``travis/setup_dependencies_common.sh`` - set up conda packages on Linux and MacOS X
+* ``travis/setup_conda.sh`` - set up conda on MacOS X or Linux, users should use this directly rather than the OS specific ones below
 * ``travis/setup_conda_linux.sh`` - set up conda on Linux
 * ``travis/setup_conda_osx.sh`` - set up conda on MacOS X
-* ``travis/setup_conda.sh`` - set up conda on MacOS X or Linux
+
 
 This repository can be cloned directly from the ``.travis.yml`` and
 ``appveyor.yml`` files when about to run tests and does not need to be

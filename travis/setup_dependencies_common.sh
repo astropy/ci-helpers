@@ -4,17 +4,6 @@ hash -r
 
 set -e
 
-if [[ ! -z $EVENT_TYPE ]]; then
-    for event in $EVENT_TYPE; do
-        if [[ $TRAVIS_EVENT_TYPE = $event ]]; then
-            allow_to_build=True
-        fi
-    done
-    if [[ $allow_to_build != True ]]; then
-        travis_terminate 0
-    fi
-fi
-
 # We need to do this before updating conda, as $CONDA_CHANNELS may be a
 # conda environment variable for some Miniconda versions, too that needs to
 # be space separated.
@@ -255,7 +244,7 @@ fi
 
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
-if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
+if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     # Check whether there are any version setting env variables, pin them if
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
@@ -428,7 +417,7 @@ fi
 # cache before starting the tests/docs build. See details in
 # https://github.com/matplotlib/matplotlib/issues/5836
 
-if [[ $SETUP_CMD == build_sphinx* ]] || [[ $SETUP_CMD == build_docs* ]]; then
+if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     python -c "import matplotlib.pyplot"
 fi
 
