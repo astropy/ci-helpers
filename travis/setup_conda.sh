@@ -7,6 +7,8 @@
 #
 # The present script was added later.
 
+echo "=== Starting install for commit: ${TRAVIS_COMMIT} with commit message: ${TRAVIS_COMMIT_MESSAGE} ==="
+
 if [[ $DEBUG == True ]]; then
     set -x
 fi
