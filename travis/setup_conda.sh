@@ -7,8 +7,6 @@
 #
 # The present script was added later.
 
-echo "=== Starting install for commit: ${TRAVIS_COMMIT} with commit message: ${TRAVIS_COMMIT_MESSAGE} ==="
-
 if [[ $DEBUG == True ]]; then
     set -x
 fi
@@ -34,10 +32,10 @@ DOCS_ONLY="\[docs only|build docs\]"
 # Skip build if the commit message contains [skip travis] or [travis skip]
 # Remove workaround once travis has this feature natively
 # https://github.com/travis-ci/travis-ci/issues/5032
-if [[ ! -z $(echo $TRAVIS_COMMIT_MESSAGE | grep -E "$TR_SKIP") ]]; then
+if [[ ! -z $(git show -s HEAD | grep -E "$TR_SKIP") ]]; then
     echo "Travis was requested to be skipped by the commit message, exiting."
     travis_terminate 0
-elif [[ ! -z $(echo $TRAVIS_COMMIT_MESSAGE | grep -E "$DOCS_ONLY") ]]; then
+elif [[ ! -z $(git show -s HEAD | grep -E "$DOCS_ONLY") ]]; then
     if [[ $SETUP_CMD != *build_docs* ]] && [[ $SETUP_CMD != *build_sphinx* ]]; then
         echo "Only docs build was requested by the commit message, exiting."
         travis_terminate 0
