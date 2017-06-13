@@ -28,7 +28,16 @@ fi
 
 TR_SKIP="\[(skip travis|travis skip)\]"
 DOCS_ONLY="\[docs only|build docs\]"
-COMMIT_MESSAGE="$(git show -s ${TRAVIS_PULL_REQUEST_BRANCH} HEAD)"
+
+# Travis doesn't provide the commit message of the top of the branch for
+# PRs, only the commit message of the merge. Thus this ugly workaround is
+# needed for now.
+
+if [[ $TRAVIS_PULL_REQUEST == false ]]; then
+    COMMIT_MESSAGE=${TRAVIS_COMMIT_MESSAGE}
+else
+    COMMIT_MESSAGE=$(git show -s $TRAVIS_COMMIT_RANGE | awk 'BEGIN{count=0}{if ($1=="Author:") count++; if (count==1) print $0}')
+fi
 
 # Skip build if the commit message contains [skip travis] or [travis skip]
 # Remove workaround once travis has this feature natively
