@@ -47,3 +47,5 @@ echo "==================== Starting executing ci-helpers scripts ===============
 source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh;
 
 echo "================= Returning executing local .travis.yml script ================="
+
+set +x
