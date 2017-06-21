@@ -94,8 +94,10 @@ if [[ ! -z $PIP_VERSION ]]; then
 fi
 
 # We use the channel astropy-ci-extras to host pytest 2.7.3 that is
-# compatible with LTS 1.0.x astropy
-conda install -c astropy-ci-extras $QUIET pytest pip
+# compatible with LTS 1.0.x astropy. We need to disable channel priority for
+# this step to make sure the latest version is picked up when
+# CHANNEL_PRIORITY is set to True above.
+conda install -c astropy-ci-extras --no-channel-priority $QUIET pytest pip
 
 export PIP_INSTALL='pip install'
 
