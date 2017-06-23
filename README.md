@@ -70,6 +70,7 @@ environment variables
     * ``--coverage``: the coverage and coveralls packages are installed
     * ``--parallel``: the pytest-xdist package is installed
     * ``--open-files``: the psutil package is installed
+    * ``--cov``: the pytest-cov package is installed
 
 * ``$NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed along with Cython. If set to a
