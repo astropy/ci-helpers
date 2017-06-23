@@ -127,6 +127,10 @@ matrix:
           env: MAIN_CMD='pylint'
                TEST_CMD='pylint --version'
 
+        - os: linux
+          env: SETUP_CMD="--cov package"
+               TEST_CMD='python -c "import pytest_cov"'
+
         # -> Don't test osx with LTS as we currently build LTS only for linux.
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=stable

@@ -411,6 +411,10 @@ if [[ $SETUP_CMD == *coverage* ]]; then
     $PIP_INSTALL coveralls
 fi
 
+if [[ $SETUP_CMP == *--cov* ]]; then
+    $CONDA_INSTALL pytest-cov
+fi
+
 
 # SPHINX BUILD MPL FONT CACHING WORKAROUND
 
