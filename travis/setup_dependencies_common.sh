@@ -411,7 +411,7 @@ if [[ $SETUP_CMD == *coverage* ]]; then
     $PIP_INSTALL coveralls
 fi
 
-if [[ $SETUP_CMP == *--cov* ]]; then
+if [[ $SETUP_CMD == *--cov* ]]; then
     $CONDA_INSTALL pytest-cov
 fi
 
