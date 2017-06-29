@@ -169,6 +169,10 @@ matrix:
                TEST_CMD='py.test -n 4 test_env.py'
 
         - os: linux
+          env: SETUP_CMD='test --numprocesses'
+               TEST_CMD='py.test --numprocesses 4 test_env.py'
+
+        - os: linux
           env: SETUP_CMD='test --open-files'
 
         - os: linux

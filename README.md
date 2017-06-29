@@ -68,7 +68,7 @@ environment variables
   In addition, if ``SETUP_CMD`` contains the following flags, extra dependencies are installed:
 
     * ``--coverage``: the coverage and coveralls packages are installed
-    * ``--parallel``: the pytest-xdist package is installed
+    * ``--parallel`` or ``--numprocesses``: the pytest-xdist package is installed
     * ``--open-files``: the psutil package is installed
     * ``--cov``: the pytest-cov package is installed
 
