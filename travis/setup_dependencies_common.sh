@@ -324,7 +324,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 fi
 
 # PARALLEL BUILDS
-if [[ $SETUP_CMD == *parallel* ]]; then
+if [[ $SETUP_CMD == *parallel* || $SETUP_CMD == *numprocesses* ]]; then
     $PIP_INSTALL pytest-xdist
 fi
 
