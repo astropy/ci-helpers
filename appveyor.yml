@@ -47,7 +47,7 @@ environment:
         ASTROPY_VERSION: "development"
 
       - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.10"
+        NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "lts"
 
 matrix:
