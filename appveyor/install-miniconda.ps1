@@ -133,7 +133,9 @@ $env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHO
 python --version
 
 # CORE DEPENDENCIES
-conda install -q -n test pytest pip
+# Remove pytest version limitation once
+# https://github.com/astropy/astropy/pull/6419 is solved
+conda install -q -n test "pytest<3.2" pip
 
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
