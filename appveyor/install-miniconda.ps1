@@ -135,7 +135,7 @@ python --version
 # CORE DEPENDENCIES
 # Remove pytest version limitation once
 # https://github.com/astropy/astropy/pull/6419 is solved
-conda install -q -n test "pytest=<3.1*" pip
+conda install -q -n test pytest<3.2 pip
 
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
