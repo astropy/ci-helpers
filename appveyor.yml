@@ -30,6 +30,7 @@ environment:
         CONDA_CHANNELS: "sunpy astrofrog"
         PIP_DEPENDENCIES: "requests pyparsing"
         CONDA_CHANNEL_PRIORITY: "True"
+        DEBUG: "True"
 
       - PYTHON_VERSION: "2.7"
         DEBUG: "True"
