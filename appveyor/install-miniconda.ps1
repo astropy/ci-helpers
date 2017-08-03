@@ -24,7 +24,7 @@ $env:LATEST_NUMPY_STABLE = "1.13"
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if (! $env:CONDA_VERSION) {
-   $env:CONDA_VERSION = "4.3.6"
+   $env:CONDA_VERSION = "4.3.17"
 }
 
 function DownloadMiniconda ($version, $platform_suffix) {
