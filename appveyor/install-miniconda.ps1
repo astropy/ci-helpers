@@ -135,7 +135,8 @@ python --version
 # CORE DEPENDENCIES
 # Remove pytest version limitation once
 # https://github.com/astropy/astropy/pull/6419 is solved
-Write-Host "pytest <3.2" | Out-File ${env:PYTHON}\envs\test\conda-meta\pinned
+"pytest <3.2" | Out-File ${env:PYTHON}\envs\test\conda-meta\pinned
+
 conda install -q -n test pytest pip
 
 # Check whether a specific version of Numpy is required
