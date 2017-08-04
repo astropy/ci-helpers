@@ -135,7 +135,7 @@ python --version
 # CORE DEPENDENCIES
 # Remove pytest version limitation once
 # https://github.com/astropy/astropy/pull/6419 is solved
-"pytest <3.2" | Out-File ${env:PYTHON}\envs\test\conda-meta\pinned
+Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
 conda install -q -n test pytest pip
 
