@@ -90,6 +90,13 @@ environment variables
   found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
+* ``$SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
+  developer version of Sunpy is installed. If set to a
+  version number, that version is installed. If set to ``stable``, install
+  the latest stable version of Sunpy. If set to ``prerelease``, the
+  pre-release version of Sunpy gets installed if there is any, otherwise the
+  build exits and passes on Travis without running the tests.
+
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
   dependencies can be overridden/specified with the ``$PACKAGENAME_VERSION``
