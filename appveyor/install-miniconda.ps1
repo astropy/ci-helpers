@@ -20,6 +20,7 @@ $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 $env:ASTROPY_LTS_VERSION = "2.0.1"
 $env:LATEST_ASTROPY_STABLE = "2.0.1"
 $env:LATEST_NUMPY_STABLE = "1.13"
+$env:LATEST_SUNPY_STABLE = "0.7.9"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
@@ -174,6 +175,25 @@ if ($env:ASTROPY_VERSION) {
     $ASTROPY_OPTION = ""
 }
 
+# Check whether a specific version of Sunpy is required
+if ($env:SUNPY_VERSION) {
+    if($env:SUNPY_VERSION -match "stable") {
+        $SUNPY_OPTION = "sunpy"
+    } elseif($env:SUNPY_VERSION -match "dev") {
+        $SUNPY_OPTION = ""
+    } else {
+        $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
+    }
+    $output = cmd /c conda install -n test -q $NUMPY_OPTION $SUNPY_OPTION 2>&1
+    echo $output
+    if ($output | select-string UnsatisfiableError) {
+       echo "Installing sunpy with conda was unsuccessful, using pip instead"
+       pip install $SUNPY_OPTION
+    }
+} else {
+    $SUNPY_OPTION = ""
+}
+
 # Install the specified versions of numpy and other dependencies
 if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = $env:CONDA_DEPENDENCIES.split(" ")
@@ -203,6 +223,12 @@ if ($env:NUMPY_VERSION -match "dev") {
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
+}
+
+# Check whether the developer version of Sunpy is required and if yes install
+# it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
+if ($env:SUNPY_VERSION -match "dev") {
+   Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/sunpy/sunpy.git#egg=sunpy --upgrade --no-deps"
 }
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this

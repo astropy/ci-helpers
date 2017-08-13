@@ -36,6 +36,7 @@ LATEST_ASTROPY_STABLE = '2.0.1'
 LATEST_ASTROPY_STABLE_WIN = '2.0.1'
 LATEST_ASTROPY_LTS = '2.0.1'
 LATEST_NUMPY_STABLE = '1.13'
+LATEST_SUNPY_STABLE = '0.7.9'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
@@ -99,6 +100,22 @@ def test_astropy():
             else:
                 assert astropy.__version__.startswith(os_astropy_version)
             assert 'dev' not in astropy.__version__
+
+
+def test_sunpy():
+    if 'SUNPY_VERSION' in os.environ:
+        import sunpy
+        os_sunpy_version = os.environ['SUNPY_VERSION'].lower()
+        if 'dev' in os_sunpy_version:
+            assert 'dev' in sunpy.__version__
+        else:
+            if 'pre' in os_sunpy_version:
+                assert re.match("[0-9.]*[0-9](rc[0-9])", sunpy.__version__)
+            elif 'stable' in os_sunpy_version:
+                assert sunpy.__version__.startswith(LATEST_SUNPY_STABLE)
+            else:
+                assert sunpy.__version__.startswith(os_sunpy_version)
+            assert 'dev' not in sunpy.__version__
 
 
 # Check whether everything is installed and importable

@@ -21,6 +21,8 @@ shopt -s nocasematch
 export LATEST_ASTROPY_STABLE=2.0.1
 ASTROPY_LTS_VERSION=2.0.1
 LATEST_NUMPY_STABLE=1.13
+LATEST_SUNPY_STABLE=0.7.9
+
 
 if [[ $DEBUG == True ]]; then
     QUIET=''
@@ -254,6 +256,40 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
 
 fi
 
+# SUNPY
+if [[ ! -z $SUNPY_VERSION ]]; then
+    if [[ $SUNPY_VERSION == dev* ]]; then
+        :  # Install at the bottom of the script
+    elif [[ $SUNPY_VERSION == pre* ]]; then
+        # We use --no-pin to avoid installing other
+        conda install --no-pin sunpy
+        if [[ -z $(pip list -o --pre | grep sunpy | \
+            grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
+            # We want to stop the script if there isn't a pre-release available,
+            # as in that case it would be just another build using the stable
+            # version.
+            travis_terminate 0
+        fi
+    elif [[ $SUNPY_VERSION == stable ]]; then
+        SUNPY_OPTION=$LATEST_SUNPY_STABLE
+    else
+        # We add sunpy to the pin file to make sure it won't get updated
+        echo "sunpy ${SUNPY_VERSION}*" >> $PIN_FILE
+        SUNPY_OPTION=$SUNPY_VERSION
+    fi
+    if [[ ! -z $SUNPY_OPTION ]]; then
+        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
+            echo "Installing sunpy with conda was unsuccessful, using pip instead"
+            $PIP_INSTALL sunpy==$SUNPY_OPTION
+            if [[ -f $PIN_FILE ]]; then
+                awk '{if ($1 != "sunpy") print $0}' $PIN_FILE > /tmp/pin_file_temp
+                mv /tmp/pin_file_temp $PIN_FILE
+            fi)
+    fi
+
+fi
+
+
 # DOCUMENTATION DEPENDENCIES
 # build_sphinx needs sphinx and matplotlib (for plot_directive).
 if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
@@ -374,6 +410,24 @@ fi
 if [[ $ASTROPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade --no-deps astropy
 fi
+
+# SUNPY DEV and PRE
+
+# We now install sunpy dev - this has to be done last, otherwise conda might
+# install a stable version of sunpy as a dependency to another package, which
+# would override sunpy dev. Also, if we are installing Numpy dev, we need to
+# compile sunpy dev against Numpy dev. We need to include --no-deps to make
+# sure that Numpy doesn't get upgraded.
+
+if [[ $SUNPY_VERSION == dev* ]]; then
+    $PIP_INSTALL git+https://github.com/sunpy/sunpy.git#egg=sunpy --upgrade --no-deps
+fi
+
+if [[ $SUNPY_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade --no-deps sunpy
+fi
+
+
 
 # ASTROPY STABLE
 
