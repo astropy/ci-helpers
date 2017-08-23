@@ -25,7 +25,7 @@ $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 $env:ASTROPY_LTS_VERSION = "2.0.1"
 $env:LATEST_ASTROPY_STABLE = "2.0.1"
 $env:LATEST_NUMPY_STABLE = "1.13"
-$env:LATEST_SUNPY_STABLE = "0.7.9"
+$env:LATEST_SUNPY_STABLE = "0.8.0"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
