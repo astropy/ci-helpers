@@ -3,6 +3,8 @@
 # Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
+$QUIET = "-q"
+
 if ($env:DEBUG) {
     if($env:DEBUG -match "True") {
 
@@ -11,6 +13,9 @@ if ($env:DEBUG) {
 
         # Print out environment variables
         Get-ChildItem Env:
+
+        # Disable Quiet mode
+        $QUIET = ""
 
     }
 }
@@ -111,7 +116,7 @@ if ($env:CONDA_CHANNELS) {
 }
 
 # Install the build and runtime dependencies of the project.
-conda install -q conda=$env:CONDA_VERSION
+conda install $QUIET conda=$env:CONDA_VERSION
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
@@ -124,7 +129,7 @@ if (! $env:CONDA_CHANNEL_PRIORITY) {
 conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 
 # Create a conda environment using the astropy bonus packages
-conda create -q -n test python=$env:PYTHON_VERSION
+conda create $QUIET -n test python=$env:PYTHON_VERSION
 activate test
 
 # Set environment variables for environment (activate test doesn't seem to do the trick)
@@ -138,7 +143,7 @@ python --version
 # https://github.com/astropy/astropy/pull/6419 is solved
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
-conda install -q -n test pytest pip
+conda install $QUIET -n test pytest pip
 
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
@@ -149,7 +154,7 @@ if ($env:NUMPY_VERSION) {
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
-    conda install -n test -q $NUMPY_OPTION
+    conda install -n test $QUIET $NUMPY_OPTION
 } else {
     $NUMPY_OPTION = ""
 }
@@ -165,7 +170,7 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
-    $output = cmd /c conda install -n test -q $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION 2>&1
     echo $output
     if ($output | select-string UnsatisfiableError) {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
@@ -184,7 +189,7 @@ if ($env:SUNPY_VERSION) {
     } else {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
-    $output = cmd /c conda install -n test -q $NUMPY_OPTION $SUNPY_OPTION 2>&1
+    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
     echo $output
     if ($output | select-string UnsatisfiableError) {
        echo "Installing sunpy with conda was unsuccessful, using pip instead"
@@ -202,7 +207,7 @@ if ($env:CONDA_DEPENDENCIES) {
 }
 
 # Check whether the installation is successful, if not abort the build
-$output = cmd /c conda install -n test -q $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+$output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
 
 echo $output
 if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
