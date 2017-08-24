@@ -1,13 +1,13 @@
-﻿# Sample script to install anaconda under windows
-# Authors: Stuart Mumford
-# Borrowed from: Olivier Grisel and Kyle Kastner
-# License: BSD 3 clause
+# Script to set up Miniconda with a test environment
+
+# This script has been heavily adapted from a script by Olivier Grisel and Kyle
+# Kastner licensed under a BSD 3-clause license, and subsequently modified by
+# Stuart Mumford before being adapted to its current form in ci-helper.
 
 # We use the following function to exit the script after any failing command
 function checkLastExitCode {
   if ($lastExitCode) {
     echo "ERROR: the last command returned the following exit code: $lastExitCode"
-    $host.SetShouldExit(1)
     Exit $lastExitCode
   }
 }
@@ -246,7 +246,7 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
      checkLastExitCode
      echo $output
      if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
-        $host.SetShouldExit(1)
+        Exit 1
      }
   }
 
