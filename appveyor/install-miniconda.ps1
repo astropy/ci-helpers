@@ -233,19 +233,23 @@ if ($env:CONDA_DEPENDENCIES) {
     $CONDA_DEPENDENCIES = ""
 }
 
-# Check whether the installation is successful, if not abort the build
-$output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
-checkLastExitCode
+# If NUMPY_OPTION and CONDA_DEPENDENCIES are both empty, we skip this step
+if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
-echo $output
-if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
-   echo "Installing dependencies with conda was unsuccessful, using pip instead"
-   $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
-   checkLastExitCode
-   echo $output
-   if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
-      $host.SetShouldExit(1)
-   }
+  $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+  checkLastExitCode
+
+  echo $output
+  if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+     echo "Installing dependencies with conda was unsuccessful, using pip instead"
+     $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
+     checkLastExitCode
+     echo $output
+     if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+        $host.SetShouldExit(1)
+     }
+  }
+
 }
 
 # Check whether the developer version of Numpy is required and if yes install it
