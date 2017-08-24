@@ -3,9 +3,13 @@
 # Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
-# The following try...catch block encompasses the whole script and is to
-# make sure we return non-zero exit status.
-try {
+# We use the following function to exit the script after any failing command
+function checkLastExitCode {
+  if ($lastExitCode -ne 0) {
+    echo "ERROR: the last command returned the following exit code: $lastExitCode"
+    Exit $lastExitCode
+  }
+}
 
 $QUIET = "-q"
 
@@ -102,18 +106,24 @@ if (! $env:MINICONDA_VERSION) {
 }
 
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
+checkLastExitCode
 
 # Set environment variables
 $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
+
 conda config --set always_yes true
+checkLastExitCode
+
 conda config --add channels defaults
+checkLastExitCode
 
 if ($env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
    foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
-           conda config --add channels $CONDA_CHANNEL
+       conda config --add channels $CONDA_CHANNEL
+       checkLastExitCode
    }
    Remove-Variable CONDA_CHANNELS
    rm env:CONDA_CHANNELS
@@ -121,6 +131,7 @@ if ($env:CONDA_CHANNELS) {
 
 # Install the build and runtime dependencies of the project.
 conda install $QUIET conda=$env:CONDA_VERSION
+checkLastExitCode
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
@@ -131,16 +142,21 @@ if (! $env:CONDA_CHANNEL_PRIORITY) {
 # We need to add this after the update, otherwise the ``channel_priority``
 # key may not yet exists
 conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
+checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 conda create $QUIET -n test python=$env:PYTHON_VERSION
+checkLastExitCode
+
 activate test
+checkLastExitCode
 
 # Set environment variables for environment (activate test doesn't seem to do the trick)
 $env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHON}\envs\test\Library\bin;" + $env:PATH
 
 # Check that we have the expected version of Python
 python --version
+checkLastExitCode
 
 # CORE DEPENDENCIES
 # Remove pytest version limitation once
@@ -148,6 +164,7 @@ python --version
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
 conda install $QUIET -n test pytest pip
+checkLastExitCode
 
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
@@ -159,6 +176,7 @@ if ($env:NUMPY_VERSION) {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
     conda install -n test $QUIET $NUMPY_OPTION
+    checkLastExitCode
 } else {
     $NUMPY_OPTION = ""
 }
@@ -175,10 +193,12 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    checkLastExitCode
     echo $output
     if ($output | select-string UnsatisfiableError) {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
        pip install $ASTROPY_OPTION
+       checkLastExitCode
     }
 } else {
     $ASTROPY_OPTION = ""
@@ -194,10 +214,12 @@ if ($env:SUNPY_VERSION) {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
+    checkLastExitCode
     echo $output
     if ($output | select-string UnsatisfiableError) {
        echo "Installing sunpy with conda was unsuccessful, using pip instead"
        pip install $SUNPY_OPTION
+       checkLastExitCode
     }
 } else {
     $SUNPY_OPTION = ""
@@ -212,11 +234,13 @@ if ($env:CONDA_DEPENDENCIES) {
 
 # Check whether the installation is successful, if not abort the build
 $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+checkLastExitCode
 
 echo $output
 if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
    echo "Installing dependencies with conda was unsuccessful, using pip instead"
    $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
+   checkLastExitCode
    echo $output
    if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
       $host.SetShouldExit(1)
@@ -226,18 +250,21 @@ if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
 # Check whether the developer version of Numpy is required and if yes install it
 if ($env:NUMPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps"
+   checkLastExitCode
 }
 
 # Check whether the developer version of Astropy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
+   checkLastExitCode
 }
 
 # Check whether the developer version of Sunpy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:SUNPY_VERSION -match "dev") {
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/sunpy/sunpy.git#egg=sunpy --upgrade --no-deps"
+   checkLastExitCode
 }
 
 # We finally install the dependencies listed in PIP_DEPENDENCIES. We do this
@@ -260,9 +287,5 @@ if ($env:PIP_DEPENDENCIES) {
 
 if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
-}
-
-} catch {
-  Write-Error $_
-  [System.Environment]::Exit(1)
+    checkLastExitCode
 }
