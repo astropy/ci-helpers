@@ -3,12 +3,9 @@
 # Borrowed from: Olivier Grisel and Kyle Kastner
 # License: BSD 3 clause
 
-# The following should catch any error and return a non-zero exit code
-trap
-{
-    Write-Error -ErrorRecord $_
-    exit 1
-}
+# The following try...catch block encompasses the whole script and is to
+# make sure we return non-zero exit status.
+try {
 
 $QUIET = "-q"
 
@@ -263,4 +260,9 @@ if ($env:PIP_DEPENDENCIES) {
 
 if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
+}
+
+} catch {
+  Write-Error $_
+  [System.Environment]::Exit(1)
 }
