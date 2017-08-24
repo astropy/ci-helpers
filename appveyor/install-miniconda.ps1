@@ -5,8 +5,9 @@
 
 # We use the following function to exit the script after any failing command
 function checkLastExitCode {
-  if ($lastExitCode -ne 0) {
+  if ($lastExitCode) {
     echo "ERROR: the last command returned the following exit code: $lastExitCode"
+    $host.SetShouldExit(1)
     Exit $lastExitCode
   }
 }
