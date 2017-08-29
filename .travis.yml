@@ -28,7 +28,7 @@ matrix:
     include:
         # pytest pip fallback, conda package for 3.2 is not available for py3.4
         - os: linux
-          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.2
+          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
 
         # -> even if CHANNEL_PRIORITY is true then the old pytest shouldn't
         #     be picked up from the astropy-ci-extras channel.
