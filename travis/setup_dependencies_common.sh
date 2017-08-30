@@ -21,7 +21,7 @@ shopt -s nocasematch
 export LATEST_ASTROPY_STABLE=2.0.1
 ASTROPY_LTS_VERSION=2.0.1
 LATEST_NUMPY_STABLE=1.13
-LATEST_SUNPY_STABLE=0.8.0
+LATEST_SUNPY_STABLE=0.8.1
 
 
 if [[ $DEBUG == True ]]; then
@@ -103,7 +103,15 @@ fi
 # compatible with LTS 1.0.x astropy. We need to disable channel priority for
 # this step to make sure the latest version is picked up when
 # CHANNEL_PRIORITY is set to True above.
-conda install -c astropy-ci-extras --no-channel-priority $QUIET pytest pip
+conda install -c astropy-ci-extras --no-channel-priority $QUIET pytest pip || ( \
+    if [[ ! -z $PYTEST_VERSION ]]; then
+        echo "Installing pytest with conda was unsuccessful, using pip instead"
+        conda install $QUIET pip
+        pip install pytest==$PYTEST_VERSION
+        awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
+        mv /tmp/pin_file_temp $PIN_FILE
+     fi
+)
 
 export PIP_INSTALL='pip install'
 
