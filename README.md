@@ -114,6 +114,11 @@ environment variables
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
   channel names. We don't add any channel by default.
 
+* ``CONDA_ENVIRONMENT``: this is a path to a file that should be used with
+  ``conda env create -f $CONDA_ENVIRONMENT``. This is applied to set up the
+  test environment *before* the conda and pip dependencies (which otherwise
+  act additively with this option).
+
 * ``$DEBUG``: if `True` this turns on the shell debug mode in the install
   scripts, and provides information on the current conda install and
   switches off the ``-q`` conda flag for verbose output.

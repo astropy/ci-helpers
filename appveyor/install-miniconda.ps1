@@ -146,7 +146,11 @@ conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
-conda create $QUIET -n test python=$env:PYTHON_VERSION
+if (! $env:CONDA_ENVIRONMENT ) {
+   conda create $QUIET -n test python=$env:PYTHON_VERSION
+} else {
+   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
+}
 checkLastExitCode
 
 activate test

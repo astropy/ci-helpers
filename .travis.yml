@@ -188,6 +188,14 @@ matrix:
           env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing requests'
                PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
 
+        - os: linux
+          env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml'
+               TEST_CMD="python -c $'import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass\nelse:\n    raise RuntimeError'"
+
+        - os: linux
+          env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
+               TEST_CMD="python -c $'import matplotlib\nimport scipy'"
+
 before_install:
     - ln -s . ci-helpers
     - source ci-helpers/travis/setup_conda.sh

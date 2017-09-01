@@ -70,7 +70,11 @@ if [[ -z $PYTHON_VERSION ]]; then
 fi
 
 # CONDA
-conda create $QUIET -n test python=$PYTHON_VERSION
+if [[ -z $CONDA_ENVIRONMENT ]]; then
+    conda create $QUIET -n test python=$PYTHON_VERSION
+else
+    conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
+fi
 source activate test
 
 # PIN FILE
