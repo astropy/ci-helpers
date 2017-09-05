@@ -44,14 +44,6 @@ matrix:
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=stable
 
-        # -> Temporary test, should be removed once
-        #    https://github.com/sphinx-gallery/sphinx-gallery/issues/241 is
-        #    addressed and workaround is removed
-        - os: linux
-          env: SETUP_CMD='build_docs'
-               CONDA_CHANNELS='conda-forge' PYTHON_VERSION=3.5
-               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])<6"'
-
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
