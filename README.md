@@ -26,7 +26,7 @@ Include the following lines at the start of the ``install`` section in ``.travis
 
 ```yaml
 install:
-    - git clone git://github.com/astropy/ci-helpers.git
+    - git clone --depth 1 git://github.com/astropy/ci-helpers.git
     - source ci-helpers/travis/setup_conda.sh
 ```
 
@@ -182,7 +182,7 @@ Include the following lines at the start of the ``install`` section in ``appveyo
 
 ```yaml
 install:
-    - "git clone git://github.com/astropy/ci-helpers.git"
+    - "git clone --depth 1 git://github.com/astropy/ci-helpers.git"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
     - "activate test"
