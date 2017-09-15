@@ -31,8 +31,8 @@ if ($env:DEBUG) {
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
-$env:ASTROPY_LTS_VERSION = "2.0.1"
-$env:LATEST_ASTROPY_STABLE = "2.0.1"
+$env:ASTROPY_LTS_VERSION = "2.0.2"
+$env:LATEST_ASTROPY_STABLE = "2.0.2"
 $env:LATEST_NUMPY_STABLE = "1.13"
 $env:LATEST_SUNPY_STABLE = "0.8.1"
 
@@ -189,7 +189,7 @@ if ($env:NUMPY_VERSION) {
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        $ASTROPY_OPTION = "astropy"
+        $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
     } elseif($env:ASTROPY_VERSION -match "lts") {
