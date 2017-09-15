@@ -18,8 +18,8 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
-export LATEST_ASTROPY_STABLE=2.0.1
-ASTROPY_LTS_VERSION=2.0.1
+export LATEST_ASTROPY_STABLE=2.0.2
+ASTROPY_LTS_VERSION=2.0.2
 LATEST_NUMPY_STABLE=1.13
 LATEST_SUNPY_STABLE=0.8.1
 
