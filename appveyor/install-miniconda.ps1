@@ -189,7 +189,7 @@ if ($env:NUMPY_VERSION) {
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        $ASTROPY_OPTION = "astropy"
+        $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
     } elseif($env:ASTROPY_VERSION -match "lts") {
