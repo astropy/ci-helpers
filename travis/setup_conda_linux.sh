@@ -11,5 +11,5 @@ source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
 
 if [[ $SETUP_XVFB == True ]]; then
     export DISPLAY=:99.0
-    sh -e /etc/init.d/xvfb start
+    /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset
 fi
