@@ -30,8 +30,10 @@ matrix:
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
 
-        # Try pytest pip fallback as conda package for 3.1 is not available for py3.4 but
-        # then fail as PIP_FALLBACK is False
+        # Try pytest pip fallback as conda package for 3.1 is not available
+        # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
+        # under the allowed failures as there is no way at the moment to
+        # require it to fail.
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
@@ -192,6 +194,10 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
+
+    allow_failures:
+        - os: linux
+          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
 before_install:
     - ln -s . ci-helpers
