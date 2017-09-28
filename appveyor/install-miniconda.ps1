@@ -42,6 +42,10 @@ if (! $env:CONDA_VERSION) {
    $env:CONDA_VERSION = "4.3.21"
 }
 
+if (! $env:PIP_FALLBACK) {
+   $env:PIP_FALLBACK = "True"
+}
+
 function DownloadMiniconda ($version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
     $filename = "Miniconda3-" + $version + "-Windows-" + $platform_suffix + ".exe"
@@ -199,7 +203,7 @@ if ($env:ASTROPY_VERSION) {
     }
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION 2>&1
     echo $output
-    if ($output | select-string UnsatisfiableError) {
+    if ($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
        pip install $ASTROPY_OPTION
        checkLastExitCode
@@ -221,7 +225,7 @@ if ($env:SUNPY_VERSION) {
     }
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
     echo $output
-    if ($output | select-string UnsatisfiableError) {
+    if ($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK {
        echo "Installing sunpy with conda was unsuccessful, using pip instead"
        pip install $SUNPY_OPTION
        checkLastExitCode
@@ -244,7 +248,7 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
   $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
   echo $output
-  if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+  if ($output | select-string UnsatisfiableError, PackageNotFoundError) -and $env:PIP_FALLBACK {
      echo "Installing dependencies with conda was unsuccessful, using pip instead"
      $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
      echo $output
