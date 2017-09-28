@@ -24,7 +24,7 @@ LATEST_NUMPY_STABLE=1.13
 LATEST_SUNPY_STABLE=0.8.1
 
 if [[ -z $PIP_FALLBACK ]]; then
-    PIP_FALLBACK=True
+    PIP_FALLBACK=true
 fi
 
 if [[ $DEBUG == True ]]; then
