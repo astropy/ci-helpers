@@ -214,6 +214,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         # We want to stop the script if there isn't a pre-release available,
         # as in that case it would be just another build using the stable
         # version.
+        echo "Prerelease for numpy is not available, stopping test"
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -237,6 +238,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             # We want to stop the script if there isn't a pre-release available,
             # as in that case it would be just another build using the stable
             # version.
+            echo "Prerelease for astropy is not available, stopping test"
             travis_terminate 0
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
@@ -280,6 +282,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
             # We want to stop the script if there isn't a pre-release available,
             # as in that case it would be just another build using the stable
             # version.
+            echo "Prerelease for sunpy is not available, stopping test"
             travis_terminate 0
         fi
     elif [[ $SUNPY_VERSION == stable ]]; then
