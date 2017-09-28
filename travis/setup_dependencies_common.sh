@@ -23,6 +23,9 @@ ASTROPY_LTS_VERSION=2.0.2
 LATEST_NUMPY_STABLE=1.13
 LATEST_SUNPY_STABLE=0.8.1
 
+if [[ -z $PIP_FALLBACK ]]; then
+    PIP_FALLBACK=true
+fi
 
 if [[ $DEBUG == True ]]; then
     QUIET=''
@@ -108,13 +111,14 @@ fi
 # this step to make sure the latest version is picked up when
 # CHANNEL_PRIORITY is set to True above.
 conda install -c astropy-ci-extras --no-channel-priority $QUIET pytest pip || ( \
+    $PIP_FALLBACK && ( \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         conda install $QUIET pip
         pip install pytest==$PYTEST_VERSION
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
-     fi
+    fi)
 )
 
 export PIP_INSTALL='pip install'
@@ -214,6 +218,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         # We want to stop the script if there isn't a pre-release available,
         # as in that case it would be just another build using the stable
         # version.
+        echo "Prerelease for numpy is not available, stopping test"
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
@@ -237,6 +242,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             # We want to stop the script if there isn't a pre-release available,
             # as in that case it would be just another build using the stable
             # version.
+            echo "Prerelease for astropy is not available, stopping test"
             travis_terminate 0
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
@@ -258,12 +264,13 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
+            $PIP_FALLBACK && ( \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "astropy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi)
+            fi))
     fi
 
 fi
@@ -280,6 +287,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
             # We want to stop the script if there isn't a pre-release available,
             # as in that case it would be just another build using the stable
             # version.
+            echo "Prerelease for sunpy is not available, stopping test"
             travis_terminate 0
         fi
     elif [[ $SUNPY_VERSION == stable ]]; then
@@ -291,12 +299,13 @@ if [[ ! -z $SUNPY_VERSION ]]; then
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
+            $PIP_FALLBACK && ( \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "sunpy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi)
+            fi))
     fi
 
 fi
@@ -332,6 +341,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
 
         $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
+            $PIP_FALLBACK && (\
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
@@ -341,7 +351,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             fi
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
-        )
+        ))
     done
 
     if [[ $DEBUG == True ]]; then
@@ -353,6 +363,7 @@ fi
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
+        $PIP_FALLBACK && ( \
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
@@ -370,7 +381,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 mv /tmp/pin_copy_temp /tmp/pin_copy
                 $PIP_INSTALL $package);
         done
-        mv /tmp/pin_copy $PIN_FILE)
+        mv /tmp/pin_copy $PIN_FILE))
 fi
 
 # PARALLEL BUILDS

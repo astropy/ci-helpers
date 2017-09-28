@@ -145,6 +145,9 @@ environment variables
   run only on pushes to master, or for Travis cron jobs. Valid event types
   are: ``push``, ``pull_request``, ``api`` or ``cron``.
 
+* ``$PIP_FALLBACK``: the default behaviour is to fall back to try to pip
+  install a package if installing it with conda fails for any reason. Set
+  this variable to ``false`` to opt out of this.
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:
@@ -211,11 +214,24 @@ Following this, various dependencies are installed depending on the following en
   version is installed (more info about LTS can be found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering)).
 
+* ``$SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
+  developer version of Sunpy is installed. If set to a
+  version number, that version is installed. If set to ``stable``, install
+  the latest stable version of Sunpy.
+
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.
 
 * ``$CONDA_CHANNELS``: this should be a space-separated string of conda
   channel names. We don't add any channel by default.
+
+* ``$DEBUG``: if `True` this turns on the shell debug mode in the install
+  scripts, and provides information on the current conda install and
+  switches off the ``-q`` conda flag for verbose output.
+
+* ``$PIP_FALLBACK``: the default behaviour is to fall back to try to pip
+  install a package if installing it with conda fails for any reason. Set
+  this variable to ``false`` to opt out of this.
 
 Details
 -------
