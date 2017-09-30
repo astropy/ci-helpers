@@ -205,7 +205,7 @@ if ($env:ASTROPY_VERSION) {
     echo $output
     if (($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK) {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
-       pip install $ASTROPY_OPTION
+       pip install --upgrade-strategy only-if-needed $ASTROPY_OPTION
        checkLastExitCode
     } else {
       checkLastExitCode
@@ -227,7 +227,7 @@ if ($env:SUNPY_VERSION) {
     echo $output
     if (($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK) {
        echo "Installing sunpy with conda was unsuccessful, using pip instead"
-       pip install $SUNPY_OPTION
+       pip install --upgrade-strategy only-if-needed $SUNPY_OPTION
        checkLastExitCode
     } else {
       checkLastExitCode
@@ -250,7 +250,7 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
   echo $output
   if (($output | select-string UnsatisfiableError, PackageNotFoundError) -and $env:PIP_FALLBACK) {
      echo "Installing dependencies with conda was unsuccessful, using pip instead"
-     $output = cmd /c pip install $CONDA_DEPENDENCIES 2>&1
+     $output = cmd /c pip install --upgrade-strategy only-if-needed $CONDA_DEPENDENCIES 2>&1
      echo $output
      checkLastExitCode
      if ($output | select-string UnsatisfiableError, PackageNotFoundError) {

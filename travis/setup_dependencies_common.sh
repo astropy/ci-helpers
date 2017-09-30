@@ -266,7 +266,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
-            $PIP_INSTALL astropy==$ASTROPY_OPTION
+            $PIP_INSTALL --upgrade-strategy only-if-needed astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "astropy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
@@ -301,7 +301,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
-            $PIP_INSTALL sunpy==$SUNPY_OPTION
+            $PIP_INSTALL --upgrade-strategy only-if-needed sunpy==$SUNPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "sunpy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
@@ -349,7 +349,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
-            $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
+            $PIP_INSTALL --upgrade-strategy only-if-needed ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         ))
     done
@@ -379,7 +379,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 # too.
                 awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
-                $PIP_INSTALL $package);
+                $PIP_INSTALL --upgrade-strategy only-if-needed $package);
         done
         mv /tmp/pin_copy $PIN_FILE))
 fi
