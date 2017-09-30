@@ -26,6 +26,11 @@ env:
 
 matrix:
     include:
+        # making sure that falling back on pip install doesn't upgrade dependencies
+        # This combination need to fail as np1.8 is an unsupported version
+        - os: linux
+          env: PYTHON_VERSION=2.7 NUMPY_VERSION=1.8 ASTROPY_VERSION=2.0.2
+
         # pytest pip fallback, conda package for 3.1 is not available for py3.4
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
