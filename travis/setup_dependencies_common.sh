@@ -492,6 +492,7 @@ fi
 
 if [[ $SETUP_CMD == *--cov* ]]; then
     $CONDA_INSTALL pytest-cov
+    $PIP_INSTALL coveralls
 fi
 
 
