@@ -86,8 +86,10 @@ environment variables
   version of Astropy. If set to ``prerelease``, the pre-release version of
   Astropy gets installed if there is any, otherwise the build exits and
   passes on Travis without running the tests. If set to ``lts`` the latest
-  long term support (LTS) version is installed (more info about LTS can be
-  found
+  long term support (LTS) version is installed. If the ``stable`` version is
+  also an LTS version, the build exits without running the tests assuming
+  there are other jobs in the Travis matrix that test the ``stable``
+  release. (More info about version numbering, and LTS can be found
   [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
 
 * ``$SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
