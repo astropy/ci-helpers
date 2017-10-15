@@ -18,6 +18,8 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
+LATEST_NUMPY_STABLE=1.14
+
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
 fi

@@ -13,7 +13,6 @@ fi
 
 export LATEST_ASTROPY_STABLE=2.0.3
 export ASTROPY_LTS_VERSION=2.0.3
-export LATEST_NUMPY_STABLE=1.14
 export LATEST_SUNPY_STABLE=0.8.2
 
 # First check: if the build should be run at all based on the event type
