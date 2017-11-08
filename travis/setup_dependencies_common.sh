@@ -419,6 +419,15 @@ fi
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
     $CONDA_INSTALL Cython jinja2
+    # Make sure pytest-astropy is available for astropy 3.0+, including it's
+    # dependencies. However be careful in case the version numbers are
+    # pinned. Ideally we'll have a conda package of pytest-astropy, so won't
+    # need this hack.
+    if [ ! -z $PYTEST_VERSION ]; then
+        $PIP_INSTALL pytest-astropy pytest==PYTEST_VERSION
+    else
+        $PIP_INSTALL pytest-astropy
+    fi
     $PIP_INSTALL git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
