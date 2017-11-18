@@ -96,10 +96,6 @@ fi
 
 if [[ ! -z $PYTEST_VERSION ]]; then
     echo "pytest ${PYTEST_VERSION}*" >> $PIN_FILE
-else
-    # Remove this else clause when
-    # https://github.com/astropy/astropy/pull/6419 is solved
-    echo "pytest <3.2" >> $PIN_FILE
 fi
 
 if [[ ! -z $PIP_VERSION ]]; then
