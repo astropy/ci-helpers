@@ -82,6 +82,8 @@ source activate test
 
 # PIN FILE
 PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+# ensure the PIN_FILE exists
+touch $PIN_FILE
 
 if [[ $DEBUG == True ]]; then
     conda config --show
@@ -96,10 +98,6 @@ fi
 
 if [[ ! -z $PYTEST_VERSION ]]; then
     echo "pytest ${PYTEST_VERSION}*" >> $PIN_FILE
-else
-    # Remove this else clause when
-    # https://github.com/astropy/astropy/pull/6419 is solved
-    echo "pytest <3.2" >> $PIN_FILE
 fi
 
 if [[ ! -z $PIP_VERSION ]]; then
