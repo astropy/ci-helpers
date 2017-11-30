@@ -235,7 +235,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     # it. But keep it if it's installed as an explicit dependency in
     # PIP_DEPENDENCIES or CONDA_DEPENDENCIES below
     # https://github.com/astropy/astropy/issues/6919
-    conda remove --force hypothesis
+    conda remove --force hypothesis || true
 
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
