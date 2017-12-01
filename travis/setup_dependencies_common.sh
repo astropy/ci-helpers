@@ -522,4 +522,25 @@ if [[ $DEBUG == True ]]; then
     conda info -a
 fi
 
+if [[ ! -z $ASTROPY_VERSION ]]; then
+    # Force uninstall hypothesis if it's silently installed as an upstream
+    # dependency as the astropy <2.0.3 machinery is incompatible with
+    # it. But if it's an explicit dependency in PIP_DEPENDENCIES or
+    # CONDA_DEPENDENCIES then we only issue a warning.
+    # https://github.com/astropy/astropy/issues/6919
+
+    old_astropy=$(python -c "from distutils.version import LooseVersion;\
+                  import astropy; \
+                  print(LooseVersion(astropy.__version__) <\
+                  LooseVersion('2.0.3'))")
+    if [[ $(echo $CONDA_DEPENDENCIES $PIP_DEPENDENCIES | grep hypothesis) ]]; then
+        no_explicit_dependency=false
+        echo "WARNING: the package 'hypothesis' is incompatible with the Astropy testing mechanism prior version v2.0.3, expect issues during doctesting."
+    fi
+
+    if [[ $old_astropy == True ]] && $no_explicit_dependency; then
+        conda remove --force hypothesis || true
+    fi
+fi
+
 set +x
