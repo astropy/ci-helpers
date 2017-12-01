@@ -230,13 +230,6 @@ fi
 
 # ASTROPY
 if [[ ! -z $ASTROPY_VERSION ]]; then
-    # force uninstall hypothesis if it's silentry installed as an upstream
-    # dependency as the astropy <2.0.3 machinery is incompatible with
-    # it. But keep it if it's installed as an explicit dependency in
-    # PIP_DEPENDENCIES or CONDA_DEPENDENCIES below
-    # https://github.com/astropy/astropy/issues/6919
-    conda remove --force hypothesis || true
-
     if [[ $ASTROPY_VERSION == dev* ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
@@ -277,6 +270,13 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
                 mv /tmp/pin_file_temp $PIN_FILE
             fi))
     fi
+
+    # Force uninstall hypothesis if it's silently installed as an upstream
+    # dependency as the astropy <2.0.3 machinery is incompatible with
+    # it. But we do that here so that it will be reinstalled if it's an
+    # explicit dependency in PIP_DEPENDENCIES or CONDA_DEPENDENCIES below
+    # https://github.com/astropy/astropy/issues/6919
+    conda remove --force hypothesis || true
 
 fi
 
