@@ -4,6 +4,10 @@ hash -r
 
 set -e
 
+if [[ -z $MINICONDA_BASE ]]; then
+    MINICONDA_BASE=$HOME/miniconda
+fi
+
 # We need to do this before updating conda, as $CONDA_CHANNELS may be a
 # conda environment variable for some Miniconda versions, too that needs to
 # be space separated.
@@ -47,7 +51,7 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.3.27
 fi
 
-PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+PIN_FILE_CONDA=$MINICONDA_BASE/conda-meta/pinned
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
@@ -81,9 +85,7 @@ fi
 source activate test
 
 # PIN FILE
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
-# ensure the PIN_FILE exists
-touch $PIN_FILE
+PIN_FILE=$MINICONDA_BASE/envs/test/conda-meta/pinned
 
 if [[ $DEBUG == True ]]; then
     conda config --show
