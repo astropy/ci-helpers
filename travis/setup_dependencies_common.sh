@@ -18,6 +18,12 @@ if [[ ! -z $CONDA_CHANNELS ]]; then
     unset CONDA_CHANNELS
 fi
 
+if [[ ! -z $CONDA_APPEND_CHANNELS ]]; then
+    for channel in $CONDA_APPEND_CHANNELS; do
+        conda config --append channels $channel
+    done
+fi
+
 conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
