@@ -5,7 +5,7 @@
 #
 # /Users/travis/build.sh: line 109: shell_session_update: command not found
 #
-rvm get head
+rvm get stable
 
 # Install conda
 # http://conda.pydata.org/docs/travis.html#the-travis-yml-file
