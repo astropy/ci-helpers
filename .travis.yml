@@ -45,7 +45,7 @@ matrix:
 
         # -> tests sunpy stable
         # -> Test falling back on pip when conda install is not working.
-        #    Here healpy is not available with numpy 1.13
+        #    Here healpy is not available with numpy >=1.13
         - os: linux
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
