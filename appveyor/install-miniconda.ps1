@@ -168,8 +168,7 @@ python --version
 checkLastExitCode
 
 # CORE DEPENDENCIES
-# Remove pytest version limitation once
-# https://github.com/astropy/astropy/pull/6419 is solved
+# any pinned version should be set in `pinned`
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
 conda install $QUIET -n test pytest pip
