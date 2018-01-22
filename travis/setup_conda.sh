@@ -11,6 +11,10 @@ if [[ $DEBUG == True ]]; then
     set -x
 fi
 
+export LATEST_ASTROPY_STABLE=2.0.3
+export ASTROPY_LTS_VERSION=2.0.3
+export LATEST_SUNPY_STABLE=0.8.2
+
 # First check: if the build should be run at all based on the event type
 
 if [[ ! -z $EVENT_TYPE ]]; then
@@ -50,6 +54,14 @@ elif [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${DOCS_ONLY}") ]]; then
     if ! [[ $SETUP_CMD =~ build_docs|build_sphinx|pycodestyle|flake|pep8 ]]; then
         # we also allow the style checkers to run here
         echo "Only docs build was requested by the commit message, exiting."
+        travis_terminate 0
+    fi
+fi
+
+if [[ $ASTROPY_VERSION == lts ]]; then
+    # We skip the build if the LTS version is the same as latest stable
+    if [[ $LATEST_ASTROPY_STABLE == ${ASTROPY_LTS_VERSION}* ]]; then
+        echo "The latest stable version of astropy is an LTS version, skipping testing as LTS"
         travis_terminate 0
     fi
 fi
