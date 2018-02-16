@@ -46,7 +46,7 @@ $env:LATEST_SUNPY_STABLE = "0.8.3"
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if (! $env:CONDA_VERSION) {
-   $env:CONDA_VERSION = "4.3.27"
+   $env:CONDA_VERSION = "4.3.34"
 }
 
 if (! $env:PIP_FALLBACK) {
