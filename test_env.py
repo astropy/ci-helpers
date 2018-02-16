@@ -29,8 +29,14 @@ if 'TRAVIS_REPO_SLUG' in os.environ:
 # The test scripts accept 'stable' for ASTROPY_VERSION to test that it's
 # properly parsed hard-wire the latest stable branch version here
 
-LATEST_ASTROPY_STABLE = '3.0'
-LATEST_ASTROPY_STABLE_WIN = '3.0'
+
+if not LooseVersion(sys.version) < '3.5':
+    LATEST_ASTROPY_STABLE = '3.0'
+    LATEST_ASTROPY_STABLE_WIN = '3.0'
+else:
+    LATEST_ASTROPY_STABLE = '2.0.4'
+    LATEST_ASTROPY_STABLE_WIN = '2.0.4'
+
 LATEST_ASTROPY_LTS = '2.0.4'
 LATEST_NUMPY_STABLE = '1.14'
 LATEST_SUNPY_STABLE = '0.8.3'
