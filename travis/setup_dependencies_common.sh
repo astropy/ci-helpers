@@ -78,16 +78,18 @@ conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 # future changes
 export PYTHONIOENCODING=UTF8
 
+# PIN FILE
+PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
     conda create $QUIET -n test python=$PYTHON_VERSION
+    echo "python ${PYTHON_VERSION}*" >> $PIN_FILE
 else
     conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
 source activate test
 
-# PIN FILE
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
 # ensure the PIN_FILE exists
 touch $PIN_FILE
 
@@ -210,6 +212,7 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
 elif [[ $NUMPY_VERSION == stable ]]; then
+    echo "numpy ${LATEST_NUMPY_STABLE}*" >> $PIN_FILE
     conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
@@ -226,6 +229,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
+    echo "numpy ${NUMPY_VERSION}*" >> $PIN_FILE
     conda install $QUIET --no-pin numpy=$NUMPY_VERSION
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
     export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
@@ -302,6 +306,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
             travis_terminate 0
         fi
     elif [[ $SUNPY_VERSION == stable ]]; then
+        echo "numpy ${LATEST_SUNPY_STABLE}*" >> $PIN_FILE
         SUNPY_OPTION=$LATEST_SUNPY_STABLE
     else
         # We add sunpy to the pin file to make sure it won't get updated
@@ -381,8 +386,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
-            # We need to avoid other dependencies picked up from the pin file
+            # We need to avoid other dependencies picked up from the pin
+            # file while respect the pinned version of packages that are
+            # already installed.
+            conda list > /tmp/installed
             awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_copy > $PIN_FILE
+            awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_copy >> $PIN_FILE
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
