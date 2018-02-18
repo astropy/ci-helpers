@@ -251,6 +251,9 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
         ASTROPY_OPTION=$LATEST_ASTROPY_STABLE
+
+        # We add astropy to the pin file to make sure it won't get downgraded
+        echo "astropy ${LATEST_ASTROPY_STABLE}*" >> $PIN_FILE
     elif [[ $ASTROPY_VERSION == lts ]]; then
         # We ship the build if the LTS version is the same as latest stable
         if [[ $LATEST_ASTROPY_STABLE == ${ASTROPY_LTS_VERSION}* ]]; then
