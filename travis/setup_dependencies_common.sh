@@ -340,12 +340,15 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         fi
     fi
 
-    # We don't want to install everything listed in the PIN_FILE in this section
-
+    # We don't want to install everything listed in the PIN_FILE in this
+    # section, but respect the pinned version of packages that are already
+    # installed
+    conda list > /tmp/installed
     for package in matplotlib sphinx; do
         mv $PIN_FILE /tmp/pin_file_copy
 
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
+        awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_file_copy >> $PIN_FILE
 
         $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
             $PIP_FALLBACK && (\
