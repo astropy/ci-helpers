@@ -18,10 +18,20 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
-export LATEST_ASTROPY_STABLE=2.0.3
-ASTROPY_LTS_VERSION=2.0.3
+if [[ -z $PYTHON_VERSION ]]; then
+    PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
+fi
+
+# We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
+if [[ $(python -c "from distutils.version import LooseVersion; import os;\
+        print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
+    export LATEST_ASTROPY_STABLE=3.0
+else
+    export LATEST_ASTROPY_STABLE=2.0.4
+fi
+ASTROPY_LTS_VERSION=2.0.4
 LATEST_NUMPY_STABLE=1.14
-LATEST_SUNPY_STABLE=0.8.2
+LATEST_SUNPY_STABLE=0.8.3
 
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
@@ -67,10 +77,6 @@ conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
 export PYTHONIOENCODING=UTF8
-
-if [[ -z $PYTHON_VERSION ]]; then
-    PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
-fi
 
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then

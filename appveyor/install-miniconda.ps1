@@ -31,10 +31,17 @@ if ($env:DEBUG) {
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
-$env:ASTROPY_LTS_VERSION = "2.0.3"
-$env:LATEST_ASTROPY_STABLE = "2.0.3"
+# We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
+if ((python -c "from distutils.version import LooseVersion; import os; print(LooseVersion(os.environ['PYTHON_VERSION']) < str(3.5))") -match "False") {
+    $env:LATEST_ASTROPY_STABLE = "3.0"
+}
+else {
+    $env:LATEST_ASTROPY_STABLE = "2.0.4"
+}
+
+$env:ASTROPY_LTS_VERSION = "2.0.4"
 $env:LATEST_NUMPY_STABLE = "1.14"
-$env:LATEST_SUNPY_STABLE = "0.8.2"
+$env:LATEST_SUNPY_STABLE = "0.8.3"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.

@@ -97,10 +97,12 @@ matrix:
           env: SUNPY_VERSION=prerelease CONDA_CHANNELS='conda-forge'
 
         # -> Setting pytest version should be recognized in the next two jobs
+        # -> astropy stable should stay on the 2.0.x branch
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
                DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.7.3
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.7.3\")"'
+               ASTROPY_VERSION=stable
+               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.7.3\"); import astropy; assert astropy.__version__.startswith(\"2.0\")"'
 
         - os: linux
           env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True
