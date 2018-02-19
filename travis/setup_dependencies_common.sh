@@ -57,9 +57,17 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.3.27
 fi
 
+# We pin the version of setuptools as setuptools 38.5.1 causes segmentation
+# faults with Cython: https://github.com/cython/cython/issues/2104. This is
+# covered by the test_cython_segfault regression test.
+if [[ -z $SETUPTOOLS_VERSION ]]; then
+    SETUPTOOLS_VERSION=38.4.0
+fi
+
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
+echo "setuptools ${SETUPTOOLS_VERSION}" >> $PIN_FILE_CONDA
 
 conda install $QUIET conda
 
