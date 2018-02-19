@@ -49,6 +49,13 @@ if (! $env:CONDA_VERSION) {
    $env:CONDA_VERSION = "4.3.27"
 }
 
+# We pin the version of setuptools as setuptools 38.5.1 causes segmentation
+# faults with Cython: https://github.com/cython/cython/issues/2104. This is
+# covered by the test_cython_segfault regression test.
+if (! $env:SETUPTOOLS_VERSION) {
+   $env:SETUPTOOLS_VERSION = "38.4.0"
+}
+
 if (! $env:PIP_FALLBACK) {
    $env:PIP_FALLBACK = "True"
 }
@@ -158,9 +165,9 @@ checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 if (! $env:CONDA_ENVIRONMENT ) {
-   conda create $QUIET -n test python=$env:PYTHON_VERSION
+   conda create $QUIET -n test python=$env:PYTHON_VERSION setuptools=$env:SETUPTOOLS_VERSION
 } else {
-   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
+   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT setuptools=$env:SETUPTOOLS_VERSION
 }
 checkLastExitCode
 
