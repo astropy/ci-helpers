@@ -165,9 +165,9 @@ checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 if (! $env:CONDA_ENVIRONMENT ) {
-   conda create $QUIET -n test python=$env:PYTHON_VERSION setuptools=$env:SETUPTOOLS_VERSION
+   conda create $QUIET -n test python=$env:PYTHON_VERSION
 } else {
-   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT setuptools=$env:SETUPTOOLS_VERSION
+   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
 }
 checkLastExitCode
 
@@ -184,6 +184,8 @@ checkLastExitCode
 # CORE DEPENDENCIES
 # any pinned version should be set in `pinned`
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
+
+"setuptools " + $env:SETUPTOOLS_VERSION + "*" >> ${env:PYTHON}\envs\test\conda-meta\pinned
 
 conda install $QUIET -n test pytest pip
 checkLastExitCode
