@@ -67,7 +67,6 @@ fi
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
-echo "setuptools ${SETUPTOOLS_VERSION}" >> $PIN_FILE_CONDA
 
 conda install $QUIET conda
 
@@ -109,6 +108,10 @@ if [[ $SETUP_CMD == egg_info ]]; then
 fi
 
 # CORE DEPENDENCIES
+
+if [[ ! -z $SETUPTOOLS_VERSION ]]; then
+    echo "setuptools ${SETUPTOOLS_VERSION}*" >> $PIN_FILE
+fi
 
 if [[ ! -z $PYTEST_VERSION ]]; then
     echo "pytest ${PYTEST_VERSION}*" >> $PIN_FILE
