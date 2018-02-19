@@ -197,8 +197,8 @@ matrix:
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
 
-         - os: linux
-           env: CONDA_CHANNELS='conda-forge' CONDA_DEPENDENCIES='cython'
+        - os: linux
+          env: CONDA_CHANNELS='conda-forge' CONDA_DEPENDENCIES='cython'
 
     allow_failures:
         - os: linux
