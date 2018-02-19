@@ -230,6 +230,8 @@ cythonize('test.pyx')
 
 def test_cython_segfault(tmpdir):
 
+    pytest.importorskip("Cython")
+
     # This is a regression test of an issue with setuptools and/or Cython
     # which causes segmentation faults with setuptools 0.38.5. This test
     # is here so that once we un-pin setuptools, we can make sure that
