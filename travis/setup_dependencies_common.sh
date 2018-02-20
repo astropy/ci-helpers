@@ -560,4 +560,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     fi
 fi
 
+# Show the state of the environemnt post-setup
+conda list
+
 set +x

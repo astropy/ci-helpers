@@ -320,3 +320,8 @@ if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
     checkLastExitCode
 }
+
+# Show the state of the environemnt post-setup
+conda list
+checkLastExitCode
+
