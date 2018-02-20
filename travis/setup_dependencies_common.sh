@@ -115,11 +115,11 @@ fi
 # https://github.com/cython/cython/issues/2104. This is covered by the
 # test_cython_segfault regression test.
 
-if [[ ! -z $SETUPTOOLS_VERSION ]]; then
+if [[ -z $SETUPTOOLS_VERSION ]]; then
     echo "setuptools <38.5" >> $PIN_FILE
 fi
 
-if [[ ! -z $CYTHON_VERSION ]]; then
+if [[ -z $CYTHON_VERSION ]]; then
     echo "cython <0.26" >> $PIN_FILE
 fi
 
