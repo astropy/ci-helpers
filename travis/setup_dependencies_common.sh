@@ -22,9 +22,14 @@ if [[ -z $PYTHON_VERSION ]]; then
     PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
 fi
 
+PYTHON_LT_35 = $(python -c "from distutils.version import LooseVersion; import os;\
+                 print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')")
+
+PYTHON_LT_36 = $(python -c "from distutils.version import LooseVersion; import os;\
+                print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.6')")
+
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
-if [[ $(python -c "from distutils.version import LooseVersion; import os;\
-        print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
+if [[ $PYTHON_LT_35 == False ]]; then
     export LATEST_ASTROPY_STABLE=3.0
 else
     export LATEST_ASTROPY_STABLE=2.0.4
@@ -112,15 +117,21 @@ fi
 
 # We pin the version of setuptools and Cython as recent setuptools and Cython
 # versions cause segmentation faults:
-# https://github.com/cython/cython/issues/2104. This is covered by the
-# test_cython_segfault regression test.
+# https://github.com/cython/cython/issues/2104. Unfortunately the situation is a
+# bit of a mess as to which versions work and which don't, hence the checks
+# below. We make sure that things work using the test_cython_segfault regression
+# test.
 
 if [[ -z $SETUPTOOLS_VERSION ]]; then
     echo "setuptools <38.5" >> $PIN_FILE
 fi
 
 if [[ -z $CYTHON_VERSION ]]; then
-    echo "cython <0.26" >> $PIN_FILE
+  if [[ $PYTHON_LT_36 ]]; then
+    echo "cython <0.24" >> $PIN_FILE;
+  else
+    echo "cython <0.26" >> $PIN_FILE;
+  fi
 fi
 
 # We use the channel astropy-ci-extras to host pytest 2.7.3 that is
