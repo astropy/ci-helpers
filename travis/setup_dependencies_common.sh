@@ -22,11 +22,11 @@ if [[ -z $PYTHON_VERSION ]]; then
     PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
 fi
 
-PYTHON_LT_35 = $(python -c "from distutils.version import LooseVersion; import os;\
-                 print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')")
+PYTHON_LT_35=$(python -c "from distutils.version import LooseVersion; import os;\
+               print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')")
 
-PYTHON_LT_36 = $(python -c "from distutils.version import LooseVersion; import os;\
-                print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.6')")
+PYTHON_LT_36=$(python -c "from distutils.version import LooseVersion; import os;\
+               print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.6')")
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if [[ $PYTHON_LT_35 == False ]]; then
