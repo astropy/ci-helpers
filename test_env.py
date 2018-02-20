@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import subprocess
 from distutils.version import LooseVersion
 
 import pytest
@@ -208,6 +209,40 @@ def test_conda_channel_priority():
         content = f.read()
 
     assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
+
+
+CYTHON_SEGFAULT_CODE = """
+import os
+
+with open('test.pyx', 'w') as f:
+    f.write('cimport cython')
+
+with open('test.py', 'w') as f:
+    f.write('import Cython.Compiler.Main')
+
+from setuptools.sandbox import run_setup
+run_setup(os.path.join(os.path.abspath('.'), 'test.py'), ['egg_info'])
+
+from Cython.Build import cythonize
+cythonize('test.pyx')
+"""
+
+
+def test_cython_segfault(tmpdir):
+
+    pytest.importorskip("Cython")
+
+    # This is a regression test of an issue with setuptools and/or Cython
+    # which causes segmentation faults with setuptools 0.38.5. This test
+    # is here so that once we un-pin setuptools, we can make sure that
+    # everything works correctly.
+
+    script = tmpdir.join('setup.py').strpath
+
+    with open(script, 'w') as f:
+        f.write(CYTHON_SEGFAULT_CODE)
+
+    subprocess.check_output([sys.executable, script])
 
 
 if __name__ == '__main__':

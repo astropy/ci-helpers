@@ -49,6 +49,13 @@ if (! $env:CONDA_VERSION) {
    $env:CONDA_VERSION = "4.3.27"
 }
 
+# We pin the version of setuptools as setuptools 38.5.1 causes segmentation
+# faults with Cython: https://github.com/cython/cython/issues/2104. This is
+# covered by the test_cython_segfault regression test.
+if (! $env:SETUPTOOLS_VERSION) {
+   $env:SETUPTOOLS_VERSION = "38.4.0"
+}
+
 if (! $env:PIP_FALLBACK) {
    $env:PIP_FALLBACK = "True"
 }
@@ -177,6 +184,8 @@ checkLastExitCode
 # CORE DEPENDENCIES
 # any pinned version should be set in `pinned`
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
+
+"setuptools " + $env:SETUPTOOLS_VERSION + "*" >> ${env:PYTHON}\envs\test\conda-meta\pinned
 
 conda install $QUIET -n test pytest pip
 checkLastExitCode
@@ -311,3 +320,8 @@ if ($env:PIP_DEPENDENCIES) {
     pip install $PIP_DEPENDENCIES $PIP_FLAGS
     checkLastExitCode
 }
+
+# Show the state of the environemnt post-setup
+conda list
+checkLastExitCode
+
