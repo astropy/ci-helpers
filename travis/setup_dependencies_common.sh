@@ -61,7 +61,7 @@ fi
 # faults with Cython: https://github.com/cython/cython/issues/2104. This is
 # covered by the test_cython_segfault regression test.
 if [[ -z $SETUPTOOLS_VERSION ]]; then
-    SETUPTOOLS_VERSION=38.4.0
+    SETUPTOOLS_VERSION='<=38.4'
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
