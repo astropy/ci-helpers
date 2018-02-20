@@ -129,6 +129,9 @@ def test_dependency_imports():
     if os.environ.get('CONDA_DEPENDENCIES_FLAGS', '') == '--no-deps':
         return
 
+    # We print the dependencies for debug purposes when test are failing
+    print(dependency_list)
+
     for package in dependency_list:
         if package == 'pyqt5':
             __import__('PyQt5')
