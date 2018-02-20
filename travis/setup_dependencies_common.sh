@@ -57,11 +57,17 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.3.27
 fi
 
-# We pin the version of setuptools as setuptools 38.5.1 causes segmentation
-# faults with Cython: https://github.com/cython/cython/issues/2104. This is
-# covered by the test_cython_segfault regression test.
+# We pin the version of setuptools and Cython as recent setuptools and Cython
+# versions cause segmentation faults:
+# https://github.com/cython/cython/issues/2104. This is covered by the
+# test_cython_segfault regression test.
+
 if [[ -z $SETUPTOOLS_VERSION ]]; then
     SETUPTOOLS_VERSION='<=38.4'
+fi
+
+if [[ -z $CYTHON_VERSION ]]; then
+    CYTHON_VERSION='<0.24'
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
@@ -111,6 +117,10 @@ fi
 
 if [[ ! -z $SETUPTOOLS_VERSION ]]; then
     echo "setuptools ${SETUPTOOLS_VERSION}*" >> $PIN_FILE
+fi
+
+if [[ ! -z $CYTHON_VERSION ]]; then
+    echo "cython ${CYTHON_VERSION}*" >> $PIN_FILE
 fi
 
 if [[ ! -z $PYTEST_VERSION ]]; then
