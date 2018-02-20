@@ -22,41 +22,8 @@ env:
         - PYTHON_VERSION=3.6
         - DEBUG=True
 
-    matrix:
-        - SETUP_CMD='egg_info' TEST_CMD='python --version'
-
 matrix:
     include:
-        # pytest pip fallback, conda package for 3.1 is not available for py3.4
-        - os: linux
-          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
-
-        # Try pytest pip fallback as conda package for 3.1 is not available
-        # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
-        # under the allowed failures as there is no way at the moment to
-        # require it to fail.
-        - os: linux
-          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
-
-        # -> even if CHANNEL_PRIORITY is true then the old pytest shouldn't
-        #     be picked up from the astropy-ci-extras channel.
-        - os: linux
-          env: CONDA_PRIORITY=True CONDA_CHANNELS='conda-forge'
-               TEST_CMD='python -c "import pytest; assert pytest.__version__.startswith(\"3.\")"'
-
-        # -> tests sunpy stable
-        # -> Test falling back on pip when conda install is not working.
-        #    Here healpy is not available with numpy >=1.13
-        - os: linux
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy'
-               CONDA_CHANNELS='conda-forge' DEBUG=True
-               SUNPY_VERSION=stable
-
-        # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
-        - os: linux
-          env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
-               PYTHON_VERSION=3.5
-               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5"'
 
         # -> tests sunpy dev
         # -> Starting with the dev versions as they take the longest to run. We
@@ -76,73 +43,6 @@ matrix:
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
 
-        # -> Have non Python package (openjpeg) in dependency list when
-        #    falling back on pip installing the dependencies (as photutils is
-        #    missing from listed channels) to test the install one-by-one.
-        # -> Have package dependency that matches partially another package
-        #    (pytest vs pytest-cov) when falling back to pip install
-        - os: linux
-          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
-               TEST_CMD='py.test test_env.py && coverage run test_env.py'
-               CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5 openjpeg photutils pytest pytest-cov'
-               DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
-
-        # -> The pre builds should run the testing phase only when a pre
-        #    release is available on pypi, otherwise it should pass
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=pre
-        - os: linux
-          env: SETUP_CMD='test' ASTROPY_VERSION=pre DEBUG=True
-        - os: linux
-          env: SUNPY_VERSION=prerelease CONDA_CHANNELS='conda-forge'
-
-        # -> Setting pytest version should be recognized in the next two jobs
-        # -> astropy stable should stay on the 2.0.x branch
-        - os: linux
-          env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
-               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.7.3
-               ASTROPY_VERSION=stable
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.7.3\"); import astropy; assert astropy.__version__.startswith(\"2.0\")"'
-
-        - os: linux
-          env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True
-               MATPLOTLIB_VERSION=1.4 DEBUG=True PYTHON_VERSION=3.5 PYTEST_VERSION=3.0
-               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.4.1\"; import pytest; pytest.__version__.startswith(\"3.0\"); import matplotlib; assert matplotlib.__version__=="\""1.4.3"\"'
-
-        - os: linux
-          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5.0 sphinx'
-               MATPLOTLIB_VERSION=1.5.1 DEBUG=True PYTHON_VERSION=3.5
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=="\""1.5.1"\"'
-
-        - os: linux
-          env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7
-
-        - os: linux
-          env: MAIN_CMD='pep8'
-               TEST_CMD='pep8 --version'
-
-        - os: linux
-          env: MAIN_CMD='pycodestyle'
-               TEST_CMD='pycodestyle --version'
-
-        - os: linux
-          env: MAIN_CMD='flake8'
-               TEST_CMD='flake8 --version'
-
-        - os: linux
-          env: MAIN_CMD='pylint'
-               TEST_CMD='pylint --version'
-
-        - os: linux
-          env: SETUP_CMD="--cov package"
-               TEST_CMD='python -c "import pytest_cov"'
-
-        # -> Don't test osx with LTS as we currently build LTS only for linux.
-        - os: osx
-          env: SETUP_CMD='test' ASTROPY_VERSION=stable
-               CONDA_DEPENDENCIES='requests'
-
         # -> Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
         #    to the rest of the build and won't change anything, except that we
         #    can make sure the conda config was correctly updated.
@@ -151,52 +51,6 @@ matrix:
                SCIKIT_IMAGE_VERSION=0.11 PYTHON_VERSION=3.5
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
                CONDA_CHANNEL_PRIORITY=False
-
-        # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
-        #    to the rest of the build and won't change anything, except that we
-        #    can make sure the conda config was correctly updated.
-        # -> Have a package dependency with alphanumerical name
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_CHANNEL_PRIORITY=True
-               CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
-               ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy astrodendro'
-               PYTHON_VERSION='3.5'
-
-        # -> Have empty string as dependency list when falling back on pip
-        - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=stable
-               CONDA_DEPENDENCIES=''
-
-        - os: linux
-          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5'
-               TEST_CMD='python -c "import matplotlib; assert int(matplotlib.__version__[-1])>0"'
-
-        - os: linux
-          env: SETUP_CMD='test --parallel'
-               TEST_CMD='py.test -n 4 test_env.py'
-
-        - os: linux
-          env: SETUP_CMD='test --numprocesses'
-               TEST_CMD='py.test --numprocesses 4 test_env.py'
-
-        - os: linux
-          env: SETUP_CMD='test --open-files'
-
-        - os: linux
-          env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib'
-               CONDA_DEPENDENCIES_FLAGS='--no-deps'
-
-        - os: linux
-          env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing requests'
-               PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
-
-        - os: linux
-          env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml'
-               TEST_CMD="python -c $'import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass\nelse:\n    raise RuntimeError'"
-
-        - os: linux
-          env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
-               TEST_CMD="python -c $'import matplotlib\nimport scipy'"
 
         - os: linux
           env: CONDA_CHANNELS='conda-forge' CONDA_DEPENDENCIES='cython'
