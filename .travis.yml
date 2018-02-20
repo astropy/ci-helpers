@@ -20,6 +20,7 @@ env:
         - SETUP_CMD='test'
         - TEST_CMD='py.test test_env.py'
         - PYTHON_VERSION=3.6
+        - DEBUG=True
 
     matrix:
         - SETUP_CMD='egg_info' TEST_CMD='python --version'
