@@ -54,7 +54,7 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.3.27
+    CONDA_VERSION=4.3.34
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
@@ -251,6 +251,9 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
         ASTROPY_OPTION=$LATEST_ASTROPY_STABLE
+
+        # We add astropy to the pin file to make sure it won't get downgraded
+        echo "astropy ${LATEST_ASTROPY_STABLE}*" >> $PIN_FILE
     elif [[ $ASTROPY_VERSION == lts ]]; then
         # We ship the build if the LTS version is the same as latest stable
         if [[ $LATEST_ASTROPY_STABLE == ${ASTROPY_LTS_VERSION}* ]]; then
@@ -337,12 +340,15 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         fi
     fi
 
-    # We don't want to install everything listed in the PIN_FILE in this section
-
+    # We don't want to install everything listed in the PIN_FILE in this
+    # section, but respect the pinned version of packages that are already
+    # installed
+    conda list > /tmp/installed
     for package in matplotlib sphinx; do
         mv $PIN_FILE /tmp/pin_file_copy
 
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
+        awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_file_copy >> $PIN_FILE
 
         $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
             $PIP_FALLBACK && (\
