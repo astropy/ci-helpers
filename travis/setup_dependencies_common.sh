@@ -250,10 +250,10 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
             travis_terminate 0
         fi
     elif [[ $ASTROPY_VERSION == stable ]]; then
-        ASTROPY_OPTION=$LATEST_ASTROPY_STABLE
-
         # We add astropy to the pin file to make sure it won't get downgraded
         echo "astropy ${LATEST_ASTROPY_STABLE}*" >> $PIN_FILE
+        ASTROPY_OPTION="$LATEST_ASTROPY_STABLE pytest-astropy"
+
     elif [[ $ASTROPY_VERSION == lts ]]; then
         # We ship the build if the LTS version is the same as latest stable
         if [[ $LATEST_ASTROPY_STABLE == ${ASTROPY_LTS_VERSION}* ]]; then
@@ -267,7 +267,11 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     else
         # We add astropy to the pin file to make sure it won't get updated
         echo "astropy ${ASTROPY_VERSION}*" >> $PIN_FILE
-        ASTROPY_OPTION=$ASTROPY_VERSION
+        if [[ $(echo ${ASTROPY_VERSION} | cut -b 1) -ge 3 ]]; then
+            ASTROPY_OPTION="$ASTROPY_VERSION pytest-astropy"
+        else
+            ASTROPY_OPTION=$ASTROPY_VERSION
+        fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
@@ -428,16 +432,8 @@ fi
 # sure that Numpy doesn't get upgraded.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
-    $CONDA_INSTALL Cython jinja2
-    # Make sure pytest-astropy is available for astropy 3.0+, including it's
-    # dependencies. However be careful in case the version numbers are
-    # pinned. Ideally we'll have a conda package of pytest-astropy, so won't
-    # need this hack.
-    if [ ! -z $PYTEST_VERSION ]; then
-        $PIP_INSTALL pytest-astropy pytest==PYTEST_VERSION
-    else
-        $PIP_INSTALL pytest-astropy
-    fi
+    $CONDA_INSTALL Cython jinja2 pytest-astropy
+
     $PIP_INSTALL git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
@@ -480,7 +476,7 @@ if [[ $ASTROPY_VERSION == stable ]]; then
         # by pip will be used. We use --force to make sure things that depend
         # on astropy don't cause issues or get uninstalled.
         conda remove astropy --force
-        $PIP_INSTALL --upgrade --no-deps --ignore-installed astropy==$LATEST_ASTROPY_STABLE
+        $PIP_INSTALL --upgrade --no-deps --ignore-installed astropy==$LATEST_ASTROPY_STABLE pytest-astropy
     fi
 fi
 

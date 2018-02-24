@@ -199,19 +199,19 @@ if ($env:NUMPY_VERSION) {
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE
+        $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE + " pytest-astropy"
     } elseif($env:ASTROPY_VERSION -match "dev") {
-        $ASTROPY_OPTION = "Cython pip jinja2".Split(" ")
+        $ASTROPY_OPTION = "Cython pip jinja2 pytest-astropy".Split(" ")
     } elseif($env:ASTROPY_VERSION -match "lts") {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_LTS_VERSION
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
-    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
     echo $output
     if (($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK) {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
-       pip install $ASTROPY_OPTION
+       pip install $ASTROPY_OPTION.Split(" ")
        checkLastExitCode
     } else {
       checkLastExitCode
@@ -277,7 +277,6 @@ if ($env:NUMPY_VERSION -match "dev") {
 # Check whether the developer version of Astropy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
-   Invoke-Expression "${env:CMD_IN_ENV} pip install pytest-astropy"
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
    checkLastExitCode
 }
