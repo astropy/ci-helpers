@@ -207,11 +207,11 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
-    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION 2>&1
+    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
     echo $output
     if (($output | select-string UnsatisfiableError) -and $env:PIP_FALLBACK) {
        echo "Installing astropy with conda was unsuccessful, using pip instead"
-       pip install $ASTROPY_OPTION
+       pip install $ASTROPY_OPTION.Split(" ")
        checkLastExitCode
     } else {
       checkLastExitCode
