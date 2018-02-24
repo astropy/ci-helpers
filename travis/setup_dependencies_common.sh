@@ -267,7 +267,11 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     else
         # We add astropy to the pin file to make sure it won't get updated
         echo "astropy ${ASTROPY_VERSION}*" >> $PIN_FILE
-        ASTROPY_OPTION=$ASTROPY_VERSION
+        if [[ $(echo ${ASTROPY_VERSION} | cut -b 1) -ge 3 ]]; then
+            ASTROPY_OPTION="$ASTROPY_VERSION pytest-astropy"
+        else
+            ASTROPY_OPTION=$ASTROPY_VERSION
+        fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
         conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
