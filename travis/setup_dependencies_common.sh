@@ -19,7 +19,7 @@ conda config --set always_yes yes --set changeps1 no
 shopt -s nocasematch
 
 if [[ -z $PYTHON_VERSION ]]; then
-    PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
+    export PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
 fi
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
