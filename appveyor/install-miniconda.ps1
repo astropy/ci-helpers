@@ -200,7 +200,7 @@ if ($env:NUMPY_VERSION) {
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        if($env:NO_PYTEST_ASTROPY -match "True) {
+        if($env:NO_PYTEST_ASTROPY -match "True") {
             $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE
         } else {
             $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE + " pytest-astropy"
