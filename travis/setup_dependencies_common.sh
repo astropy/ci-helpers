@@ -185,7 +185,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # want to check if fname contains one of the bad_fruit
         if [[ $package =~ $re ]]; then
             echo "$package should be set via ENVIRONMENT variable"
-            exit(1)
+            exit 1
         fi
     done
 
