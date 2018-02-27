@@ -104,6 +104,12 @@ def test_astropy():
                 assert astropy.__version__.startswith(os_astropy_version)
             assert 'dev' not in astropy.__version__
 
+    # We should not install pytest-astropy for the 2.0.x series, since
+    # pytest-astropy is a metapackage, check one of its components
+    if LATEST_ASTROPY_STABLE.startswith('2'):
+        with pytest.raises(ImportError):
+            import pytest_doctestplus
+
 
 def test_sunpy():
     if 'SUNPY_VERSION' in os.environ:

@@ -37,6 +37,7 @@ if ((python -c "from distutils.version import LooseVersion; import os; print(Loo
 }
 else {
     $env:LATEST_ASTROPY_STABLE = "2.0.4"
+    $env:NO_PYTEST_ASTROPY = "True"
 }
 
 $env:ASTROPY_LTS_VERSION = "2.0.4"
@@ -199,7 +200,11 @@ if ($env:NUMPY_VERSION) {
 # Check whether a specific version of Astropy is required
 if ($env:ASTROPY_VERSION) {
     if($env:ASTROPY_VERSION -match "stable") {
-        $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE + " pytest-astropy"
+        if($env:NO_PYTEST_ASTROPY -match "True") {
+            $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE
+        } else {
+            $ASTROPY_OPTION = "astropy=" + $env:LATEST_ASTROPY_STABLE + " pytest-astropy"
+        }
     } elseif($env:ASTROPY_VERSION -match "dev") {
         $ASTROPY_OPTION = "Cython pip jinja2 pytest-astropy".Split(" ")
     } elseif($env:ASTROPY_VERSION -match "lts") {

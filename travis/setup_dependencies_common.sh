@@ -28,6 +28,7 @@ if [[ $(python -c "from distutils.version import LooseVersion; import os;\
     export LATEST_ASTROPY_STABLE=3.0
 else
     export LATEST_ASTROPY_STABLE=2.0.4
+    export NO_PYTEST_ASTROPY=True
 fi
 ASTROPY_LTS_VERSION=2.0.4
 LATEST_NUMPY_STABLE=1.14
@@ -252,7 +253,12 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     elif [[ $ASTROPY_VERSION == stable ]]; then
         # We add astropy to the pin file to make sure it won't get downgraded
         echo "astropy ${LATEST_ASTROPY_STABLE}*" >> $PIN_FILE
-        ASTROPY_OPTION="$LATEST_ASTROPY_STABLE pytest-astropy"
+
+        if [[ $NO_PYTEST_ASTROPY == True ]]; then
+            ASTROPY_OPTION="$LATEST_ASTROPY_STABLE"
+        else
+            ASTROPY_OPTION="$LATEST_ASTROPY_STABLE pytest-astropy"
+        fi
 
     elif [[ $ASTROPY_VERSION == lts ]]; then
         # We ship the build if the LTS version is the same as latest stable
