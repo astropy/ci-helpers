@@ -176,6 +176,19 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         cat $PIN_FILE
     fi
 
+    # filter conda dependencies for packages that should be set by environment variables
+    # based on: https://stackoverflow.com/a/12768321/2207958
+    bad_package=( numpy astropy )
+    re="$(printf '%s\n' "${bad_package[@]}" | paste -sd '|')"
+    # black-listed packages shouldn't be part of conda dependencies
+    for package in $(awk '{print $1}' $PIN_FILE); do
+        # want to check if fname contains one of the bad_fruit
+        if [[ $package =~ $re ]]; then
+            echo "$package should be set via ENVIRONMENT variable"
+            exit(1)
+        fi
+    done
+
     # Let env variable version number override this pinned version
     for package in $(awk '{print $1}' $PIN_FILE); do
         version=$(eval echo -e \$$(echo $package | tr "-" "_" | \
@@ -184,9 +197,9 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             awk -v package=$package -v version=$version \
                 '{if ($1 == package) print package" " version"*";
                   else print $0}' \
-                $PIN_FILE > /tmp/pin_file_temp
+                      $PIN_FILE > /tmp/pin_file_temp
             mv /tmp/pin_file_temp $PIN_FILE
-       fi
+        fi
     done
 
     # Do in the pin file what conda silently does on the command line, to

@@ -196,6 +196,9 @@ matrix:
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
 
+        - os: linux
+          env: SETUP_CMD='test' CONDA_DEPENDENCIES='numpy'
+
     allow_failures:
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
