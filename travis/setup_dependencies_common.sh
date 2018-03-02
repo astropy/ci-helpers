@@ -344,6 +344,13 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         fi
     fi
 
+    # Temporary version limitation until
+    # https://github.com/sphinx-doc/sphinx/issues/4689 (affecting 1.7) is
+    # addressed and a new version of sphinx is released.
+    if [[ -z $SPHINX_VERSION ]]; then
+        SPHINX_VERSION='<1.7'
+    fi
+
     if [[ ! -z $SPHINX_VERSION ]]; then
         if [[ -z $(grep sphinx $PIN_FILE) ]]; then
             echo "sphinx ${SPHINX_VERSION}*" >> $PIN_FILE
