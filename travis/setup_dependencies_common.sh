@@ -25,14 +25,14 @@ fi
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if [[ $(python -c "from distutils.version import LooseVersion; import os;\
         print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
-    export LATEST_ASTROPY_STABLE=3.0
+    export LATEST_ASTROPY_STABLE=3.0.1
 else
-    export LATEST_ASTROPY_STABLE=2.0.4
+    export LATEST_ASTROPY_STABLE=2.0.5
     export NO_PYTEST_ASTROPY=True
 fi
-ASTROPY_LTS_VERSION=2.0.4
+ASTROPY_LTS_VERSION=2.0.5
 LATEST_NUMPY_STABLE=1.14
-LATEST_SUNPY_STABLE=0.8.4
+LATEST_SUNPY_STABLE=0.8.5
 
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
