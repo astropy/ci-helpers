@@ -20,11 +20,11 @@ environment:
       - PYTHON_VERSION: "2.7"
         NUMPY_VERSION: "development"
         CONDA_DEPENDENCIES: "scipy glymur"
-        CONDA_CHANNELS: "conda-forge sunpy astrofrog"
+        CONDA_CHANNELS: "conda-forge astrofrog"
         PIP_DEPENDENCIES: "requests pyparsing"
         CONDA_CHANNEL_PRIORITY: "True"
         DEBUG: "True"
-        SUNPY_VERSION: "stable"
+
 
       - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "stable"
