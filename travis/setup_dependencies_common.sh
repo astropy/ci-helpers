@@ -344,6 +344,15 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         fi
     fi
 
+
+    # Temporary version limitation due to mpl segfaulting for the docs build
+    # (issue tbd). sip needed to be added to the list of packages below to
+    # be manually installed so this version pinning actually being taken
+    # account
+    if [[ -z $SIP_VERSION ]]; then
+        echo "sip <4.19" >> $PIN_FILE
+    fi
+
     # Temporary version limitation until
     # https://github.com/sphinx-doc/sphinx/issues/4689 (affecting 1.7) is
     # addressed and a new version of sphinx is released.
@@ -360,8 +369,11 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     # We don't want to install everything listed in the PIN_FILE in this
     # section, but respect the pinned version of packages that are already
     # installed
+
+    # Adding sip temporarily here, too to take into account the version
+    # pinning added above
     conda list > /tmp/installed
-    for package in matplotlib sphinx; do
+    for package in sip matplotlib sphinx; do
         mv $PIN_FILE /tmp/pin_file_copy
 
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
