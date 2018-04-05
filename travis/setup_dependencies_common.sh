@@ -344,6 +344,13 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         fi
     fi
 
+
+    # Temporary version limitation due to mpl segfaulting for the docs build
+    # (issue tbd)
+    if [[ -z $SIP_VERSION ]]; then
+        echo "sip <4.19" >> $PIN_FILE
+    fi
+
     # Temporary version limitation until
     # https://github.com/sphinx-doc/sphinx/issues/4689 (affecting 1.7) is
     # addressed and a new version of sphinx is released.
