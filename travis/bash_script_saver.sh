@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Workaround for executing scripts on OSX.
+#
 # Workaround for https://github.com/travis-ci/travis-ci/issues/6307, which
 # caused the following error on MacOS X workers:
 #
@@ -9,6 +11,5 @@
 # The above issue is present when running scripts using `set -e` on OSX.
 # This script should therefore be run 1st and by default to allow stable
 # script execution on OSX.
-#
-command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
-rvm get stable
+
+source "$( dirname "${BASH_SOURCE[0]}" )"/setup_rvm_osx.sh
