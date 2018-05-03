@@ -250,7 +250,7 @@ if ($env:SUNPY_VERSION) {
 # Install the specified versions of numpy and other dependencies
 if ($env:CONDA_DEPENDENCIES) {
    if ($env:CONDA_DEPENDENCIES -match "matplotlib") {
-   $CONDA_DEPENDENCIES = $env:CONDA_DEPENDENCIES + " sip=4.18"
+      $env:CONDA_DEPENDENCIES += " sip=4.18"
    }
     $CONDA_DEPENDENCIES = $env:CONDA_DEPENDENCIES.split(" ")
 } else {
