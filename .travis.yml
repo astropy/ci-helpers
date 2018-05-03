@@ -157,7 +157,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_CHANNEL_PRIORITY=True
                CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
-               ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy astrodendro'
+               ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy'
                PYTHON_VERSION='3.5'
 
         # -> Have empty string as dependency list when falling back on pip
