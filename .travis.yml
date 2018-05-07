@@ -147,7 +147,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
                SCIKIT_IMAGE_VERSION=0.11 PYTHON_VERSION=3.5
-               CONDA_DEPENDENCIES='Cython numpy scikit-image'
+               CONDA_DEPENDENCIES='Cython scikit-image'
                CONDA_CHANNEL_PRIORITY=False
 
         # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
@@ -195,6 +195,10 @@ matrix:
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
+
+        # this should result in a build failure. But it's hard to test though
+        - os: linux
+          env: SETUP_CMD='test' CONDA_DEPENDENCIES='numpy'
 
     allow_failures:
         - os: linux
