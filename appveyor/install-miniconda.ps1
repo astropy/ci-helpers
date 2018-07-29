@@ -42,7 +42,7 @@ else {
 
 $env:ASTROPY_LTS_VERSION = "2.0.7"
 $env:LATEST_NUMPY_STABLE = "1.14"
-$env:LATEST_SUNPY_STABLE = "0.9.0"
+$env:LATEST_SUNPY_STABLE = "0.9.2"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.

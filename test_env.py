@@ -39,7 +39,7 @@ else:
 
 LATEST_ASTROPY_LTS = '2.0.7'
 LATEST_NUMPY_STABLE = '1.14'
-LATEST_SUNPY_STABLE = '0.9.0'
+LATEST_SUNPY_STABLE = '0.9.2'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
