@@ -105,6 +105,10 @@ fi
 
 if [[ ! -z $PYTEST_VERSION ]]; then
     echo "pytest ${PYTEST_VERSION}*" >> $PIN_FILE
+else
+    # pin pytest to avoid upstream issues
+    # https://github.com/astropy/pytest-doctestplus/issues/22
+    echo "pytest <3.7" >> $PIN_FILE
 fi
 
 if [[ ! -z $PIP_VERSION ]]; then
