@@ -7,6 +7,10 @@ import pytest
 
 PYTEST_LT_3 = LooseVersion(pytest.__version__) < LooseVersion('3')
 
+# Remove this assert once we remove pinning pytest
+PYTEST_LT_37 = LooseVersion(pytest.__version__) < LooseVersion('3.7')
+assert PYTEST_LT_37
+
 
 # If we are on Travis or AppVeyor, we should check if we are running the tests
 # in the ci-helpers repository, or whether for example someone else is running
