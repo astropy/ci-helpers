@@ -217,7 +217,7 @@ if ($env:ASTROPY_VERSION) {
     } else {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
-    if ($env:PIP_FALLBACK) {
+    if ($env:PIP_FALLBACK -match "True") {
       $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
       echo $output
       if ($output | select-string UnsatisfiableError) {
@@ -245,7 +245,7 @@ if ($env:SUNPY_VERSION) {
     } else {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
-    if ($env:PIP_FALLBACK) {
+    if ($env:PIP_FALLBACK -match "True") {
       $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
       echo $output
       if ($output | select-string UnsatisfiableError) {
@@ -276,7 +276,7 @@ if ($env:CONDA_DEPENDENCIES) {
 # If NUMPY_OPTION and CONDA_DEPENDENCIES are both empty, we skip this step
 if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
-  if ($env:PIP_FALLBACK) {
+  if ($env:PIP_FALLBACK -match "True") {
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
     echo $output
     if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
