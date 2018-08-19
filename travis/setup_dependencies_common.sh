@@ -55,7 +55,7 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.3.34
+    CONDA_VERSION=4.4.10
 fi
 
 PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
@@ -79,16 +79,25 @@ conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 # future changes
 export PYTHONIOENCODING=UTF8
 
+# PIN FILE
+PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+
+# Making sure we don't upgrade python accidentally
+if [[ ! -z $PYTHON_VERSION ]]; then
+    PYTHON_OPTION="python=$PYTHON_VERSION"
+else
+    PYTHON_OPTION=""
+fi
+
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
-    conda create $QUIET -n test python=$PYTHON_VERSION
+
+    conda create $QUIET -n test $PYTHON_OPTION
 else
     conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
 source activate test
 
-# PIN FILE
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
 # ensure the PIN_FILE exists
 touch $PIN_FILE
 
@@ -119,11 +128,11 @@ fi
 # compatible with LTS 1.0.x astropy. We need to disable channel priority for
 # this step to make sure the latest version is picked up when
 # CHANNEL_PRIORITY is set to True above.
-conda install -c astropy-ci-extras --no-channel-priority $QUIET pytest pip || ( \
+conda install -c astropy-ci-extras --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
     $PIP_FALLBACK && ( \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
-        conda install $QUIET pip
+        conda install $QUIET $PYTHON_OPTION pip
         pip install pytest==$PYTEST_VERSION
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
@@ -220,17 +229,18 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    conda install $QUIET --no-pin nomkl
+    conda install $PYTHON_OPTION $QUIET --no-pin nomkl
     # We then install Numpy itself at the bottom of this script
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
 elif [[ $NUMPY_VERSION == stable ]]; then
+    echo "numpy ${LATEST_NUMPY_STABLE}*" >> $PIN_FILE
     conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$LATEST_NUMPY_STABLE"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$LATEST_NUMPY_STABLE"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     conda install $QUIET --no-pin nomkl numpy
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         # We want to stop the script if there isn't a pre-release available,
@@ -240,12 +250,13 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install $QUIET --no-pin numpy=$NUMPY_VERSION
+    echo "numpy ${NUMPY_VERSION}*" >> $PIN_FILE
+    conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION numpy=$NUMPY_VERSION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$NUMPY_VERSION"
 else
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET python=$PYTHON_VERSION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
 fi
 
 # ASTROPY
@@ -254,7 +265,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other dependencies just yet
-        conda install --no-pin astropy
+        conda install --no-pin $PYTHON_OPTION astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -293,7 +304,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
+        conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
@@ -311,7 +322,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         :  # Install at the bottom of the script
     elif [[ $SUNPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other
-        conda install --no-pin sunpy
+        conda install --no-pin $PYTHON_OPTION sunpy
         if [[ -z $(pip list -o --pre | grep sunpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -321,6 +332,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
             travis_terminate 0
         fi
     elif [[ $SUNPY_VERSION == stable ]]; then
+        echo "numpy ${LATEST_SUNPY_STABLE}*" >> $PIN_FILE
         SUNPY_OPTION=$LATEST_SUNPY_STABLE
     else
         # We add sunpy to the pin file to make sure it won't get updated
@@ -328,7 +340,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         SUNPY_OPTION=$SUNPY_VERSION
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
-        conda install --no-pin $QUIET python=$PYTHON_VERSION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
+        conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
@@ -419,8 +431,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
-            # We need to avoid other dependencies picked up from the pin file
+            # We need to avoid other dependencies picked up from the pin
+            # file while respect the pinned version of packages that are
+            # already installed.
+            conda list > /tmp/installed
             awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_copy > $PIN_FILE
+            awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_copy >> $PIN_FILE
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
