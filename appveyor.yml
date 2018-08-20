@@ -64,6 +64,7 @@ environment:
         ASTROPY_VERSION: "3.0"
         SUNPY_VERSION: "0.9"
         PIP_FALLBACK: "False"
+        CONDA_CHANNELS: "conda-forge"
 
 matrix:
    fast_finish: true
