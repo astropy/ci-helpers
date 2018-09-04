@@ -8,13 +8,6 @@ os:
 
 sudo: false
 
-addons:
-    apt:
-        packages:
-            - graphviz
-            - texlive-latex-extra
-            - dvipng
-
 env:
     global:
         - SETUP_CMD='test'
