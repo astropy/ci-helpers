@@ -155,7 +155,7 @@ matrix:
         #    can make sure the conda config was correctly updated.
         # -> Have a package dependency with alphanumerical name
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.9 CONDA_CHANNEL_PRIORITY=True
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=True
                CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
                ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy'
                PYTHON_VERSION='3.5'
