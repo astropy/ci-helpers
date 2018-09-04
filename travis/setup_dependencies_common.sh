@@ -227,7 +227,7 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    conda install $PYTHON_OPTION $QUIET --no-pin nomkl
+    conda install $QUIET --no-pin $PYTHON_OPTION nomkl
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
 elif [[ $NUMPY_VERSION == stable ]]; then
