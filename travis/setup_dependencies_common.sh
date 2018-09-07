@@ -19,6 +19,7 @@ unset CONDA_CHANNELS
 
 conda config --set always_yes yes --set changeps1 no
 
+conda config --show-sources
 shopt -s nocasematch
 
 if [[ -z $PYTHON_VERSION ]]; then
