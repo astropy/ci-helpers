@@ -11,8 +11,11 @@ if [[ ! -z $CONDA_CHANNELS ]]; then
     for channel in $CONDA_CHANNELS; do
         conda config --add channels $channel
     done
-    unset CONDA_CHANNELS
 fi
+
+# This used to be in the conditional above, but even if empty it shouldn't
+# be passed to conda.
+unset CONDA_CHANNELS
 
 conda config --set always_yes yes --set changeps1 no
 

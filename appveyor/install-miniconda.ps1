@@ -140,9 +140,12 @@ if ($env:CONDA_CHANNELS) {
        conda config --add channels $CONDA_CHANNEL
        checkLastExitCode
    }
-   Remove-Variable CONDA_CHANNELS
-   rm env:CONDA_CHANNELS
 }
+
+# These used to be in the conditional above, but even if empty it shouldn't
+# be passed to conda.
+Remove-Variable CONDA_CHANNELS
+rm env:CONDA_CHANNELS
 
 # Install the build and runtime dependencies of the project.
 conda install $QUIET conda=$env:CONDA_VERSION
