@@ -5,7 +5,6 @@
 # This can be updated from time to time.
 if [[ -z "${MINICONDA_VERSION}" ]]; then
     MINICONDA_VERSION=4.5.4
-    # MINICONDA_VERSION=latest
 fi
 wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
