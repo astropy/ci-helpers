@@ -97,6 +97,9 @@ environment variables
   pre-release version of Sunpy gets installed if there is any, otherwise the
   build exits and passes on Travis without running the tests.
 
+* ``$MINICONDA_VERSION``: This sets the version of Miniconda that will be
+  installed.  Use this to override a pinned version if necessary.
+
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
   dependencies can be overridden/specified with the ``$PACKAGENAME_VERSION``
@@ -218,6 +221,9 @@ Following this, various dependencies are installed depending on the following en
   developer version of Sunpy is installed. If set to a
   version number, that version is installed. If set to ``stable``, install
   the latest stable version of Sunpy.
+
+* ``$MINICONDA_VERSION``: This sets the version of Miniconda that will be
+  installed.  Use this to override a pinned version if necessary.
 
 * ``$CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.

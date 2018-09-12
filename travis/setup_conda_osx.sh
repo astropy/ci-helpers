@@ -12,7 +12,10 @@ rvm get stable
 # Install conda (http://conda.pydata.org/docs/travis.html#the-travis-yml-file)
 # Note that we pin the Miniconda version to avoid issues when new versions are released.
 # This can be updated from time to time.
-wget https://repo.continuum.io/miniconda/Miniconda3-4.5.4-MacOSX-x86_64.sh -O miniconda.sh
+if [[ -z "${MINICONDA_VERSION}" ]]; then
+    MINICONDA_VERSION=4.5.4
+fi
+wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-MacOSX-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
