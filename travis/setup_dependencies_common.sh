@@ -229,9 +229,9 @@ fi
 # We use --no-pin to avoid installing other dependencies just yet.
 
 
-MKL = 'nomkl'
+MKL='nomkl'
 if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
-    MKL = ''
+    MKL=''
 fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
