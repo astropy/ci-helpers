@@ -44,6 +44,11 @@ $env:ASTROPY_LTS_VERSION = "2.0.8"
 $env:LATEST_NUMPY_STABLE = "1.15"
 $env:LATEST_SUNPY_STABLE = "0.9.2"
 
+[Environment]::SetEnvironmentVariable("ASTROPY_LTS_VERSION", $env:ASTROPY_LTS_VERSION, "User")
+[Environment]::SetEnvironmentVariable("LATEST_NUMPY_STABLE", $env:LATEST_NUMPY_STABLE, "User")
+[Environment]::SetEnvironmentVariable("LATEST_SUNPY_STABLE", $env:LATEST_SUNPY_STABLE, "User")
+
+
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if (! $env:CONDA_VERSION) {
