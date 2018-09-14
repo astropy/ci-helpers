@@ -79,7 +79,9 @@ environment variables
   pre-release version of Numpy gets installed if there is any, otherwise the
   build exits and passes on Travis without running the tests. We try to
   avoid downloading and installing mkl, so unless ``mkl`` is specified as a
-  dependency in ``$CONDA_DEPENDENCIES``, ``nomkl`` is used.
+  dependency in ``$CONDA_DEPENDENCIES``, ``nomkl`` is used. On Windows the
+  is only MKL, so while the ``nomkl`` package exists it does nothing,
+  ``mkl`` is always needed to be installed.
 
 * ``$ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Astropy is installed, along with Cython and jinja2,
