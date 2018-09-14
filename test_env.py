@@ -72,9 +72,10 @@ def test_python_version():
 
 
 def test_exported_variables():
-    assert os.environ.get('ASTROPY_LTS_VERSION', '') == LATEST_ASTROPY_LTS
-    assert os.environ.get('LATEST_NUMPY_STABLE', '') == LATEST_NUMPY_STABLE
-    assert os.environ.get('LATEST_SUNPY_STABLE', '') == LATEST_SUNPY_STABLE
+    if 'TRAVIS' in os.environ:
+        assert os.environ.get('ASTROPY_LTS_VERSION', '') == LATEST_ASTROPY_LTS
+        assert os.environ.get('LATEST_NUMPY_STABLE', '') == LATEST_NUMPY_STABLE
+        assert os.environ.get('LATEST_SUNPY_STABLE', '') == LATEST_SUNPY_STABLE
 
 def test_numpy():
     if 'NUMPY_VERSION' in os.environ:
