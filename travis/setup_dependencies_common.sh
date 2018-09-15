@@ -183,6 +183,10 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" sip<4.19"
     fi
 
+    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+        CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
+    fi
+
     echo $CONDA_DEPENDENCIES | awk '{print tolower($0)}' | tr " " "\n" | \
         sed -E -e 's|([a-z0-9]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' >> $PIN_FILE
 
@@ -224,23 +228,29 @@ fi
 # NUMPY
 # We use --no-pin to avoid installing other dependencies just yet.
 
+
+MKL='nomkl'
+if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+    MKL=''
+fi
+
 if [[ $NUMPY_VERSION == dev* ]]; then
     # We install nomkl here to make sure that Numpy and Scipy versions
     # installed subsequently don't depend on the MKL. If we don't do this, then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    conda install $QUIET --no-pin $PYTHON_OPTION nomkl
+    conda install $QUIET --no-pin $PYTHON_OPTION $MKL
     # We then install Numpy itself at the bottom of this script
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE
+    conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE $MKL
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$LATEST_NUMPY_STABLE"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$LATEST_NUMPY_STABLE $MKL"
 elif [[ $NUMPY_VERSION == pre* ]]; then
-    conda install $QUIET --no-pin nomkl numpy
+    conda install $QUIET --no-pin $MKL numpy
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         # We want to stop the script if there isn't a pre-release available,
@@ -250,12 +260,12 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION
+    conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$NUMPY_VERSION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL"
 else
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
 fi
 
 # ASTROPY

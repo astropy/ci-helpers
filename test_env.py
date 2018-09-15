@@ -154,6 +154,13 @@ def test_dependency_imports():
             continue
         elif package == 'pytest-cov':
             __import__('pytest_cov')
+        elif package == 'nomkl':
+            import subprocess
+            assert 'nomkl' in str(subprocess.check_output(["conda", "list"]))
+        elif package == 'mkl':
+            import subprocess
+            assert 'nomkl' not in str(subprocess.check_output(["conda", "list"]))
+            assert 'mkl' in str(subprocess.check_output(["conda", "list"]))
         elif package == '':
             continue
         else:
