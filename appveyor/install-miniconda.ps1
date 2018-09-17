@@ -279,7 +279,7 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
   if ($env:PIP_FALLBACK -match "True") {
     $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
     echo $output
-    if ($output | select-string UnsatisfiableError, PackageNotFoundError) {
+    if ($output | select-string UnsatisfiableError, PackageNotFoundError, PackagesNotFoundError) {
        echo "Installing dependencies with conda was unsuccessful, using pip instead"
        pip install $CONDA_DEPENDENCIES
        checkLastExitCode
