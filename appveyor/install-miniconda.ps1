@@ -7,7 +7,7 @@
 # We use the following function to exit the script after any failing command
 function checkLastExitCode {
   if ($lastExitCode) {
-    echo "ERROR: the last command returned the following exit code: $lastExitCode"
+    Write-Host "ERROR: the last command returned the following exit code: $lastExitCode"
     Exit $lastExitCode
   }
 }
@@ -59,52 +59,86 @@ function retry_on_known_error {
     if ($args.Count -eq 0) {
         Throw (New-Object -TypeName System.ArgumentException -ArgumentList "Function retry_on_known_error() called without arguments.")
     }
-    # Put comand in a single string, unify its stdout and stderr (2>&1), and get
-    # its exit status (; $?):
-    $_cmd = "$args 2>&1" + '; $?'
-    $_n_retries = 0
-    $_retry = $TRUE
-    $_status = $FALSE
-    while ($_retry) {
-        $_retry = $FALSE
-        # Execute the wrapped command:
-        $_output_and_status = Invoke-Expression $_cmd
-        # Separate the received array into actual output and exit status:
-        $_output = $_output_and_status[0..($_output_and_status.length - 2)]
-        $_status = $_output_and_status[-1]
-        # If the command was sucessful, make sure $lastexitcode is zero and
-        # abort the retry loop:
-        if ($_status) {
-            if ($lastexitcode) {
-                $global:lastexitcode = 0
+    # We need to flatten the command arguments since arrays are not automatically expanded:
+    $flat_args = @()
+    foreach ($arg in $args) {
+        if ($arg.GetType().IsArray) {
+            foreach ($subarg in $arg) {
+                $flat_args += $subarg
             }
+        }
+        else {
+            $flat_args += $arg
+        }
+    }
+    $_n_retries = 0
+    $_retry = $true
+    $_exitcode = 0
+    $_process_info = New-Object System.Diagnostics.ProcessStartInfo
+    $_process_info.FileName = $flat_args[0]
+    if ($flat_args.Count -gt 1) {
+        $_process_info.Arguments = $flat_args[1..($flat_args.length - 1)]
+    }
+    $_process_info.RedirectStandardError = $true
+    $_process_info.RedirectStandardOutput = $true
+    $_process_info.RedirectStandardInput = $true
+    $_process_info.UseShellExecute = $false
+    $_process = New-Object System.Diagnostics.Process
+    $_process.StartInfo = $_process_info
+    $_stdout_builder = New-Object -TypeName System.Text.StringBuilder
+    $_stderr_builder = New-Object -TypeName System.Text.StringBuilder
+    $_output_event_handler = {
+        if (! [String]::IsNullOrEmpty($EventArgs.Data)) {
+            $Event.MessageData.AppendLine($EventArgs.Data)
+        }
+    }
+    if ($env:DEBUG -match "True") {
+        Write-Host DEBUG: Running ""$flat_args""
+    }
+    while ($_retry) {
+        $_retry = $false
+        $_stdout_builder.Clear() | Out-Null  # System.Text.StringBuilder.Clear() requires .Net >= 4.0
+        $_stderr_builder.Clear() | Out-Null  # System.Text.StringBuilder.Clear() requires .Net >= 4.0
+        $_stdout_event = Register-ObjectEvent -InputObject $_process `
+                                              -Action $_output_event_handler `
+                                              -EventName 'OutputDataReceived' `
+                                              -MessageData $_stdout_builder
+        $_stderr_event = Register-ObjectEvent -InputObject $_process `
+                                              -Action $_output_event_handler `
+                                              -EventName 'ErrorDataReceived' `
+                                              -MessageData $_stderr_builder
+        $_process.Start() | Out-Null
+        $_process.BeginOutputReadLine()
+        $_process.BeginErrorReadLine()
+        $_process.WaitForExit()
+        Unregister-Event -SourceIdentifier $_stdout_event.Name
+        Unregister-Event -SourceIdentifier $_stderr_event.Name
+        $_stdout = $_stdout_builder.ToString()
+        $_stderr = $_stderr_builder.ToString()
+        $_process.CancelOutputRead()
+        $_process.CancelErrorRead()
+        $global:lastexitcode = $_process.ExitCode
+        # If the command was successful, bail out:
+        if ($lastexitcode -eq 0) {
             break
         }
-        # The command errored, so let's check its output for the specified error
+        # The command errored, so let's check its stderr output for the specified error
         # strings:
         if ($_n_retries -lt $env:RETRY_MAX) {
             foreach ($err in $env:RETRY_ERRORS) {
                 # If a known error string was found, throw a warning and wait a
                 # certain number of seconds before invoking the command again:
-                if ($_output | Select-String $err) {
+                if ($_stderr | Select-String $err) {
                     Write-Warning "The command ""$args"" failed due to a $err, retrying after $env:RETRY_DELAY seconds."
                     $_n_retries++
-                    $_retry = $TRUE
+                    $_retry = $true
                     Start-Sleep $env:RETRY_DELAY
                     break
                 }
             }
         }
     }
-    # If the command errored, make sure that $lastexitcode is not zero
-    # or empty:
-    if (! $_status) {
-        if (! $lastexitcode) {
-            $global:lastexitcode = 1
-        }
-    }
-    # Finally, return the command's output:
-    return $_output
+    return $_stdout, $_stderr
 }
 
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
@@ -296,10 +330,10 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
-      echo $output
+      $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
+      Write-Host $output
       if ($output | select-string UnsatisfiableError) {
-         echo "Installing astropy with conda was unsuccessful, using pip instead"
+         Write-Warning "Installing astropy with conda was unsuccessful, using pip instead"
          pip install $ASTROPY_OPTION.Split(" ")
          checkLastExitCode
       } else {
@@ -324,10 +358,10 @@ if ($env:SUNPY_VERSION) {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
-      echo $output
+      $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
+      Write-Host $output
       if ($output | select-string UnsatisfiableError) {
-         echo "Installing sunpy with conda was unsuccessful, using pip instead"
+         Write-Warning "Installing sunpy with conda was unsuccessful, using pip instead"
          pip install $SUNPY_OPTION
          checkLastExitCode
       } else {
@@ -355,10 +389,10 @@ if ($env:CONDA_DEPENDENCIES) {
 if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
   if ($env:PIP_FALLBACK -match "True") {
-    $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
-    echo $output
+    $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
+    Write-Host $output
     if ($output | select-string UnsatisfiableError, PackageNotFoundError, PackagesNotFoundError) {
-       echo "Installing dependencies with conda was unsuccessful, using pip instead"
+       Write-Warning "Installing dependencies with conda was unsuccessful, using pip instead"
        pip install $CONDA_DEPENDENCIES
        checkLastExitCode
     } else {
