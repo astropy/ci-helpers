@@ -29,6 +29,84 @@ if ($env:DEBUG) {
     }
 }
 
+# If not set from outside, initialize parameters for the retry_on_known_error()
+# function:
+
+# If a command wrapped by the 'retry_on_known_error' function fails, its output
+# (stdout and stderr) is parsed for the strings in $env:RETRY_ERRORS and
+# scheduled for retry if any of the strings is found.
+# CAUTION: $env:RETRY_ERRORS is assumed to be an ARRAY of strings, i.e., a
+# comma-separated list of individual strings (NOT a whitespace-separated
+# string)!
+# Correct usage example: $env:RETRY_ERRORS = "CondaHTTPError", "SomeOtherError"
+if (! (Test-Path env:RETRY_ERRORS)) {
+    $env:RETRY_ERRORS = "CondaHTTPError"
+}
+
+# Maximum number of retries (integer):
+if (! (Test-Path env:RETRY_MAX)) {
+    $env:RETRY_MAX = 3
+}
+
+# Delay before retrying in seconds (non-negative integer):
+if (! (Test-Path env:RETRY_DELAY)) {
+    $env:RETRY_DELAY = 2
+}
+
+# A wrapper for commands that should be repeated if their output contains any of
+# the strings in $env:RETRY_ERRORS.
+function retry_on_known_error {
+    if ($args.Count -eq 0) {
+        Throw (New-Object -TypeName System.ArgumentException -ArgumentList "Function retry_on_known_error() called without arguments.")
+    }
+    # Put comand in a single string, unify its stdout and stderr (2>&1), and get
+    # its exit status (; $?):
+    $_cmd = "$args 2>&1" + '; $?'
+    $_n_retries = 0
+    $_retry = $TRUE
+    $_status = $FALSE
+    while ($_retry) {
+        $_retry = $FALSE
+        # Execute the wrapped command:
+        $_output_and_status = Invoke-Expression $_cmd
+        # Separate the received array into actual output and exit status:
+        $_output = $_output_and_status[0..($_output_and_status.length - 2)]
+        $_status = $_output_and_status[-1]
+        # If the command was sucessful, make sure $lastexitcode is zero and
+        # abort the retry loop:
+        if ($_status) {
+            if ($lastexitcode) {
+                $global:lastexitcode = 0
+            }
+            break
+        }
+        # The command errored, so let's check its output for the specified error
+        # strings:
+        if ($_n_retries -lt $env:RETRY_MAX) {
+            foreach ($err in $env:RETRY_ERRORS) {
+                # If a known error string was found, throw a warning and wait a
+                # certain number of seconds before invoking the command again:
+                if ($_output | Select-String $err) {
+                    Write-Warning "The command ""$args"" failed due to a $err, retrying after $env:RETRY_DELAY seconds."
+                    $_n_retries++
+                    $_retry = $TRUE
+                    Start-Sleep $env:RETRY_DELAY
+                    break
+                }
+            }
+        }
+    }
+    # If the command errored, make sure that $lastexitcode is not zero
+    # or empty:
+    if (! $_status) {
+        if (! $lastexitcode) {
+            $global:lastexitcode = 1
+        }
+    }
+    # Finally, return the command's output:
+    return $_output
+}
+
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
@@ -148,7 +226,7 @@ Remove-Variable CONDA_CHANNELS
 rm env:CONDA_CHANNELS
 
 # Install the build and runtime dependencies of the project.
-conda install $QUIET conda=$env:CONDA_VERSION
+retry_on_known_error conda install $QUIET conda=$env:CONDA_VERSION
 checkLastExitCode
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
@@ -164,9 +242,9 @@ checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 if (! $env:CONDA_ENVIRONMENT ) {
-   conda create $QUIET -n test python=$env:PYTHON_VERSION
+   retry_on_known_error conda create $QUIET -n test python=$env:PYTHON_VERSION
 } else {
-   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
+   retry_on_known_error conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
 }
 checkLastExitCode
 
@@ -184,7 +262,7 @@ checkLastExitCode
 # any pinned version should be set in `pinned`
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
-conda install $QUIET -n test pytest pip
+retry_on_known_error conda install $QUIET -n test pytest pip
 checkLastExitCode
 
 # Check whether a specific version of Numpy is required
@@ -196,7 +274,7 @@ if ($env:NUMPY_VERSION) {
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
-    conda install -n test $QUIET $NUMPY_OPTION
+    retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION
     checkLastExitCode
 } else {
     $NUMPY_OPTION = ""
@@ -218,7 +296,7 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
+      $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ") 2>&1
       echo $output
       if ($output | select-string UnsatisfiableError) {
          echo "Installing astropy with conda was unsuccessful, using pip instead"
@@ -228,7 +306,7 @@ if ($env:ASTROPY_VERSION) {
         checkLastExitCode
       }
     } else {
-      conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
+      retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
       checkLastExitCode
     }
 
@@ -246,7 +324,7 @@ if ($env:SUNPY_VERSION) {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
+      $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION 2>&1
       echo $output
       if ($output | select-string UnsatisfiableError) {
          echo "Installing sunpy with conda was unsuccessful, using pip instead"
@@ -256,7 +334,7 @@ if ($env:SUNPY_VERSION) {
         checkLastExitCode
       }
     } else {
-      conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
+      retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
       checkLastExitCode
     }
 } else {
@@ -277,7 +355,7 @@ if ($env:CONDA_DEPENDENCIES) {
 if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
   if ($env:PIP_FALLBACK -match "True") {
-    $output = cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
+    $output = retry_on_known_error cmd /c conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES 2>&1
     echo $output
     if ($output | select-string UnsatisfiableError, PackageNotFoundError, PackagesNotFoundError) {
        echo "Installing dependencies with conda was unsuccessful, using pip instead"
@@ -287,7 +365,7 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
       checkLastExitCode
     }
   } else {
-    conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
+    retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
     checkLastExitCode
   }
 
