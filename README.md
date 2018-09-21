@@ -170,7 +170,7 @@ environment variables
   If not set, this will default to ``RETRY_MAX=3``. Setting ``RETRY_MAX`` to
   zero will disable automatic retries.
 
-* ``RETRY_DELAY``; a positive integer specifying the number of seconds to wait
+* ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``RETRY_DELAY=2``.
 
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
@@ -275,7 +275,7 @@ environment variables:
   If not set, this will default to ``$RETRY_MAX=3``. Setting ``RETRY_MAX`` to
   zero will disable automatic retries.
 
-* ``RETRY_DELAY``; a positive integer specifying the number of seconds to wait
+* ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``$RETRY_DELAY=2``.
 
 Details
