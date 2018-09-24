@@ -4,6 +4,78 @@ hash -r
 
 set -e
 
+
+# If not set from outside, initialize parameters for the retry_on_known_error()
+# function:
+
+# If a command wrapped by the 'retry_on_known_error' function fails, its output
+# (stdout and stderr) is parsed for the strings in RETRY_ERRORS and scheduled
+# for retry if any of the strings is found.
+if [ -z "$RETRY_ERRORS" ]; then
+    RETRY_ERRORS="CondaHTTPError" # add more errors if needed (space-separated)
+fi
+
+# Maximum number of retries:
+if [ -z "$RETRY_MAX" ]; then
+    RETRY_MAX=3
+fi
+
+# Delay before retrying in seconds:
+if [ -z "$RETRY_DELAY" ]; then
+    RETRY_DELAY=2
+fi
+
+# A wrapper for calls that should be repeated if their output contains any of
+# the strings in RETRY_ERRORS.
+##############################################################################
+# CAUTION: This function will *unify* stdout and stderr of the wrapped call: #
+#          In case of success, the call's entire output will go to stdout.   #
+#          In case of failure, the call's entire output will go to stderr.   #
+##############################################################################
+function retry_on_known_error() {
+    if [ -z "$*" ]; then
+        echo "ERROR: Function retry_on_known_error() called without arguments." 1>&2
+        return 1
+    fi
+    _n_retries=0
+    _exitval=0
+    _retry=true
+    while $_retry; do
+        _retry=false
+        # Execute the wrapped command and get its unified output:
+        _output=$($@ 2>&1)
+        _exitval="$?"
+        # If the command was sucessful, abort the retry loop:
+        if [ "$_exitval" == "0" ]; then
+            break
+        fi
+        # The command errored, so let's check its output for the specified error
+        # strings:
+        if [[ $_n_retries -lt $RETRY_MAX ]]; then
+            # If a known error string was found, throw a warning and wait a
+            # certain number of seconds before invoking the command again:
+            for _error in $RETRY_ERRORS; do
+                if [ -n "$(echo "$_output" | grep "$_error")" ]; then
+                    echo "WARNING: The comand \"$@\" failed due to a $_error, retrying." 1>&2
+                    _n_retries=$(($_n_retries + 1))
+                    _retry=true
+                    sleep $RETRY_DELAY
+                    break
+                fi
+            done
+        fi
+    done
+    # If the command succeeded, print its output to stdout (otherwise, print to
+    # stderr):
+    if [ "$_exitval" == "0" ]; then
+        echo "$_output"
+    else
+        echo "$_output" 1>&2
+    fi
+    # Finally, return the command's exit code:
+    return $_exitval
+}
+
 # We need to do this before updating conda, as $CONDA_CHANNELS may be a
 # conda environment variable for some Miniconda versions, too that needs to
 # be space separated.
@@ -65,7 +137,7 @@ PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
-conda install $QUIET conda
+retry_on_known_error conda install $QUIET conda
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
     CONDA_CHANNEL_PRIORITY=false
@@ -91,9 +163,9 @@ fi
 
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
-    conda create $QUIET -n test $PYTHON_OPTION
+    retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
 else
-    conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
+    retry_on_known_error conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
 source activate test
 
@@ -129,11 +201,11 @@ fi
 # compatible with LTS 1.0.x astropy. We need to disable channel priority for
 # this step to make sure the latest version is picked up when
 # CHANNEL_PRIORITY is set to True above.
-conda install -c astropy-ci-extras --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
+retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
     $PIP_FALLBACK && ( \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
-        conda install $QUIET $PYTHON_OPTION pip
+        retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
         pip install pytest==$PYTEST_VERSION
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
@@ -240,15 +312,15 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    conda install $QUIET --no-pin $PYTHON_OPTION $MKL
+    retry_on_known_error conda install $QUIET --no-pin $PYTHON_OPTION $MKL
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE $MKL
+    retry_on_known_error conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE $MKL
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$LATEST_NUMPY_STABLE $MKL"
 elif [[ $NUMPY_VERSION == pre* ]]; then
-    conda install $QUIET --no-pin $MKL numpy
+    retry_on_known_error conda install $QUIET --no-pin $MKL numpy
     export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
     if [[ -z $(pip list -o --pre | grep numpy | \
@@ -260,7 +332,7 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL
+    retry_on_known_error conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL"
 else
@@ -274,7 +346,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other dependencies just yet
-        conda install --no-pin $PYTHON_OPTION astropy
+        retry_on_known_error conda install --no-pin $PYTHON_OPTION astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -313,7 +385,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
@@ -331,7 +403,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         :  # Install at the bottom of the script
     elif [[ $SUNPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other
-        conda install --no-pin $PYTHON_OPTION sunpy
+        retry_on_known_error conda install --no-pin $PYTHON_OPTION sunpy
         if [[ -z $(pip list -o --pre | grep sunpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -348,7 +420,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         SUNPY_OPTION=$SUNPY_VERSION
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
-        conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
             $PIP_FALLBACK && ( \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
@@ -412,7 +484,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_file_copy >> $PIN_FILE
 
-        $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
+        retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
             $PIP_FALLBACK && (\
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
@@ -434,7 +506,7 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
+    retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
         $PIP_FALLBACK && ( \
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
@@ -444,7 +516,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
-            $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
+            retry_on_known_error $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
@@ -463,7 +535,7 @@ fi
 
 # OPEN FILES
 if [[ $SETUP_CMD == *open-files* ]]; then
-    $CONDA_INSTALL psutil
+    retry_on_known_error $CONDA_INSTALL psutil
 fi
 
 # NUMPY DEV and PRE
@@ -473,7 +545,7 @@ fi
 # would override Numpy dev or pre.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
-    conda install $QUIET Cython
+    retry_on_known_error conda install $QUIET Cython
     $PIP_INSTALL git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 
@@ -490,7 +562,7 @@ fi
 # sure that Numpy doesn't get upgraded.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
-    $CONDA_INSTALL Cython jinja2 pytest-astropy
+    retry_on_known_error $CONDA_INSTALL Cython jinja2 pytest-astropy
 
     $PIP_INSTALL git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
@@ -559,12 +631,12 @@ fi
 
 if [[ $SETUP_CMD == *coverage* ]]; then
     # We install requests with conda since it's required by coveralls.
-    $CONDA_INSTALL coverage requests
+    retry_on_known_error $CONDA_INSTALL coverage requests
     $PIP_INSTALL coveralls
 fi
 
 if [[ $SETUP_CMD == *--cov* ]]; then
-    $CONDA_INSTALL pytest-cov
+    retry_on_known_error $CONDA_INSTALL pytest-cov
     $PIP_INSTALL coveralls
 fi
 
