@@ -121,6 +121,19 @@ def test_astropy():
             import pytest_doctestplus
 
 
+def test_mpl():
+    if 'MATPLOTLIB_VERSION' in os.environ:
+        import matplotlib
+        os_mpl_version = os.environ['MATPLOTLIB_VERSION'].lower()
+
+        # Revise when figured out the exact rule behind mpl dev versioning
+        if 'dev' in os_mpl_version:
+            assert '+' in matplotlib.__version__
+        else:
+            assert matplotlib.__version__.startswith(os_mpl_version)
+            assert '+' not in matplotlib.__version__
+
+
 def test_sunpy():
     if 'SUNPY_VERSION' in os.environ:
         import sunpy
