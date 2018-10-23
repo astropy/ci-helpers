@@ -6,7 +6,9 @@ import importlib
 def import_submodules(package, recursive=True):
     """
     Import all submodules of a module, recursively, including subpackages
-    Original form is from StackOverflow.
+
+    Original form is from StackOverflow:
+        https://stackoverflow.com/a/25562415
 
     Parameters
     ----------
