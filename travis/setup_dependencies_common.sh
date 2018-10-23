@@ -270,7 +270,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     for package in $(awk '{print $1}' $PIN_FILE); do
         version=$(eval echo -e \$$(echo $package | tr "-" "_" | \
             awk '{print toupper($0)"_VERSION"}'))
-        if [[ ! -z $version ]]; then
+        if [[ ! -z $version && ($version != dev* && $version != pre*) ]]; then
             awk -v package=$package -v version=$version \
                 '{if ($1 == package) print package" " version"*";
                   else print $0}' \
@@ -551,6 +551,20 @@ fi
 
 if [[ $NUMPY_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade numpy
+fi
+
+# MATPLOTLIB DEV
+
+# We now install Matplotlib dev - this has to be done last, otherwise conda might
+# install a stable version of matplotlib as a dependency to another package, which
+# would override matplotlib dev.
+
+if [[ $MATPLOTLIB_VERSION == dev* ]]; then
+    $PIP_INSTALL git+https://github.com/matplotlib/matplotlib.git#egg=matplotlib --upgrade --no-deps
+fi
+
+if [[ $MATPLOTLIB_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade --no-deps matplotlib
 fi
 
 # ASTROPY DEV and PRE
