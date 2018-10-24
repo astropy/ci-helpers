@@ -278,6 +278,17 @@ environment variables:
 * ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``$RETRY_DELAY=2``.
 
+
+### Utils
+
+A directory to collect all kinds of useful scripts to be used during various
+CI runs.
+
+* ``import_submodules.py`` - utility script to make it possible to test
+  importing submodules when optional dependencies, including pytest, are
+  missing.
+
+
 Details
 -------
 
