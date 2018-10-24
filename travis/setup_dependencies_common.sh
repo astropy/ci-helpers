@@ -106,7 +106,7 @@ else
     export NO_PYTEST_ASTROPY=True
 fi
 export ASTROPY_LTS_VERSION=2.0.8
-export LATEST_NUMPY_STABLE=1.15
+export LATEST_NUMPY_STABLE=1.15.2
 export LATEST_SUNPY_STABLE=0.9.2
 
 if [[ -z $PIP_FALLBACK ]]; then
