@@ -45,7 +45,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         raise IndexError("specify a packagename to import.")
     package_name = sys.argv[1]
-    if len(sys.argv[2]) >= 3:
+    if len(sys.argv) >= 3:
         skip_modules = sys.argv[2]
     else:
         skip_modules = None
