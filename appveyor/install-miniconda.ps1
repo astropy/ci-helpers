@@ -293,7 +293,10 @@ python --version
 checkLastExitCode
 
 # CORE DEPENDENCIES
-# any pinned version should be set in `pinned`
+# any pinned version should be set in `pinned`. We also need to pin the
+# python version, as conda sometimes tries to upgrade from e.g. 3.5 to 3.6
+# and it's totally unaccapteble for CI.
+Add-Content ci-helpers\appveyor\pinned "`npython $env:PYTHON_VERSION*"
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
 retry_on_known_error conda install $QUIET -n test pytest pip
