@@ -145,14 +145,14 @@ $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if ((python -c "from distutils.version import LooseVersion; import os; print(LooseVersion(os.environ['PYTHON_VERSION']) < str(3.5))") -match "False") {
-    $env:LATEST_ASTROPY_STABLE = "3.0.4"
+    $env:LATEST_ASTROPY_STABLE = "3.0.5"
 }
 else {
-    $env:LATEST_ASTROPY_STABLE = "2.0.8"
+    $env:LATEST_ASTROPY_STABLE = "2.0.9"
     $env:NO_PYTEST_ASTROPY = "True"
 }
 
-$env:ASTROPY_LTS_VERSION = "2.0.8"
+$env:ASTROPY_LTS_VERSION = "2.0.9"
 $env:LATEST_NUMPY_STABLE = "1.15.2"
 $env:LATEST_SUNPY_STABLE = "0.9.2"
 
@@ -293,7 +293,10 @@ python --version
 checkLastExitCode
 
 # CORE DEPENDENCIES
-# any pinned version should be set in `pinned`
+# any pinned version should be set in `pinned`. We also need to pin the
+# python version, as conda sometimes tries to upgrade from e.g. 3.5 to 3.6
+# and it's totally unaccapteble for CI.
+Add-Content ci-helpers\appveyor\pinned "`npython $env:PYTHON_VERSION*"
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
 retry_on_known_error conda install $QUIET -n test pytest pip
@@ -334,6 +337,7 @@ if ($env:ASTROPY_VERSION) {
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing astropy with conda was unsuccessful, using pip instead"
+         $ASTROPY_OPTION = $ASTROPY_OPTION -replace '=','=='
          pip install $ASTROPY_OPTION.Split(" ")
          checkLastExitCode
       } else {
@@ -362,6 +366,7 @@ if ($env:SUNPY_VERSION) {
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing sunpy with conda was unsuccessful, using pip instead"
+         $SUNPY_OPTION = $SUNPY_OPTION -replace '=','=='
          pip install $SUNPY_OPTION
          checkLastExitCode
       } else {

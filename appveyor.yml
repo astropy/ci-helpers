@@ -17,6 +17,10 @@ environment:
         # unrelated to the rest of the builds and won't change anything, except
         # that we can make sure the conda config was correctly updated.
 
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.13"
+        ASTROPY_VERSION: "lts"
+
       - PYTHON_VERSION: "2.7"
         NUMPY_VERSION: "development"
         CONDA_DEPENDENCIES: "scipy glymur"
@@ -50,10 +54,6 @@ environment:
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "development"
-
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.13"
-        ASTROPY_VERSION: "lts"
 
       # Have to supply "PYTHON_VERSION" only because of windows_sdk.cmd code
       - PYTHON_VERSION: "3.5"

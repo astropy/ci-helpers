@@ -100,12 +100,12 @@ fi
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if [[ $(python -c "from distutils.version import LooseVersion; import os;\
         print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
-    export LATEST_ASTROPY_STABLE=3.0.4
+    export LATEST_ASTROPY_STABLE=3.0.5
 else
-    export LATEST_ASTROPY_STABLE=2.0.8
+    export LATEST_ASTROPY_STABLE=2.0.9
     export NO_PYTEST_ASTROPY=True
 fi
-export ASTROPY_LTS_VERSION=2.0.8
+export ASTROPY_LTS_VERSION=2.0.9
 export LATEST_NUMPY_STABLE=1.15.2
 export LATEST_SUNPY_STABLE=0.9.2
 
