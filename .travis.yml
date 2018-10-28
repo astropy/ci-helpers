@@ -36,13 +36,13 @@ matrix:
           env: CONDA_PRIORITY=True CONDA_CHANNELS='conda-forge'
                TEST_CMD='python -c "import pytest; assert pytest.__version__.startswith(\"3.\")"'
 
-        # -> tests sunpy stable
+        # -> tests sunpy dev
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         - os: linux
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
-               SUNPY_VERSION=stable
+               SUNPY_VERSION=dev
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         - os: linux
@@ -50,13 +50,13 @@ matrix:
                PYTHON_VERSION=3.5 DEBUG=True
                TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5"'
 
-        # -> tests sunpy dev
+        # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
         #    deliberately test with Numpy 1.13 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.13 ASTROPY_VERSION=dev
-               PYTHON_VERSION=3.5 SUNPY_VERSION=dev CONDA_CHANNELS='conda-forge'
+               PYTHON_VERSION=3.5 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
 
         # -> For the Numpy dev build, we also specify a conda package that
         #    depends on Numpy to make sure that Numpy dev is used (because
