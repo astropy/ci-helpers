@@ -337,6 +337,7 @@ if ($env:ASTROPY_VERSION) {
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing astropy with conda was unsuccessful, using pip instead"
+         $ASTROPY_OPTION = $ASTROPY_OPTION -replace '=','=='
          pip install $ASTROPY_OPTION.Split(" ")
          checkLastExitCode
       } else {
@@ -365,6 +366,7 @@ if ($env:SUNPY_VERSION) {
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing sunpy with conda was unsuccessful, using pip instead"
+         $SUNPY_OPTION = $SUNPY_OPTION -replace '=','=='
          pip install $SUNPY_OPTION
          checkLastExitCode
       } else {
