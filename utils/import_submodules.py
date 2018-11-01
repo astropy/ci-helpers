@@ -3,7 +3,7 @@ import pkgutil
 import importlib
 
 
-def import_submodules(package, skip_modules=None, recursive=True):
+def import_submodules(package, skip_modules='', recursive=True):
     """
     Import all submodules of a module, recursively, including subpackages
 
@@ -16,29 +16,34 @@ def import_submodules(package, skip_modules=None, recursive=True):
     package : str or module name
         name of the package or the imported package to import the
         submodules from.
-    skip_modules : comma separated str or None
+    skip_modules : comma separated str
         Comma separated string of module names to be skipped.
     recursive : bool
         Import only the top level if recursive is False.
     """
-    if skip_modules is not None:
-        skip_modules = skip_modules.split(',')
+
+    skip_modules_list = skip_modules.split(',')
+
     if isinstance(package, str):
         package = importlib.import_module(package)
     results = {}
+    errors = []
+
     for loader, name, is_pkg in pkgutil.walk_packages(package.__path__):
         full_name = package.__name__ + '.' + name
+        if name.startswith('_') or name in skip_modules_list:
+            continue
         try:
             results[full_name] = importlib.import_module(full_name)
-            print(full_name)
-        except ImportError:
-            if name.startswith('_'):
-                continue
-            elif name in skip_modules:
-                continue
-        if recursive and is_pkg:
-            results.update(import_submodules(full_name))
-    return results
+            if recursive and is_pkg:
+                result, error = import_submodules(full_name, skip_modules)
+                results.update(result)
+                errors.append(error)
+        except ImportError as errs:
+            print("Cannot import {}".format(full_name))
+            errors.append(str(errs))
+
+    return results, errors
 
 
 if __name__ == "__main__":
@@ -48,6 +53,9 @@ if __name__ == "__main__":
     if len(sys.argv) >= 3:
         skip_modules = sys.argv[2]
     else:
-        skip_modules = None
+        skip_modules = ''
 
-    import_submodules(package_name, skip_modules)
+    results, errors = import_submodules(package_name, skip_modules)
+
+    if len(errors) > 0:
+        raise ImportError("Cannot import from {} module(s).".format(len(errors)))
