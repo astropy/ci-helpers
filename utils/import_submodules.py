@@ -31,7 +31,16 @@ def import_submodules(package, skip_modules='', recursive=True):
 
     for loader, name, is_pkg in pkgutil.walk_packages(package.__path__):
         full_name = package.__name__ + '.' + name
-        if name.startswith('_') or name in skip_modules_list:
+
+        # Sometimes ``walk_packages`` pickes up fuller namespaces thus we may
+        # miss skipping the modules we intended to skip
+        all_names = full_name.split('.')
+
+        name_skip = set(all_names).intersection(skip_modules_list)
+        is_non_public = any((n.startswith('_') for n in (all_names[-1], name)))
+        full_name_skip = any([full_name.startswith(m) for m in skip_modules_list])
+
+        if is_non_public or full_name_skip or name_skip:
             continue
         try:
             results[full_name] = importlib.import_module(full_name)
