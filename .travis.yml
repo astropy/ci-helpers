@@ -46,10 +46,12 @@ matrix:
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
+        # -> Test we have a recent pip version, the newest on the defaults channel
+        #    is 10.0.1 while the latest is 18.0 at the time of writing this test.
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
                PYTHON_VERSION=3.5 DEBUG=True
-               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5"'
+               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5; import pip; assert int(pip.__version__.split(\".\")[0])>17"'
 
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
