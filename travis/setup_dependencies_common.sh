@@ -212,6 +212,14 @@ retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $Q
     fi)
 )
 
+# In case of older python versions there isn't an up-to-date version of pip
+# which may lead to ignore install dependencies of the package we test.
+# This update should not interfere with the rest of the functionalities
+# here.
+if [[ -z $PIP_VERSION ]]; then
+    pip install --upgrade pip
+fi
+
 export PIP_INSTALL='pip install'
 
 # PEP8
