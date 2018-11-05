@@ -163,6 +163,8 @@ def test_dependency_imports():
             __import__('PyQt5')
         elif package == 'scikit-image':
             __import__('skimage')
+        elif package == 'scikit-learn':
+            __import__('sklearn')
         elif package == 'openjpeg':
             continue
         elif package == 'pytest-cov':
