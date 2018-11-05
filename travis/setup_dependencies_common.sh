@@ -497,7 +497,11 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
+                if [[ ${PIP_${package}_VERSION} == *">"* || ${PIP_${package}_VERSION} == *"<"* ]]; then
+                   PIP_PACKAGE_VERSION=${PIP_${package}_VERSION}
+                else
+                    PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
+                fi
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
