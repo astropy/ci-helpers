@@ -57,9 +57,11 @@ matrix:
         # -> Starting with the dev versions as they take the longest to run. We
         #    deliberately test with Numpy 1.13 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
+        # -> testing whether version numbers are respected by pip install fallback
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.13 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.5 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
+               SCIKIT_LEARN_VERSION='>=0.20' CONDA_DEPENDENCIES='scikit-learn'
 
         # -> For the Numpy dev build, we also specify a conda package that
         #    depends on Numpy to make sure that Numpy dev is used (because
