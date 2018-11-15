@@ -83,7 +83,7 @@ matrix:
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
                CONDA_DEPENDENCIES='pyqt5 openjpeg photutils pytest pytest-cov'
                DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=stable
-               SCIKIT_LEARN_VERSION='<=0.20,>=0.19' CONDA_DEPENDENCIES='scikit-learn'
+               SCIKIT_LEARN_VERSION='<0.20,>=0.19' CONDA_DEPENDENCIES='scikit-learn'
 
         # -> The pre builds should run the testing phase only when a pre
         #    release is available on pypi, otherwise it should pass
