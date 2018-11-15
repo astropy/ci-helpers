@@ -109,6 +109,11 @@ export ASTROPY_LTS_VERSION=2.0.9
 export LATEST_NUMPY_STABLE=1.15
 export LATEST_SUNPY_STABLE=0.9.2
 
+
+is_number='[0-9]'
+is_eq_number='=[0-9]'
+
+
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
 fi
@@ -443,9 +448,6 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     # Check whether there are any version setting env variables, pin them if
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
-
-    is_number='[0-9]'
-    is_eq_number='=[0-9]'
 
     if [[ ! -z $MATPLOTLIB_VERSION ]]; then
         if [[ -z $(grep matplotlib $PIN_FILE) ]]; then
