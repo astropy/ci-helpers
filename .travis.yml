@@ -81,9 +81,9 @@ matrix:
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.4
                TEST_CMD='py.test test_env.py && coverage run test_env.py; python -c "import sklearn; assert sklearn.__version__.startswith(\"0.19\")"'
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5 openjpeg photutils pytest pytest-cov'
+               CONDA_DEPENDENCIES='scipy pyqt5 openjpeg photutils pytest pytest-cov scikit-learn'
                DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=stable
-               SCIKIT_LEARN_VERSION='<0.20,>=0.19' CONDA_DEPENDENCIES='scikit-learn'
+               SCIKIT_LEARN_VERSION='<0.20,>=0.19'
 
         # -> The pre builds should run the testing phase only when a pre
         #    release is available on pypi, otherwise it should pass
