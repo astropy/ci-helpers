@@ -57,11 +57,9 @@ matrix:
         # -> Starting with the dev versions as they take the longest to run. We
         #    deliberately test with Numpy 1.13 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
-        # -> testing whether version numbers are respected by pip install fallback
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.13 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.5 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
-               SCIKIT_LEARN_VERSION='>=0.20' CONDA_DEPENDENCIES='scikit-learn'
 
         # -> For the Numpy dev build, we also specify a conda package that
         #    depends on Numpy to make sure that Numpy dev is used (because
@@ -78,12 +76,14 @@ matrix:
         #    missing from listed channels) to test the install one-by-one.
         # -> Have package dependency that matches partially another package
         #    (pytest vs pytest-cov) when falling back to pip install
+        # -> testing whether version numbers are respected by pip install fallback
         - os: linux
-          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.5
-               TEST_CMD='py.test test_env.py && coverage run test_env.py'
+          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.4
+               TEST_CMD='py.test test_env.py && coverage run test_env.py; python -c "import sklearn; assert sklearn.__version__.startswith(\"0.19\")"'
                CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='pyqt5 openjpeg photutils pytest pytest-cov'
-               DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=lts
+               CONDA_DEPENDENCIES='scipy pyqt5 openjpeg photutils pytest pytest-cov scikit-learn'
+               DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=stable
+               SCIKIT_LEARN_VERSION='<0.20,>=0.19'
 
         # -> The pre builds should run the testing phase only when a pre
         #    release is available on pypi, otherwise it should pass
@@ -160,7 +160,7 @@ matrix:
 
         # -> Have empty string as dependency list when falling back on pip
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=stable
+          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
                CONDA_DEPENDENCIES=''
 
         - os: linux

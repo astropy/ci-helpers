@@ -109,6 +109,11 @@ export ASTROPY_LTS_VERSION=2.0.9
 export LATEST_NUMPY_STABLE=1.15
 export LATEST_SUNPY_STABLE=0.9.2
 
+
+is_number='[0-9]'
+is_eq_number='=[0-9]'
+
+
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
 fi
@@ -444,9 +449,6 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
     # there are (only need to deal with the case when they aren't listed in
     # CONDA_DEPENDENCIES, otherwise this was already dealt with)
 
-    is_number='[0-9]'
-    is_eq_number='=[0-9]'
-
     if [[ ! -z $MATPLOTLIB_VERSION ]]; then
         if [[ -z $(grep matplotlib $PIN_FILE) ]]; then
             echo "matplotlib ${MATPLOTLIB_VERSION}*" >> $PIN_FILE
@@ -493,11 +495,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                if [[ ${PIP_${package}_VERSION} == *">"* || ${PIP_${package}_VERSION} == *"<"* ]]; then
-                   PIP_PACKAGE_VERSION=${PIP_${package}_VERSION}
-                else
-                    PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
-                fi
+                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
@@ -528,10 +526,18 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
-                # too.
+                # too. Also we may need to limit the version installed by pip.
+                PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
+
+                # Deal with as for specific version, otherwise the limitation can be passed on as is
+                if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
+                    PIP_PACKAGE_VERSION='=='${PIP_PACKAGE_VERSION}
+                elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+                    PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
+                fi
                 awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
-                $PIP_INSTALL $package);
+                $PIP_INSTALL $package${PIP_PACKAGE_VERSION});
         done
         mv /tmp/pin_copy $PIN_FILE))
 fi
