@@ -493,11 +493,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                if [[ ${PIP_${package}_VERSION} == *">"* || ${PIP_${package}_VERSION} == *"<"* ]]; then
-                   PIP_PACKAGE_VERSION=${PIP_${package}_VERSION}
-                else
-                    PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
-                fi
+                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
@@ -528,10 +524,18 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
-                # too.
+                # too. Also we may need to limit the version installed by pip.
+                PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
+
+                # Deal with as for specific version, otherwise the limitation can be passed on as is
+                if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
+                    PIP_PACKAGE_VERSION='=='${PIP_PACKAGE_VERSION}
+                elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+                    PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
+                fi
                 awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
-                $PIP_INSTALL $package);
+                $PIP_INSTALL $package${PIP_PACKAGE_VERSION});
         done
         mv /tmp/pin_copy $PIN_FILE))
 fi
