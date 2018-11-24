@@ -17,6 +17,11 @@ environment:
         # unrelated to the rest of the builds and won't change anything, except
         # that we can make sure the conda config was correctly updated.
 
+      - PYTHON_VERSION: "2.7"
+        DEBUG: "True"
+        PYTEST_VERSION: "<4"
+        TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
+
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "lts"
@@ -29,7 +34,6 @@ environment:
         CONDA_CHANNEL_PRIORITY: "True"
         DEBUG: "True"
 
-
       - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "stable"
         ASTROPY_VERSION: "stable"
@@ -37,9 +41,6 @@ environment:
         PIP_DEPENDENCIES: "astrodendro"
         CONDA_CHANNEL_PRIORITY: "False"
         SUNPY_VERSION: "dev"
-        DEBUG: "True"
-
-      - PYTHON_VERSION: "2.7"
         DEBUG: "True"
 
         # For the Numpy dev build, we also specify a conda package that depends
