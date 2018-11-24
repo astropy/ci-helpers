@@ -304,6 +304,10 @@ if ($env:PYTEST_VERSION) {
 
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
 
+if ($env:DEBUG) {
+   Get-Content ${env:PYTHON}\envs\test\conda-meta\pinned
+}
+
 retry_on_known_error conda install $QUIET -n test pytest pip
 checkLastExitCode
 
