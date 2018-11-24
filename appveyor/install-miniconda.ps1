@@ -299,7 +299,7 @@ checkLastExitCode
 Add-Content ci-helpers\appveyor\pinned "`npython $env:PYTHON_VERSION*"
 
 if ($env:PYTEST_VERSION) {
-   Add-Content ci-helpers\appveyor\pinned "npytest $env:PYTEST_VERSION*"
+   Add-Content ci-helpers\appveyor\pinned "`npytest $env:PYTEST_VERSION*"
 }
 
 Copy-Item ci-helpers\appveyor\pinned ${env:PYTHON}\envs\test\conda-meta\pinned
