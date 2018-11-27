@@ -40,10 +40,12 @@ matrix:
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
+        # -> Pytest pip fall back handles version number correctly
         - os: linux
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
+               PYTEST_VERSION="<3.4"
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         # -> Test we have a recent pip version, the newest on the defaults channel
