@@ -188,6 +188,32 @@ if [[ $SETUP_CMD == egg_info ]]; then
     return  # no more dependencies needed
 fi
 
+# TEMPORARY PYTEST VERSION HANDLING
+
+# pytest 3.7, 3.8, and 3.9 don't work properly with astropy <3
+# (https://github.com/astropy/astropy/issues/8177)
+
+# In addition, pytest 4.0 has an issue with the test function at the top of
+# packages. There is a fix for this in the package-template
+# (https://github.com/astropy/package-template/pull/373) as well as in the core
+# package (https://github.com/astropy/astropy/pull/8170). We can revert this
+# once most packages have been updated to use the latest _astropy_init.py file.
+
+if [[ ! -z $PYTEST_VERSION ]]; then
+
+  if [[ ! -z $ASTROPY_VERSION ]]; then
+      if [[ $ASTROPY_VERSION == lts || $ASTROPY_VERSION == 0* || $ASTROPY_VERSION == 1* || $ASTROPY_VERSION == 2* ]]; then
+        PYTEST_VERSION=3.6
+      else
+        PYTEST_VERSION=3.9
+      fi
+  else
+    if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep astropy) ]]; then
+      PYTEST_VERSION=3.9
+    fi
+  fi
+fi
+
 # CORE DEPENDENCIES
 
 if [[ ! -z $PYTEST_VERSION ]]; then
