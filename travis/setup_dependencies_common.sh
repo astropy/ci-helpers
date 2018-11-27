@@ -207,7 +207,14 @@ retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $Q
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
-        pip install pytest==$PYTEST_VERSION
+        if [[ $(echo $PYTEST_VERSION | cut -c 1) =~ $is_number ]]; then
+            PIP_PYTEST_VERSION='=='${PYTEST_VERSION}
+        elif [[ $(echo $PYTEST_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+            PIP_PYTEST_VERSION='='${PYTEST_VERSION}
+        else
+            PIP_PYTEST_VERSION=${PYTEST_VERSION}
+        fi
+        pip install pytest${PIP_PYTEST_VERSION}
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
     fi)
