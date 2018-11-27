@@ -199,7 +199,7 @@ fi
 # package (https://github.com/astropy/astropy/pull/8170). We can revert this
 # once most packages have been updated to use the latest _astropy_init.py file.
 
-if [[ ! -z $PYTEST_VERSION ]]; then
+if [[ -z $PYTEST_VERSION ]]; then
 
   if [[ ! -z $ASTROPY_VERSION ]]; then
       if [[ $ASTROPY_VERSION == lts || $ASTROPY_VERSION == 0* || $ASTROPY_VERSION == 1* || $ASTROPY_VERSION == 2* ]]; then
