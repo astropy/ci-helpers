@@ -263,14 +263,6 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
-    # On the defaults conda channel mpl currently segfault with newer sip
-    # versions. While it doesn't happen for all python version, there are
-    # many packages running into the issue, so we better have a temporarily
-    # limitation for everything here.
-    if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep matplotlib) ]]; then
-        CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" sip<4.19"
-    fi
-
     if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
     fi
