@@ -208,10 +208,12 @@ matrix:
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
 before_install:
+    - pwd
+    - ls -l
     - if [[ $TRAVIS_OS_NAME != windows ]]; then
         ln -s . ci-helpers;
       fi
-    - source ci-helpers/travis/setup_conda.sh
+    - source ./ci-helpers/travis/setup_conda.sh
 
 script:
    - eval $TEST_CMD
