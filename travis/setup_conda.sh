@@ -56,12 +56,7 @@ fi
 
 echo "==================== Starting executing ci-helpers scripts ====================="
 
-if [[ $TRAVIS_OS_NAME == windows ]]; then
-    # The default shell is git-bash, so just use the linux script
-    source ci-helpers/travis/setup_conda_linux.sh;
-else
-    source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh;
-fi
+source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh;
 
 echo "================= Returning executing local .travis.yml script ================="
 
