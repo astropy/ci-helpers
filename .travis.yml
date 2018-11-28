@@ -212,8 +212,10 @@ before_install:
     - ls -l
     - if [[ $TRAVIS_OS_NAME != windows ]]; then
         ln -s . ci-helpers;
+        source ./ci-helpers/travis/setup_conda.sh;
+      else
+        source ./travis/setup_conda.sh;
       fi
-    - source ./ci-helpers/travis/setup_conda.sh
 
 script:
    - eval $TEST_CMD
