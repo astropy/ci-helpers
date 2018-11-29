@@ -41,6 +41,9 @@ matrix:
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
         - os: linux
+          addons:
+              apt:
+                  packages: gfortran
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
