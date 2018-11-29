@@ -574,6 +574,40 @@ if [[ $MATPLOTLIB_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade --no-deps matplotlib
 fi
 
+
+# SCIPY_DEV
+
+# We now install Scipy dev - this has to be done last, otherwise conda might
+# install a stable version of matplotlib as a dependency to another package, which
+# would override matplotlib dev.
+
+if [[ $SCIPY_VERSION == dev* ]]; then
+    retry_on_known_error $CONDA_INSTALL Cython
+
+    $PIP_INSTALL git+https://github.com/scipy/scipy.git#egg=scipy --upgrade --no-deps
+fi
+
+if [[ $SCIPY_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade --no-deps scipy
+fi
+
+
+# SCIKIT_LEARN DEV
+
+# We now install scikit-learn dev - this has to be done last, otherwise conda might
+# install a stable version of matplotlib as a dependency to another package, which
+# would override matplotlib dev.
+
+if [[ $SCIKIT_LEARN_VERSION == dev* ]]; then
+    retry_on_known_error $CONDA_INSTALL Cython
+
+    $PIP_INSTALL git+https://github.com/scikit-learn/scikit-learn.git#egg=sklearn --upgrade --no-deps
+fi
+
+if [[ $SCIKIT_LEARN_VERSION == pre* ]]; then
+    $PIP_INSTALL --pre --upgrade --no-deps scikit-learn
+fi
+
 # ASTROPY DEV and PRE
 
 # We now install Astropy dev - this has to be done last, otherwise conda might

@@ -40,12 +40,14 @@ matrix:
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
-        # -> Pytest pip fall back handles version number correctly
         - os: linux
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib'
+          addons:
+              apt:
+                  packages: gfortran
+          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
-               PYTEST_VERSION="<3.4"
+               SCIKIT_LEARN_VERSION='dev' SCIPY_VERSION=dev
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         # -> Test we have a recent pip version, the newest on the defaults channel
@@ -69,9 +71,11 @@ matrix:
         #    include scipy here to make sure that scipy routines still work
         #    correctly, because if we aren't careful, we can end up with issues
         #    with the math kernel library.
+        # -> Pytest pip fall back handles version number correctly
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=dev
                CONDA_DEPENDENCIES='scipy'
+               PYTEST_VERSION="<3.6.2"
 
         # -> Have non Python package (openjpeg) in dependency list when
         #    falling back on pip installing the dependencies (as photutils is
