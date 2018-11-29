@@ -582,6 +582,8 @@ fi
 # would override matplotlib dev.
 
 if [[ $SCIPY_VERSION == dev* ]]; then
+    retry_on_known_error $CONDA_INSTALL Cython
+
     $PIP_INSTALL git+https://github.com/scipy/scipy.git#egg=scipy --upgrade --no-deps
 fi
 
