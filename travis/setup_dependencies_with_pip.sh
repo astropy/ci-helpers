@@ -25,6 +25,14 @@ else
     PYTHON_OPTION=""
 fi
 
+conda config --set always_yes yes --set changeps1 no
+
+if [[ ! -z $CONDA_CHANNELS ]]; then
+    for channel in $CONDA_CHANNELS; do
+        conda config --add channels $channel
+    done
+fi
+
 conda create $QUIET -n test $PYTHON_OPTION $CONDA_DEPENDENCIES
 
 source activate test
