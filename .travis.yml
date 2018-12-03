@@ -50,7 +50,7 @@ matrix:
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
-               SCIKIT_LEARN_VERSION='dev' SCIPY_VERSION=dev
+               SCIKIT_LEARN_VERSION='dev'
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         # -> Test we have a recent pip version, the newest on the defaults channel
