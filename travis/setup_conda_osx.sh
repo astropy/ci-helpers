@@ -20,4 +20,8 @@ bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
 # Install common Python dependencies
-source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
+if [[ $USE_PIP_INSTALL == True ]]; then
+    source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_with_pip.sh;
+else
+    source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh;
+fi
