@@ -138,7 +138,9 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.5.10
 fi
 
-PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+if [[ -z $PIN_FILE_CONDA ]]; then
+    PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+fi
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
@@ -175,7 +177,10 @@ fi
 source activate test
 
 # PIN FILE
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+if [[ -z $PIN_FILE ]]; then
+    PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+fi
+
 # ensure the PIN_FILE exists
 touch $PIN_FILE
 
