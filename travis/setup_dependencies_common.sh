@@ -268,7 +268,8 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
-    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') && 
+            $TRAVIS_OS_NAME != windows ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
     fi
 
@@ -315,7 +316,8 @@ fi
 
 
 MKL='nomkl'
-if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') || 
+        $TRAVIS_OS_NAME == windows ]]; then
     MKL=''
 fi
 
