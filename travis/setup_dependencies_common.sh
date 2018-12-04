@@ -161,6 +161,10 @@ conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 # future changes
 export PYTHONIOENCODING=UTF8
 
+# Use Agg backend of Matplotlib to avoid segmentation fault on some
+# versions of pytest.
+export MPLBACKEND="Agg"
+
 # Making sure we don't upgrade python accidentally
 if [[ ! -z $PYTHON_VERSION ]]; then
     PYTHON_OPTION="python=$PYTHON_VERSION"
