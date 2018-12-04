@@ -208,6 +208,8 @@ if [[ ! -z $PIP_VERSION ]]; then
     echo "pip ${PIP_VERSION}.*" >> $PIN_FILE
 fi
 
+export PIP_INSTALL='python -m pip install'
+
 # We use the channel astropy-ci-extras to host pytest 2.7.3 that is
 # compatible with LTS 1.0.x astropy. We need to disable channel priority for
 # this step to make sure the latest version is picked up when
@@ -224,7 +226,7 @@ retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $Q
         else
             PIP_PYTEST_VERSION=${PYTEST_VERSION}
         fi
-        pip install pytest${PIP_PYTEST_VERSION}
+        $PIP_INSTALL pytest${PIP_PYTEST_VERSION}
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
     fi)
@@ -235,10 +237,8 @@ retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $Q
 # This update should not interfere with the rest of the functionalities
 # here.
 if [[ -z $PIP_VERSION ]]; then
-    pip install --upgrade pip
+    $PIP_INSTALL --upgrade pip
 fi
-
-export PIP_INSTALL='pip install'
 
 # PEP8
 # PEP8 has been renamed to pycodestyle, keep both here for now
