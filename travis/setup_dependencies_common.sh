@@ -138,7 +138,9 @@ if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.5.10
 fi
 
-PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+if [[ -z $PIN_FILE_CONDA ]]; then
+    PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+fi
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
@@ -175,7 +177,10 @@ fi
 source activate test
 
 # PIN FILE
-PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+if [[ -z $PIN_FILE ]]; then
+    PIN_FILE=$HOME/miniconda/envs/test/conda-meta/pinned
+fi
+
 # ensure the PIN_FILE exists
 touch $PIN_FILE
 
@@ -263,7 +268,8 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
-    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') && 
+            $TRAVIS_OS_NAME != windows ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
     fi
 
@@ -310,7 +316,8 @@ fi
 
 
 MKL='nomkl'
-if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ]]; then
+if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') || 
+        $TRAVIS_OS_NAME == windows ]]; then
     MKL=''
 fi
 
