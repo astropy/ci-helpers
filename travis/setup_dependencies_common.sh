@@ -170,7 +170,7 @@ fi
 
 # Setting the MPL backend to a default to avoid occational segfaults with the qt backend
 if [[ ! -z $MPLBACKEND ]]; then
-    MPLBACKEND=Agg
+    export MPLBACKEND=Agg
 fi
 
 # CONDA
