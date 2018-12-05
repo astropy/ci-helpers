@@ -136,6 +136,8 @@ environment variables
 * ``SETUP_XVFB``: if True this makes sure e.g., interactive matplotlib
   backends work by starting up a X virtual framebuffer.
 
+* ``MPLBACKEND``: If not specified it is set to ``Agg`` as the default backend.
+
 * ``PACKAGENAME_VERSION``: ``PACKAGENAME`` is the name of the package to
   specify the version for (e.g. ``MATPLOTLIB_VERSION``). Due to shell
   limitations, all hyphens in the conda package name should be changed to

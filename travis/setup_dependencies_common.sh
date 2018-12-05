@@ -168,6 +168,11 @@ else
     PYTHON_OPTION=""
 fi
 
+# Setting the MPL backend to a default to avoid occational segfaults with the qt backend
+if [[ ! -z $MPLBACKEND ]]; then
+    MPLBACKEND=Agg
+fi
+
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
     retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
@@ -268,7 +273,7 @@ fi
 # http://conda.pydata.org/docs/faq.html#pinning-packages
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
-    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') && 
+    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') &&
             $TRAVIS_OS_NAME != windows ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
     fi
@@ -316,7 +321,7 @@ fi
 
 
 MKL='nomkl'
-if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') || 
+if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ||
         $TRAVIS_OS_NAME == windows ]]; then
     MKL=''
 fi
