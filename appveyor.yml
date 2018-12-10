@@ -26,7 +26,7 @@ environment:
         NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "lts"
 
-      - PYTHON_VERSION: "2.7"
+      - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "development"
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "conda-forge astrofrog"
