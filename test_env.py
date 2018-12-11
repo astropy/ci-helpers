@@ -37,9 +37,10 @@ if not LooseVersion(sys.version) < '3.5':
     LATEST_ASTROPY_STABLE_WIN = '3.1'
 else:
     LATEST_ASTROPY_STABLE = '2.0.10'
-    LATEST_ASTROPY_STABLE_WIN = '2.0.10'
+    LATEST_ASTROPY_STABLE_WIN = '2.0.9'
 
 LATEST_ASTROPY_LTS = '2.0.10'
+LATEST_ASTROPY_LTS_WIN = '2.0.9'
 LATEST_NUMPY_STABLE = '1.15'
 LATEST_SUNPY_STABLE = '0.9.2'
 
@@ -107,7 +108,10 @@ def test_astropy():
                 else:
                     assert astropy.__version__.startswith(LATEST_ASTROPY_STABLE)
             elif 'lts' in os_astropy_version:
-                assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)
+                if 'APPVEYOR' in os.environ:
+                    assert astropy.__version__.startswith(LATEST_ASTROPY_LTS_WIN)
+                else:
+                    assert astropy.__version__.startswith(LATEST_ASTROPY_LTS)
             else:
                 assert astropy.__version__.startswith(os_astropy_version)
             assert 'dev' not in astropy.__version__

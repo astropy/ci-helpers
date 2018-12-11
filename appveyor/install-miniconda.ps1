@@ -148,11 +148,11 @@ if ((python -c "from distutils.version import LooseVersion; import os; print(Loo
     $env:LATEST_ASTROPY_STABLE = "3.1"
 }
 else {
-    $env:LATEST_ASTROPY_STABLE = "2.0.10"
+    $env:LATEST_ASTROPY_STABLE = "2.0.9"
     $env:NO_PYTEST_ASTROPY = "True"
 }
 
-$env:ASTROPY_LTS_VERSION = "2.0.10"
+$env:ASTROPY_LTS_VERSION = "2.0.9"
 $env:LATEST_NUMPY_STABLE = "1.15"
 $env:LATEST_SUNPY_STABLE = "0.9.2"
 
