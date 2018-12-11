@@ -145,7 +145,7 @@ $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if ((python -c "from distutils.version import LooseVersion; import os; print(LooseVersion(os.environ['PYTHON_VERSION']) < str(3.5))") -match "False") {
-    $env:LATEST_ASTROPY_STABLE = "3.0.5"
+    $env:LATEST_ASTROPY_STABLE = "3.1"
 }
 else {
     $env:LATEST_ASTROPY_STABLE = "2.0.9"
