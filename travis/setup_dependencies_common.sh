@@ -748,4 +748,4 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
     fi
 fi
 
-set +x
+set +ex
