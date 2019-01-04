@@ -206,6 +206,11 @@ matrix:
     allow_failures:
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
+        # numpy dev currently fails with a gcc error, we should temporarily allow this job to fail here
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=dev
+               CONDA_DEPENDENCIES='scipy'
+               PYTEST_VERSION="<3.6.2"
 
 before_install:
     - if [[ $TRAVIS_OS_NAME == windows ]]; then
