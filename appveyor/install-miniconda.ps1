@@ -141,6 +141,7 @@ function retry_on_known_error {
     return $_stdout, $_stderr
 }
 
+$env:SSL_NO_VERIFY = "True"
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
