@@ -327,6 +327,8 @@ if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ||
 fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
+    # We use C99 to build Numpy
+    export CFLAGS="-std=c99"
     # We install nomkl here to make sure that Numpy and Scipy versions
     # installed subsequently don't depend on the MKL. If we don't do this, then
     # we run into issues when we install the developer version of Numpy
