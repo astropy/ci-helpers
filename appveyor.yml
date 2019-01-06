@@ -17,14 +17,14 @@ environment:
         # unrelated to the rest of the builds and won't change anything, except
         # that we can make sure the conda config was correctly updated.
 
+      - PYTHON_VERSION: "3.5"
+        NUMPY_VERSION: "1.13"
+        ASTROPY_VERSION: "lts"
+
       - PYTHON_VERSION: "2.7"
         DEBUG: "True"
         PYTEST_VERSION: "<4"
         TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
-
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.13"
-        ASTROPY_VERSION: "lts"
 
       - PYTHON_VERSION: "3.5"
         NUMPY_VERSION: "development"
