@@ -240,6 +240,9 @@ $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
 
 # Conda config
 
+conda config --set ssl_verify no
+checkLastExitCode
+
 conda config --set always_yes true
 checkLastExitCode
 
