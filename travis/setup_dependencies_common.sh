@@ -565,7 +565,7 @@ fi
 
 if [[ $NUMPY_VERSION == dev* ]]; then
     retry_on_known_error conda install $QUIET Cython
-    $PIP_INSTALL git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
+    $PIP_INSTALL git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps --install-option="-std=c99"
 fi
 
 if [[ $NUMPY_VERSION == pre* ]]; then
