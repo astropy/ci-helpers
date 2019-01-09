@@ -704,12 +704,12 @@ fi
 if [[ $SETUP_CMD == *coverage* ]]; then
     # We install requests with conda since it's required by coveralls.
     retry_on_known_error $CONDA_INSTALL coverage requests
-    $PIP_INSTALL coveralls
+    $PIP_INSTALL coveralls codecov
 fi
 
 if [[ $SETUP_CMD == *--cov* ]]; then
     retry_on_known_error $CONDA_INSTALL pytest-cov
-    $PIP_INSTALL coveralls
+    $PIP_INSTALL coveralls codecov
 fi
 
 
