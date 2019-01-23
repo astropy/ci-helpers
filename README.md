@@ -173,6 +173,11 @@ environment variables
 * ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``RETRY_DELAY=2``.
 
+* ``MACOSX_DEPLOYMENT_TARGET`` (OSX only): If left blank, the minimum OSX target
+  version for LLVM/Clang builds will be set to ``10.9``.
+  If set to ``"clang_default"``, determining the minimum OSX target version is
+  left to LLVM/Clang. If set to any different value, that value will be used.
+
 The idea behind the ``MAIN_CMD`` and ``SETUP_CMD`` environment variables is
 that the ``script`` section of the ``.travis.yml`` file can be set to:
 
