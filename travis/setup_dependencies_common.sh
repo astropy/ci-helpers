@@ -112,6 +112,7 @@ export LATEST_SUNPY_STABLE=0.9.2
 
 is_number='[0-9]'
 is_eq_number='=[0-9]'
+is_eq_float="=[0-9]+\.[0-9]+"
 
 
 if [[ -z $PIP_FALLBACK ]]; then
@@ -326,6 +327,8 @@ if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ||
     MKL=''
 fi
 
+# determine how to install numpy:
+NUMPY_INSTALL=''
 if [[ $NUMPY_VERSION == dev* ]]; then
     # We use C99 to build Numpy.
     # If CFLAGS already defined by calling pkg, it's up to them to set this.
@@ -341,13 +344,13 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # We then install Numpy itself at the bottom of this script
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
 elif [[ $NUMPY_VERSION == stable ]]; then
-    retry_on_known_error conda install $QUIET --no-pin numpy=$LATEST_NUMPY_STABLE $MKL
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$LATEST_NUMPY_STABLE $MKL"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
 elif [[ $NUMPY_VERSION == pre* ]]; then
-    retry_on_known_error conda install $QUIET --no-pin $MKL numpy
     export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
+    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $MKL numpy"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         # We want to stop the script if there isn't a pre-release available,
@@ -357,12 +360,35 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
         travis_terminate 0
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
-    retry_on_known_error conda install $QUIET --no-pin $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION numpy=$NUMPY_VERSION $MKL"
+    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    
 else
     export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
+fi
+
+# try to install numpy:
+if [[ ! -z $NUMPY_INSTALL ]]; then
+    retry_on_known_error $NUMPY_INSTALL || { \
+        if [[ -z $NUMPY_OPTION ]]; then
+            PIP_NUMPY_OPTION="numpy"
+        else
+            if [[ $NUMPY_OPTION =~ ^numpy$is_eq_float$ ]]; then
+                PIP_NUMPY_OPTION="numpy==${NUMPY_OPTION#*=}.*"
+            else
+                PIP_NUMPY_OPTION="$NUMPY_OPTION"
+            fi
+        fi
+        echo -e "\nInstalling $NUMPY_OPTION with conda was unsuccessful," \
+                "removing from conda install and adding $PIP_NUMPY_OPTION" \
+                " to PIP_DEPENDENCIES instead.\n"
+        export PIP_DEPENDENCIES="$PIP_DEPENDENCIES $PIP_NUMPY_OPTION"
+        # now that numpy will be installed via pip later,
+        # remove it from CONDA_INSTALL:
+        export CONDA_INSTALL=$(echo $CONDA_INSTALL | sed -e 's/numpy[a-zA-Z0-9.=]*\( \|$\)//g')
+    }
 fi
 
 # ASTROPY
