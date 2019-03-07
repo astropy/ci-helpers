@@ -375,8 +375,14 @@ if [[ ! -z $NUMPY_INSTALL ]]; then
         if [[ -z $NUMPY_OPTION ]]; then
             PIP_NUMPY_OPTION="numpy"
         else
+            # add wildcard for float-like version specs:
             if [[ $NUMPY_OPTION =~ ^numpy$is_eq_float$ ]]; then
                 PIP_NUMPY_OPTION="numpy==${NUMPY_OPTION#*=}.*"
+            # use exact version definitions as is:
+            elif [[ $NUMPY_OPTION =~ ^numpy=.* ]]; then
+                PIP_NUMPY_OPTION="numpy==${NUMPY_OPTION#numpy=}"
+            # Should version specs with 'numpy>=X' etc. ever be used,
+            # use these as is:
             else
                 PIP_NUMPY_OPTION="$NUMPY_OPTION"
             fi
