@@ -161,7 +161,7 @@ $env:LATEST_SUNPY_STABLE = "0.9.2"
 if (! $env:CONDA_VERSION) {
    $env:CONDA_VERSION = "4.5.10"
 }
-ElseIf ($env:CONDA_VERSION -eq stable) {
+ElseIf ($env:CONDA_VERSION -eq "stable") {
    $env:CONDA_VERSION = ""
 }
 
