@@ -105,6 +105,10 @@ environment variables
 * ``MINICONDA_VERSION``: This sets the version of Miniconda that will be
   installed.  Use this to override a pinned version if necessary.
 
+* ``CONDA_VERSION``: This sets the version of conda that will be
+  installed.  Use this to override a pinned version if necessary.
+  If set to ``stable``, install the latest stable version of conda.
+
 * ``CONDA_DEPENDENCIES``: this should be a space-separated string of
   package names that will be installed with conda. Version numbers of these
   dependencies can be overridden/specified with the ``PACKAGENAME_VERSION``
@@ -254,6 +258,10 @@ environment variables:
 
 * ``MINICONDA_VERSION``: this sets the version of Miniconda that will be
   installed.  Use this to override a pinned version if necessary.
+
+* ``CONDA_VERSION``: This sets the version of conda that will be
+  installed.  Use this to override a pinned version if necessary.
+  If set to ``stable``, install the latest stable version of conda.
 
 * ``CONDA_DEPENDENCIES``: this should be a space-separated string of package
   names that will be installed with conda.

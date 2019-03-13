@@ -137,6 +137,8 @@ fi
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
     CONDA_VERSION=4.5.12
+elif [[ $CONDA_VERSION == stable ]]; then
+    CONDA_VERSION=
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
