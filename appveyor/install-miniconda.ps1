@@ -156,15 +156,6 @@ $env:ASTROPY_LTS_VERSION = "2.0.12"
 $env:LATEST_NUMPY_STABLE = "1.16"
 $env:LATEST_SUNPY_STABLE = "0.9.2"
 
-# We pin the version for conda as it's not the most stable package from
-# release to release. Add note here if version is pinned due to a bug upstream.
-if (! $env:CONDA_VERSION) {
-   $env:CONDA_VERSION = "4.5.10"
-}
-ElseIf ($env:CONDA_VERSION -eq "stable") {
-   $env:CONDA_VERSION = ""
-}
-
 if (! $env:PIP_FALLBACK) {
    $env:PIP_FALLBACK = "True"
 }
@@ -263,8 +254,20 @@ Remove-Variable CONDA_CHANNELS
 rm env:CONDA_CHANNELS
 
 # Install the build and runtime dependencies of the project.
-retry_on_known_error conda install $QUIET conda=$env:CONDA_VERSION
-checkLastExitCode
+# We pin the version for conda as it's not the most stable package from
+# release to release. Add note here if version is pinned due to a bug upstream.
+if ($env:CONDA_VERSION -eq "stable") {
+   retry_on_known_error conda install $QUIET conda
+   checkLastExitCode
+   retry_on_known_error conda update $QUIET conda
+   checkLastExitCode
+} else { 
+   if (! $env:CONDA_VERSION) {
+       $env:CONDA_VERSION = "4.5.10"
+   }
+   retry_on_known_error conda install $QUIET conda=$env:CONDA_VERSION
+   checkLastExitCode
+}
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
