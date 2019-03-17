@@ -20,9 +20,8 @@ env:
 matrix:
     include:
         # -> pytest pip fallback, conda package for 3.1 is not available for py3.4
-        # -> check CONDA_VERSION does set the version
         - os: linux
-          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 CONDA_VERSION=4.5.10
+          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
 
         # Try pytest pip fallback as conda package for 3.1 is not available
         # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
@@ -43,7 +42,8 @@ matrix:
           addons:
               apt:
                   packages: gfortran
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
+          env: PYTHON_VERSION=3.7 NUMPY_VERSION=stable
+               CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
                SCIKIT_LEARN_VERSION='dev' CONDA_VERSION='stable'
@@ -164,8 +164,10 @@ matrix:
                PYTHON_VERSION='3.5'
 
         # -> Have empty string as dependency list when falling back on pip
+        # -> check CONDA_VERSION does set the version
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
+          env: PYTHON_VERSION=3.7 CONDA_VERSION=4.5.10
+               SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
                CONDA_DEPENDENCIES=''
 
         - os: linux

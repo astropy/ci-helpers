@@ -136,9 +136,9 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.5.12
+    export CONDA_VERSION=4.5.12
 elif [[ $CONDA_VERSION == stable ]]; then
-    CONDA_VERSION=
+    export CONDA_VERSION=
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
@@ -365,7 +365,7 @@ elif [[ ! -z $NUMPY_VERSION ]]; then
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
     NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
-    
+
 else
     export NUMPY_OPTION=""
     export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
