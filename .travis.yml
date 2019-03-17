@@ -33,12 +33,6 @@ matrix:
         - os: windows
           env: PYTHON_VERSION=3.7
 
-        # -> even if CHANNEL_PRIORITY is true then the old pytest shouldn't
-        #     be picked up from the astropy-ci-extras channel.
-        - os: linux
-          env: CONDA_PRIORITY=True CONDA_CHANNELS='conda-forge'
-               TEST_CMD='python -c "import pytest; assert int(pytest.__version__[0])>2"'
-
         # -> tests sunpy dev
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
