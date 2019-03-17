@@ -33,6 +33,7 @@ environment:
         PIP_DEPENDENCIES: "requests pyparsing"
         CONDA_CHANNEL_PRIORITY: "True"
         DEBUG: "True"
+        CONDA_VERSION: "stable"
 
       - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "stable"

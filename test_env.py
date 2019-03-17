@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import subprocess
 from distutils.version import LooseVersion
 
 import pytest
@@ -9,6 +10,12 @@ PYTEST_LT_3 = LooseVersion(pytest.__version__) < LooseVersion('3')
 
 PYTEST_LT_37 = LooseVersion(pytest.__version__) < LooseVersion('3.7')
 
+# Check whether CONDA_VERSION is respected
+CONDA_VERSION = os.environ['CONDA_VERSION']
+installed_conda = subprocess.run(["conda", "--version"], capture_output=True,
+                                 text=True).stdout.split()[1]
+if CONDA_VERSION != 'stable':
+    assert LooseVersion(CONDA_VERSION) == LooseVersion(installed_conda)
 
 # If we are on Travis or AppVeyor, we should check if we are running the tests
 # in the ci-helpers repository, or whether for example someone else is running

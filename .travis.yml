@@ -19,9 +19,10 @@ env:
 
 matrix:
     include:
-        # pytest pip fallback, conda package for 3.1 is not available for py3.4
+        # -> pytest pip fallback, conda package for 3.1 is not available for py3.4
+        # -> check CONDA_VERSION does set the version
         - os: linux
-          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
+          env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 CONDA_VERSION=4.5.10
 
         # Try pytest pip fallback as conda package for 3.1 is not available
         # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
@@ -37,6 +38,7 @@ matrix:
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
+        # -> Test that CONDA_VERSION=stable works
         - os: linux
           addons:
               apt:
@@ -44,7 +46,7 @@ matrix:
           env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
-               SCIKIT_LEARN_VERSION='dev'
+               SCIKIT_LEARN_VERSION='dev' CONDA_VERSION='stable'
 
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         # -> Test we have a recent pip version, the newest on the defaults channel
