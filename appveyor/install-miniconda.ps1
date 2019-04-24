@@ -315,8 +315,9 @@ checkLastExitCode
 # which may lead to ignore install dependencies of the package we test.
 # This update should not interfere with the rest of the functionalities
 # here.
-pip install --upgrade pip
-
+if ($env:PIP_NO_UPGRADE -notmatch "True") {
+    pip install --upgrade pip
+}
 # Check whether a specific version of Numpy is required
 if ($env:NUMPY_VERSION) {
     if($env:NUMPY_VERSION -match "stable") {
