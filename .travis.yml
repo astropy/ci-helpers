@@ -58,7 +58,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
                PYTHON_VERSION=3.5 DEBUG=True
-               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5; import pip; assert int(pip.__version__.split(\".\")[0])>17"'
+               TEST_CMD='python -c "import sphinx; from distutils.version import LooseVersion; assert LooseVersion(sphinx.__version__)>LooseVersion(\"1.5\"); import pip; assert int(pip.__version__.split(\".\")[0])>17"'
 
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
