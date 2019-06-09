@@ -288,6 +288,10 @@ checkLastExitCode
 # Set environment variables for environment (activate test doesn't seem to do the trick)
 $env:PATH = "${env:PYTHON}\envs\test;${env:PYTHON}\envs\test\Scripts;${env:PYTHON}\envs\test\Library\bin;" + $env:PATH
 
+if (! $env:MPLBACKEND) {
+   $env:MPLBACKEND = "Agg"
+}
+
 # Check that we have the expected version of Python
 python --version
 checkLastExitCode
