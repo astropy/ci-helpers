@@ -211,7 +211,8 @@ fi
 
 export PIP_INSTALL='python -m pip install'
 
-$PIP_FALLBACK && ( \
+retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
+    $PIP_FALLBACK && ( \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
@@ -226,7 +227,7 @@ $PIP_FALLBACK && ( \
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
     fi)
-
+)
 
 # In case of older python versions there isn't an up-to-date version of pip
 # which may lead to ignore install dependencies of the package we test.
