@@ -228,8 +228,6 @@ This does the following:
 - Set up a conda environment named 'test' and switch to it.
 - Set the ``always_yes`` config option for conda to ``true`` so that you don't
   need to include ``--yes``.
-- Register the specified channels, or if not stated the ``astropy``,
-  ``astropy-ci-extras``, and ``openastronomy`` channels.
 
 Following this, various dependencies are installed depending on the following
 environment variables:
