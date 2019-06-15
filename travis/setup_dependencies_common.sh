@@ -211,11 +211,7 @@ fi
 
 export PIP_INSTALL='python -m pip install'
 
-# We use the channel astropy-ci-extras to host pytest 2.7.3 that is
-# compatible with LTS 1.0.x astropy. We need to disable channel priority for
-# this step to make sure the latest version is picked up when
-# CHANNEL_PRIORITY is set to True above.
-retry_on_known_error conda install -c astropy-ci-extras --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
+retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
     $PIP_FALLBACK && ( \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
@@ -688,9 +684,8 @@ fi
 
 # ASTROPY STABLE
 
-# Due to recent instability in conda, and as new releases are not built in
-# astropy-ci-extras, this workaround ensures that we use the latest stable
-# version of astropy.
+# Due to recent instability in conda, this workaround ensures that we use the
+# latest stable version of astropy.
 
 if [[ $ASTROPY_VERSION == stable ]]; then
     old_astropy=$(python -c "from distutils.version import LooseVersion;\
