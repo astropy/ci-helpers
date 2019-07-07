@@ -39,17 +39,17 @@ if ($env:DEBUG) {
 # comma-separated list of individual strings (NOT a whitespace-separated
 # string)!
 # Correct usage example: $env:RETRY_ERRORS = "CondaHTTPError", "SomeOtherError"
-if (! (Test-Path env:RETRY_ERRORS)) {
+if (! (Test-Path $env:RETRY_ERRORS)) {
     $env:RETRY_ERRORS = "CondaHTTPError"
 }
 
 # Maximum number of retries (integer):
-if (! (Test-Path env:RETRY_MAX)) {
+if (! (Test-Path $env:RETRY_MAX)) {
     $env:RETRY_MAX = 3
 }
 
 # Delay before retrying in seconds (non-negative integer):
-if (! (Test-Path env:RETRY_DELAY)) {
+if (! (Test-Path $env:RETRY_DELAY)) {
     $env:RETRY_DELAY = 2
 }
 
@@ -252,12 +252,10 @@ if ($env:CONDA_CHANNELS) {
        conda config --add channels $CONDA_CHANNEL
        checkLastExitCode
    }
+   # This shouldn't be passed to conda.
+   Remove-Variable CONDA_CHANNELS
+   rm env:CONDA_CHANNELS
 }
-
-# These used to be in the conditional above, but even if empty it shouldn't
-# be passed to conda.
-Remove-Variable CONDA_CHANNELS
-rm env:CONDA_CHANNELS
 
 # Install the build and runtime dependencies of the project.
 retry_on_known_error conda install $QUIET conda=$env:CONDA_VERSION

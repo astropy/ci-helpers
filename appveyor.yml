@@ -26,7 +26,7 @@ environment:
         NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "lts"
 
-      - PYTHON_VERSION: "3.5"
+      - PYTHON_VERSION: "3.7"
         NUMPY_VERSION: "development"
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "conda-forge astrofrog"
@@ -52,8 +52,8 @@ environment:
 
         # We deliberately test with Numpy 1.13 to check that installing Astropy
         # dev doesn't upgrade Numpy.
-      - PYTHON_VERSION: "3.5"
-        NUMPY_VERSION: "1.13"
+      - PYTHON_VERSION: "3.7"
+        NUMPY_VERSION: "1.15"
         ASTROPY_VERSION: "development"
 
       # Have to supply "PYTHON_VERSION" only because of windows_sdk.cmd code
