@@ -246,6 +246,9 @@ checkLastExitCode
 conda config --add channels defaults
 checkLastExitCode
 
+# https://github.com/conda/conda/issues/8428
+conda init powershell
+
 if ($env:CONDA_CHANNELS) {
    $CONDA_CHANNELS=$env:CONDA_CHANNELS.split(" ")
    foreach ($CONDA_CHANNEL in $CONDA_CHANNELS) {
