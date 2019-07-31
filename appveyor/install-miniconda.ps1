@@ -276,13 +276,12 @@ checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 if (! $env:CONDA_ENVIRONMENT ) {
-   retry_on_known_error conda create $QUIET -n test python=$env:PYTHON_VERSION
+   # This was preceded by retry_on_known_error but that
+   # appears to be broken.
+   conda create $QUIET -n test python=$env:PYTHON_VERSION
 } else {
-   retry_on_known_error conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
+   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
 }
-checkLastExitCode
-
-conda create $QUIET -n test
 checkLastExitCode
 
 conda activate test
