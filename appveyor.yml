@@ -97,4 +97,5 @@ install:
 build: false
 
 test_script:
+  - "conda info -a"
   - "%CMD_IN_ENV% %TEST_CMD%"
