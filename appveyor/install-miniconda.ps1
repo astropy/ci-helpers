@@ -107,7 +107,7 @@ function retry_on_known_error {
                                               -Action $_output_event_handler `
                                               -EventName 'ErrorDataReceived' `
                                               -MessageData $_stderr_builder
-        $_process.Start() | Out-Null
+        $_process.Start()
         $_process.BeginOutputReadLine()
         $_process.BeginErrorReadLine()
         $_process.WaitForExit()
