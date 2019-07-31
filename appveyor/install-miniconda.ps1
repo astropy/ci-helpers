@@ -235,8 +235,10 @@ if (! $env:MINICONDA_VERSION) {
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
 checkLastExitCode
 
-# Set environment variables
-$env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
+# Add conda to path
+& "${env:PYTHON}\Scripts\activate.bat"
+# Equivalent to conda init
+$env:PATH = "${env:PYTHON}\condabin;" + $env:PATH
 
 # Conda config
 
@@ -280,7 +282,7 @@ if (! $env:CONDA_ENVIRONMENT ) {
 }
 checkLastExitCode
 
-activate test
+conda activate test
 checkLastExitCode
 
 # Set environment variables for environment (activate test doesn't seem to do the trick)
