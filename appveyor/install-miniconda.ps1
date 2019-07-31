@@ -282,6 +282,9 @@ if (! $env:CONDA_ENVIRONMENT ) {
 }
 checkLastExitCode
 
+conda create $QUIET -n test
+checkLastExitCode
+
 conda activate test
 checkLastExitCode
 
