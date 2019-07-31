@@ -20,7 +20,7 @@ environment:
 
       - PYTHON_VERSION: "2.7"
         DEBUG: "True"
-        PYTEST_VERSION: "<4"
+        PYTEST_VERSION: "=3"
         TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
 
       - PYTHON_VERSION: "3.5"
