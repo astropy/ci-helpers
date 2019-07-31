@@ -316,7 +316,7 @@ if ($env:DEBUG) {
 }
 
 # Pulled out retry_on_known_error
-conda install $QUIET -n test pytest pip
+conda install $QUIET -n test pytest"$env:PYTEST_VERSION" pip
 checkLastExitCode
 
 # In case of older python versions there isn't an up-to-date version of pip
