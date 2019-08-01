@@ -69,7 +69,7 @@ environment:
         CONDA_CHANNELS: "conda-forge"
 
 matrix:
-   fast_finish: true
+   fast_finish: false
 
 platform:
     -x64
