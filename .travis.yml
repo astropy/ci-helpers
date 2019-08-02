@@ -155,12 +155,12 @@ matrix:
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
                CONDA_CHANNEL_PRIORITY=False
 
-        # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to strict here is unrelated
         #    to the rest of the build and won't change anything, except that we
         #    can make sure the conda config was correctly updated.
         # -> Have a package dependency with alphanumerical name
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=True
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=strict
                CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
                ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy'
                PYTHON_VERSION='3.5'
