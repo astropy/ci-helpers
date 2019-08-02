@@ -229,7 +229,7 @@ function InstallMiniconda ($miniconda_version, $architecture, $python_home) {
 if (! $env:MINICONDA_VERSION) {
    # Note that we pin the Miniconda version to avoid issues when new versions are released.
    # This can be updated from time to time.
-   $env:MINICONDA_VERSION="4.5.12"
+   $env:MINICONDA_VERSION="4.7.10"
 }
 
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON

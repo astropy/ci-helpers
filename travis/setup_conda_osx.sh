@@ -13,7 +13,7 @@ rvm get stable
 # Note that we pin the Miniconda version to avoid issues when new versions are released.
 # This can be updated from time to time.
 if [[ -z "${MINICONDA_VERSION}" ]]; then
-    MINICONDA_VERSION=4.5.12
+    MINICONDA_VERSION=4.7.10
 fi
 
 # Set default OSX deployment target version to 10.9, since this is required for
