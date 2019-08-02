@@ -31,7 +31,7 @@ environment:
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "conda-forge astrofrog"
         PIP_DEPENDENCIES: "requests pyparsing"
-        CONDA_CHANNEL_PRIORITY: "True"
+        CONDA_CHANNEL_PRIORITY: "strict"
         DEBUG: "True"
 
       - PYTHON_VERSION: "3.6"
