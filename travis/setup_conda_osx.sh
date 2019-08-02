@@ -13,7 +13,7 @@ rvm get stable
 # Note that we pin the Miniconda version to avoid issues when new versions are released.
 # This can be updated from time to time.
 if [[ -z "${MINICONDA_VERSION}" ]]; then
-    MINICONDA_VERSION=4.5.12
+    MINICONDA_VERSION=4.7.10
 fi
 
 # Set default OSX deployment target version to 10.9, since this is required for
@@ -27,7 +27,9 @@ fi
 
 wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-MacOSX-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
+$HOME/miniconda/bin/conda init bash
+source ~/.bash_profile
+conda activate base
 
 # Install common Python dependencies
 source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
