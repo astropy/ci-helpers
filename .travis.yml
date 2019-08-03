@@ -142,14 +142,14 @@ matrix:
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
                CONDA_DEPENDENCIES='requests'
 
-        # -> Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to disabled here is unrelated
         #    to the rest of the build and won't change anything, except that we
         #    can make sure the conda config was correctly updated.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
                SCIKIT_IMAGE_VERSION=0.11 PYTHON_VERSION=3.5
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
-               CONDA_CHANNEL_PRIORITY=False
+               CONDA_CHANNEL_PRIORITY=disabled
 
         # -> Note that setting CONDA_CHANNEL_PRIORITY to strict here is unrelated
         #    to the rest of the build and won't change anything, except that we

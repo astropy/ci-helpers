@@ -143,7 +143,7 @@ environment variables
   be ``SCIKIT_IMAGE_VERSION``). If specified it will override any version
   number limitations listed in ``CONDA_DEPENDENCIES``.
 
-* ``CONDA_CHANNEL_PRIORITY``: can be set to ``strict``, ``flexible`` or ``false``, and
+* ``CONDA_CHANNEL_PRIORITY``: can be set to ``strict``, ``flexible`` or ``disabled``, and
   affects the ``channel_priority`` conda setting (as discussed
   [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-channels.html). The default is
   ``false``.
