@@ -14,6 +14,16 @@ choco install miniconda3 --params="'/AddToPath:1'" --version="$MINICONDA_VERSION
 conda init bash
 conda activate base
 
+needs__license=$(python -c "from distutils.version import LooseVersion;\
+                 import os;\
+                 print(LooseVersion(os.environ['PYTHON_VERSION']) <\
+                 LooseVersion('3.7')")
+
+if [[ $needs__license == True ]]; then
+    # _license is part of the old free channel, needed for Python<3.7 apparently
+    conda config --set restore_free_channel true
+fi
+
 PIN_FILE_CONDA="/c/tools/miniconda3/conda-meta/pinned"
 PIN_FILE="/c/tools/miniconda3/envs/test/conda-meta/pinned"
 
