@@ -148,7 +148,7 @@ echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 retry_on_known_error conda install $QUIET conda
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
-    CONDA_CHANNEL_PRIORITY=false
+    CONDA_CHANNEL_PRIORITY=disabled
 else
     # Make lowercase
     CONDA_CHANNEL_PRIORITY=$(echo $CONDA_CHANNEL_PRIORITY | awk '{print tolower($0)}')
