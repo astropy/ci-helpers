@@ -314,6 +314,21 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 fi
 
 # NUMPY
+
+# Older versions of numpy are only available on the "free" channel, which
+# has been removed as of conda 4.7 from the list of default channels.
+# This adds it back if needed.
+
+if [[ ! -z $NUMPY_VERSION ]]; then
+    old_numpy=$(python -c "from distutils.version import LooseVersion;\
+                import os;\
+                print(LooseVersion(os.environ['NUMPY_VERSION']) <\
+                      LooseVersion('1.11.0'))")
+    if [[ $old_numpy == True ]]; then
+        conda config --set restore_free_channel true
+    fi
+fi
+
 # We use --no-pin to avoid installing other dependencies just yet.
 
 
