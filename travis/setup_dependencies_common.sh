@@ -271,7 +271,7 @@ if [[ $MAIN_CMD == pylint* ]]; then
 fi
 
 # Pin required versions for dependencies, howto is in FAQ of conda
-# http://conda.pydata.org/docs/faq.html#pinning-packages
+# https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') &&
