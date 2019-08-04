@@ -747,7 +747,8 @@ fi
 
 if [[ $DEBUG == True ]]; then
     # include debug information about the current conda install
-    conda install -n root _license
+    # There was once an install of a _license package here, which does not
+    # exist for python >=3.7
     conda info -a
 fi
 

@@ -31,15 +31,5 @@ export PATH="$HOME/miniconda/bin:$PATH"
 conda init bash
 conda activate base
 
-needs__license=$(python -c "from distutils.version import LooseVersion;\
-                 import os;\
-                 print(LooseVersion(os.environ['PYTHON_VERSION']) <\
-                 LooseVersion('3.7'))")
-
-if [[ $needs__license == True ]]; then
-    # _license is part of the old free channel, needed for Python<3.7 apparently
-    conda config --set restore_free_channel true
-fi
-
 # Install common Python dependencies
 source "$( dirname "${BASH_SOURCE[0]}" )"/setup_dependencies_common.sh
