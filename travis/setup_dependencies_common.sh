@@ -330,12 +330,15 @@ fi
 # This adds it back if needed.
 
 if [[ ! -z $NUMPY_VERSION ]]; then
-    old_numpy=$(python -c "from distutils.version import LooseVersion;\
-                import os;\
-                print(LooseVersion(os.environ['NUMPY_VERSION']) <\
-                      LooseVersion('1.11.0'))")
-    if [[ $old_numpy == True ]]; then
-        conda config --set restore_free_channel true
+    # We only want to do a check for old versions of numpy, not for dev or stable
+    if [[ $NUMPY_VERSION =~ [0-9]+(\.[0-9]){1,2} ]]; then
+        old_numpy=$(python -c "from distutils.version import LooseVersion;\
+                    import os;\
+                    print(LooseVersion(os.environ['NUMPY_VERSION']) <\
+                          LooseVersion('1.11.0'))")
+        if [[ $old_numpy == True ]]; then
+            conda config --set restore_free_channel true
+        fi
     fi
 fi
 
