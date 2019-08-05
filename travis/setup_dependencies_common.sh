@@ -174,6 +174,14 @@ if [[ -z $MPLBACKEND ]]; then
     export MPLBACKEND=Agg
 fi
 
+
+# Python 3.4 is only available on conda's "free" channel, which was removed in
+# conda 4.7.
+if [[ $PYTHON_VERSION == 3.4* ]]; then
+    conda config --set restore_free_channel true
+fi
+
+
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
     retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
@@ -311,12 +319,6 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         cat $PIN_FILE
         echo $CONDA_DEPENDENCIES
     fi
-fi
-
-# Python 3.4 is only available on conda's "free" channel, which was removed in
-# conda 4.7.
-if [[ $PYTHON_VERSION == 3.4* ]]; then
-    echo conda config --set restore_free_channel true
 fi
 
 # NUMPY
