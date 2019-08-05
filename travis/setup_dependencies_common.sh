@@ -313,6 +313,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     fi
 fi
 
+# Python 3.4 is only available on conda's "free" channel, which was removed in
+# conda 4.7.
+if [[ $PYTHON_VERSION == 3.4* ]]; then
+    echo conda config --set restore_free_channel true
+fi
+
 # NUMPY
 
 # Older versions of numpy are only available on the "free" channel, which
