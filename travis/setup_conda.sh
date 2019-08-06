@@ -47,7 +47,7 @@ if [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${TR_SKIP}") ]]; then
     echo "Travis was requested to be skipped by the commit message, exiting."
     travis_terminate 0
 elif [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${DOCS_ONLY}") ]]; then
-    if ! [[ $SETUP_CMD =~ build_docs|build_sphinx|pycodestyle|flake|pep8 ]]; then
+    if ! [[ $SETUP_CMD =~ build_docs|build_sphinx|pycodestyle|flake8|pep8 ]] && [[ MAIN_CMD =~ pycodestyle|flake8|pep8 ]]; then
         # we also allow the style checkers to run here
         echo "Only docs build was requested by the commit message, exiting."
         travis_terminate 0
