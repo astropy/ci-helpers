@@ -727,9 +727,8 @@ if [[ $SETUP_CMD == *coverage* ]]; then
     $PIP_INSTALL coveralls codecov
 fi
 
-if [[ $SETUP_CMD == *--cov* ]]; then
-    retry_on_known_error $CONDA_INSTALL pytest-cov
-    $PIP_INSTALL coveralls codecov
+if [[ $SETUP_CMD == *-cov* ]]; then
+    $PIP_INSTALL coveralls codecov pytest-cov
 fi
 
 
