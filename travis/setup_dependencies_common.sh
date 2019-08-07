@@ -331,6 +331,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     # https://github.com/conda/conda/issues/9052
     # is fixed
     dry_run_bad=$(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs")
+    echo "dry_run_bad is $dry_run_bad"
     if [[ $dry_run_bad -gt 0 ]]; then
         echo "restoring free channel"
         # Add the free channel, which might fix this...
@@ -343,14 +344,14 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             echo "cannot solve this environment with pinnings and strict channel priority"
             exit 1
         fi
-    fi
 
-    # Try the dry run again, fail if pinnings are still ignored
-    dry_run_bad=$(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs")
-    if [[ $dry_run_bad -gt 0 ]]; then
-        # Add the free channel, which might fix this
-        echo "conda is ignoring pinnings, exiting"
-        #exit 1
+        # Try the dry run again, fail if pinnings are still ignored
+        dry_run_bad=$(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs")
+        if [[ $dry_run_bad -gt 0 ]]; then
+            # Add the free channel, which might fix this
+            echo "conda is ignoring pinnings, exiting"
+            #exit 1
+        fi
     fi
 fi
 
