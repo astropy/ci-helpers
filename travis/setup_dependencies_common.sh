@@ -346,7 +346,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         fi
 
         # Try the dry run again, fail if pinnings are still ignored
-        dry_run_bad=$(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs")
+        dry_run_bad=`conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs"`
         if [[ $dry_run_bad -gt 0 ]]; then
             # Add the free channel, which might fix this
             echo "conda is ignoring pinnings, exiting"
