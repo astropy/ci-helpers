@@ -326,14 +326,24 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     # ACTUALLY being respected. This will become unnecessary when
     # https://github.com/conda/conda/issues/9052
     # is fixed
-    conda install --dry-run $CONDA_DEPENDENCIES
-    echo $(conda install --dry-run $CONDA_DEPENDENCIES)
-    dry_run_bad=`conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs"`
-    echo "dry_run_bad is $dry_run_bad"
-    if [[ $dry_run_bad -gt 0 ]]; then
+
+    # NOTE: it is important that the expression below remain in an if context
+    # because of the 'set -e' above, which causes the shell to immediately
+    # exit if the last command in a pipeline has a non-zero exit status,
+    # UNLESS the pipeline is in a few specific contexts.  From
+    # https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html:
+    #
+    #     The shell does not exit if the command that fails is ...part of the
+    #     test in an if statement...
+    #
+    # In the pipeline below, 'grep' returns non-zero exit status if no lines
+    # match.
+    if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
         echo "restoring free channel"
-        # Add the free channel, which might fix this...
-        conda config --set restore_free_channel true
+        # Restoring the free channel only helps if the channel priority
+        # is not strict, so check that first. If it is strict, fail instead
+        # of changing the solve logic.
+
         # ...but only if the free channel is not ruled out by strict
         # channel priority
         if [[ ! -z $CONDA_CHANNEL_PRIORITY && $CONDA_CHANNEL_PRIORITY == strict ]]; then
@@ -342,13 +352,16 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             echo "cannot solve this environment with pinnings and strict channel priority"
             exit 1
         fi
+        # Add the free channel, which might fix this...
+        conda config --set restore_free_channel true
 
         # Try the dry run again, fail if pinnings are still ignored
-        dry_run_bad=`conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs"`
-        if [[ $dry_run_bad -gt 0 ]]; then
-            # Add the free channel, which might fix this
+        echo "Re-running with free channel restored"
+
+        if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
+            # No clue how to fix this, so just give up
             echo "conda is ignoring pinnings, exiting"
-            #exit 1
+            exit 1
         fi
     fi
 fi
