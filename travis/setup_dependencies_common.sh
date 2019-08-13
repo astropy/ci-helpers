@@ -147,7 +147,7 @@ if [[ -z $PIN_FILE_CONDA ]]; then
     PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 fi
 
-echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
+#echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
 retry_on_known_error conda install $QUIET conda
 
