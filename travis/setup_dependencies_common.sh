@@ -326,6 +326,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     # ACTUALLY being respected. This will become unnecessary when
     # https://github.com/conda/conda/issues/9052
     # is fixed
+    conda install --dry-run $CONDA_DEPENDENCIES
     dry_run_bad=`conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep -c "conflicts with explicit specs"`
     echo "dry_run_bad is $dry_run_bad"
     if [[ $dry_run_bad -gt 0 ]]; then
