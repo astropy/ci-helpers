@@ -192,7 +192,7 @@ if [[ -z $CONDA_ENVIRONMENT ]]; then
 else
     retry_on_known_error conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
-source activate test
+conda activate test
 
 # PIN FILE
 if [[ -z $PIN_FILE ]]; then
