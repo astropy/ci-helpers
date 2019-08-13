@@ -1,7 +1,6 @@
 #!/bin/bash
 # This script assumes we are running under git-bash (MinGW) on Windows
 
-export DEBUG="True"
 if [[ $DEBUG == True ]]; then
     set -x
 fi
