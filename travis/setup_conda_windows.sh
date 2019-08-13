@@ -14,6 +14,7 @@ echo "installing miniconda3"
 choco install miniconda3 --params="'/AddToPath:1'" --version="$MINICONDA_VERSION";
 export PATH="/c/tools/miniconda3/scripts:$PATH"
 ls -1 /c/tools/miniconda3/scripts
+source "/c/Users/travis/.bash_profile"
 conda init bash
 conda activate base
 
