@@ -44,8 +44,10 @@ function retry_on_known_error() {
         _retry=false
         # Execute the wrapped command and get its unified output:
         set +e
-        _output=$($@ 2>&1)
+        $@
         _exitval="$?"
+        # _output=$($@ 2>&1)
+        _output=""
         set -e
         # If the command was sucessful, abort the retry loop:
         if [ "$_exitval" == "0" ]; then
