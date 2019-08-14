@@ -46,8 +46,10 @@ function retry_on_known_error() {
         # Execute the wrapped command and get its unified output:
         # This command needs to run in the current shell/environment in case
         # it sets environment variables (like 'conda install' does)
+        set +e
         $@ 2>&1 >$_tmp_output_file
         _exitval="$?"
+        set -e
         # If the command was sucessful, abort the retry loop:
         if [ "$_exitval" == "0" ]; then
             break
