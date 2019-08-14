@@ -37,18 +37,17 @@ function retry_on_known_error() {
         echo "ERROR: Function retry_on_known_error() called without arguments." 1>&2
         return 1
     fi
+    _tmp_output_file="tmp.txt"
     _n_retries=0
     _exitval=0
     _retry=true
     while $_retry; do
         _retry=false
         # Execute the wrapped command and get its unified output:
-        set +e
-        $@
+        # This command needs to run in the current shell/environment in case
+        # it sets environment variables (like 'conda install' does)
+        $@ 2>&1 >$_tmp_output_file
         _exitval="$?"
-        # _output=$($@ 2>&1)
-        _output=""
-        set -e
         # If the command was sucessful, abort the retry loop:
         if [ "$_exitval" == "0" ]; then
             break
@@ -59,7 +58,7 @@ function retry_on_known_error() {
             # If a known error string was found, throw a warning and wait a
             # certain number of seconds before invoking the command again:
             for _error in $RETRY_ERRORS; do
-                if [ -n "$(echo "$_output" | grep "$_error")" ]; then
+                if [ -n "$(grep "$_error" "$_tmp_output_file" )" ]; then
                     echo "WARNING: The comand \"$@\" failed due to a $_error, retrying." 1>&2
                     _n_retries=$(($_n_retries + 1))
                     _retry=true
@@ -72,10 +71,12 @@ function retry_on_known_error() {
     # If the command succeeded, print its output to stdout (otherwise, print to
     # stderr):
     if [ "$_exitval" == "0" ]; then
-        echo "$_output"
+        cat "$_tmp_output_file"
     else
-        echo "$_output" 1>&2
+        cat "$_tmp_output_file" 1>&2
     fi
+    # remove the temporary output file
+    rm -f "$_tmp_output_file"
     # Finally, return the command's exit code:
     return $_exitval
 }
