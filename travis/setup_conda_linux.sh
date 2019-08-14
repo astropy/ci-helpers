@@ -11,7 +11,7 @@ wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x
 # See https://github.com/ContinuumIO/anaconda-issues/issues/11148
 mkdir $HOME/.conda
 bash miniconda.sh -b -p $HOME/miniconda
-$HOME/miniconda/conda init bash
+$HOME/miniconda/bin/conda init bash
 source ~/.bash_profile
 conda activate base
 

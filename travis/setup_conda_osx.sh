@@ -30,7 +30,6 @@ wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-MacOSX-
 # See https://github.com/ContinuumIO/anaconda-issues/issues/11148
 mkdir $HOME/.conda
 bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
 $HOME/miniconda/bin/conda init bash
 source ~/.bash_profile
 conda activate base
