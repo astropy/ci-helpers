@@ -93,12 +93,8 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
-# Remove Python 3.7.3 pinning when 3.7.5 is out. Avoid using 3.7.4 with conda.
-# https://github.com/astropy/astropy/issues/9113
 if [[ -z $PYTHON_VERSION ]]; then
     export PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
-elif [[ $PYTHON_VERSION == 3.7 ]]; then
-    export PYTHON_VERSION=3.7.3
 fi
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
