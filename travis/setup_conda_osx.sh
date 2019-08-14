@@ -26,8 +26,12 @@ elif [[ "${MACOSX_DEPLOYMENT_TARGET}" == "clang_default" ]]; then
 fi
 
 wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-MacOSX-x86_64.sh -O miniconda.sh
+# Create .conda directory before install to workaround conda bug
+# See https://github.com/ContinuumIO/anaconda-issues/issues/11148
+mkdir $HOME/.conda
 bash miniconda.sh -b -p $HOME/miniconda
-conda init bash
+export PATH="$HOME/miniconda/bin:$PATH"
+$HOME/miniconda/bin/conda init bash
 source ~/.bash_profile
 conda activate base
 

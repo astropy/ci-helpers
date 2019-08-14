@@ -142,14 +142,14 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.7
+    CONDA_VERSION="4.7.*"
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
     PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 fi
 
-#echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
+echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
 retry_on_known_error conda install $QUIET conda
 
