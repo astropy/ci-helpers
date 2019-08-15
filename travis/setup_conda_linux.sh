@@ -8,8 +8,8 @@ if [[ -z "${MINICONDA_VERSION}" ]]; then
 fi
 wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -O miniconda.sh --progress=dot:mega
 bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-conda init bash
+$HOME/miniconda/bin/conda init bash
+source ~/.bash_profile
 conda activate base
 
 # Install common Python dependencies
