@@ -50,7 +50,7 @@ function retry_on_known_error() {
         # Wow, bash is fussy about order. Redirection to a file needs to
         # happen *before* the redirection of stderr to stdout
         $@ 2>&1 | tee $_tmp_output_file
-        _exitval="${PIPSTATUS[0]}"
+        _exitval="${PIPESTATUS[0]}"
 
         # The hack below is to work around a bug in conda 4.7 in which a spec
         # pinned in a pin file is not respected if that package is listed
@@ -75,7 +75,7 @@ function retry_on_known_error() {
             echo $revised_command
             # Try it; if it still has conflicts then just give up
             $revised_command 2>&1 | tee $_tmp_output_file
-            _exitval="${PIPSTATUS[0]}"
+            _exitval="${PIPESTATUS[0]}"
             if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
                 echo "STOPPING because unable to resolve conda pinning issues"
                 exit 1
