@@ -65,7 +65,7 @@ matrix:
         #    pip minimum version >17 → >18
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
-               PYTHON_VERSION=3.5 DEBUG=True
+               PYTHON_VERSION=3.6 DEBUG=True
                TEST_CMD='python -c "import sphinx; from distutils.version import LooseVersion; assert LooseVersion(sphinx.__version__)>LooseVersion(\"1.5\"); import pip; assert int(pip.__version__.split(\".\")[0])>18"'
 
         # JOB .5
