@@ -47,9 +47,13 @@ function retry_on_known_error() {
         # This command needs to run in the current shell/environment in case
         # it sets environment variables (like 'conda install' does)
         #
-        # Wow, bash is fussy about order. Redirection to a file needs to
-        # happen *before* the redirection of stderr to stdout
+        # tee will both echo output to stdout and save it in a file. The file
+        # is needed for some error checks later. Output to stdout is needed in
+        # the event a conda solve takes a really long time (>10 min). If
+        # there is no output on travis for that long, the job is cancelled.
         $@ 2>&1 | tee $_tmp_output_file
+        # Use PIPESTATUS to get the exit code for the first command in the pipe,
+        # nothe from the second command, tee, which always succeeds.
         _exitval="${PIPESTATUS[0]}"
 
         # The hack below is to work around a bug in conda 4.7 in which a spec
@@ -77,8 +81,8 @@ function retry_on_known_error() {
             $revised_command 2>&1 | tee $_tmp_output_file
             _exitval="${PIPESTATUS[0]}"
             if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
-                echo "STOPPING because unable to resolve conda pinning issues"
-                exit 1
+                echo "STOPPING conda attempts because unable to resolve conda pinning issues"
+                return 1
             fi
         fi
 
@@ -368,6 +372,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     # https://github.com/conda/conda/issues/9052
     # is fixed
 
+    # Direct output to stdout and a file. The file is for later parsing,
+    # and stdout is so that travis knows something is happening if the solve
+    # takes a long time.
+    _tmp_output_file=dry_run.txt
+    conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | tee $_tmp_output_file
+
     # NOTE: it is important that the expression below remain in an if context
     # because of the 'set -e' above, which causes the shell to immediately
     # exit if the last command in a pipeline has a non-zero exit status,
@@ -379,7 +389,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     #
     # In the pipeline below, 'grep' returns non-zero exit status if no lines
     # match.
-    if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
+    if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
         echo "restoring free channel"
         # Restoring the free channel only helps if the channel priority
         # is not strict, so check that first. If it is strict, fail instead
@@ -390,21 +400,29 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         if [[ ! -z $CONDA_CHANNEL_PRIORITY && $CONDA_CHANNEL_PRIORITY == strict ]]; then
             # If the channel priority is strict we should fail instead of silently
             # changing how the solve is done.
-            echo "cannot solve this environment with pinnings and strict channel priority"
-            exit 1
+            echo "WARNING: May not be able to solve this environment with pinnings and strict channel priority"
+            # Keep going, because retry_on_known_errors now checks for pinning
+            # problems and will trigger a pip fallback if they continue.
         fi
+
         # Add the free channel, which might fix this...
         conda config --set restore_free_channel true
 
         # Try the dry run again, fail if pinnings are still ignored
         echo "Re-running with free channel restored"
 
-        if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
+        conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | tee $_tmp_output_file
+
+        if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
             # No clue how to fix this, so just give up
-            echo "conda is ignoring pinnings, exiting"
-            exit 1
+            echo "WARNING: conda is ignoring pinnings"
+            # Actually, just continue. retry_on_known_errors now checks for
+            # pinning problems and will trigger a pip fallback if they continue.
         fi
     fi
+
+    # Clean up
+    rm -f $_tmp_output_file
 fi
 
 # NUMPY
