@@ -93,7 +93,7 @@ matrix:
         # JOB .7
         # -> Have non Python package (openjpeg) in dependency list when
         #    falling back on pip installing the dependencies (as pyqt5 is
-        #    missing from listed channels, it is called pyqt) to test the install one-by-one.
+        #    missing from listed channels where it is called pyqt) to test the install one-by-one.
         # -> Have package dependency that matches partially another package
         #    (pytest vs pytest-cov) when falling back to pip install
         # -> testing whether version numbers are respected by pip install fallback
@@ -144,10 +144,12 @@ matrix:
         #    MATPLOTLIB_VERSION 1.4 → 3.0 (and expected installed version 3.0.3)
         #    SPHINX_VERSION 1.4.1 → 1.8.4
         #    PYTEST_VERSION 3.0 → 5.0
+        #
+        # TEMPORARILY added print of version numbers to figure out why this job fails
         - os: linux
           env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.8.4 DEBUG=True
                MATPLOTLIB_VERSION=3.0 DEBUG=True PYTHON_VERSION=3.6 PYTEST_VERSION=5.0
-               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.8.4\"; import pytest; pytest.__version__.startswith(\"5.0\"); import matplotlib; assert matplotlib.__version__=="\""3.0.3"\"'
+               TEST_CMD='python -c "import sphinx; print(sphinx.__version__); import pytest; print(pytest.__version__); import matplotlib; print(matplotlib.__version__)"; python -c "import sphinx; assert sphinx.__version__==\"1.8.4\"; import pytest; pytest.__version__.startswith(\"5.0\"); import matplotlib; assert matplotlib.__version__=="\""3.0.3"\"'
 
         # JOB .13
         - os: linux
