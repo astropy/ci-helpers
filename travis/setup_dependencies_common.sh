@@ -660,7 +660,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
             $PIP_FALLBACK && (\
             echo "Installing $package with conda was unsuccessful, using pip instead."
-            PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
+            PIP_PACKAGE_VERSION=$(grep $package $PIN_FILE | awk '{print $2}')
             # Debugging....
             echo "WHAT IS GOING ON HERE (TAKE 2)"
             conda info -a
