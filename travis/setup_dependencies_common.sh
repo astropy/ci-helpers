@@ -661,17 +661,17 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             $PIP_FALLBACK && (\
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
-            if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
-            elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
-                PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
-            fi
             # Debugging....
             echo "WHAT IS GOING ON HERE (TAKE 2)"
             conda info -a
             conda config --show
             conda list
             cat $PIN_FILE
+            if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
+                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
+            elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
+                PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
+            fi
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         ))
