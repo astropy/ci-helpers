@@ -74,7 +74,7 @@ function retry_on_known_error() {
             # $()...we need to make sure we stay in the shell in which conda is activated,
             # not a subshell.
             _tmp_updated_conda_command=new_command.txt
-            python hack_version_numbers.py $_tmp_spec_conflicts "$@" > $_tmp_updated_conda_command
+            python ci-helpers/travis/hack_version_numbers.py $_tmp_spec_conflicts "$@" > $_tmp_updated_conda_command
             revised_command=$(cat $_tmp_updated_conda_command)
             echo $revised_command
             # Try it; if it still has conflicts then just give up
