@@ -367,6 +367,12 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 fi
 
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
+    # Debugging....
+    echo "WHAT IS GOING ON HERE (TAKE 1)"
+    conda info -a
+    conda config --show
+    conda list
+    cat $PIN_FILE
     # Do a dry run of the conda install here to make sure that pins are
     # ACTUALLY being respected. This will become unnecessary when
     # https://github.com/conda/conda/issues/9052
@@ -660,6 +666,12 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
+            # Debugging....
+            echo "WHAT IS GOING ON HERE (TAKE 2)"
+            conda info -a
+            conda config --show
+            conda list
+            cat $PIN_FILE
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         ))
