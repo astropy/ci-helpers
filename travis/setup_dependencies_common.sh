@@ -286,8 +286,22 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
 # which may lead to ignore install dependencies of the package we test.
 # This update should not interfere with the rest of the functionalities
 # here.
+#
+# This *may* be leading to inconsistent conda environments, definitely means
+# that conda is not aware of pip installs, and is often overridden by
+# subsequent conda installs because conda is configured to install pip by
+# default now.
+#
+# For really old pythons it may be necessary, though, so check pip version and
+# install this way if the major version is less than 19.
 if [[ -z $PIP_VERSION ]]; then
-    $PIP_INSTALL --upgrade pip
+    old_pip=$(python -c "from distutils.version import LooseVersion;\
+                import os; import pip;\
+                print(LooseVersion(pip.__version__) <\
+                      LooseVersion('19.0.0'))")
+    if [[ $old_pip == True ]]; then
+        $PIP_INSTALL --upgrade pip
+    fi
 fi
 
 # PEP8
