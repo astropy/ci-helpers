@@ -70,13 +70,6 @@ function retry_on_known_error() {
             done
         fi
     done
-    # If the command succeeded, print its output to stdout (otherwise, print to
-    # stderr):
-    if [ "$_exitval" == "0" ]; then
-        cat "$_tmp_output_file"
-    else
-        cat "$_tmp_output_file" 1>&2
-    fi
     # remove the temporary output file
     rm -f "$_tmp_output_file"
     # Finally, return the command's exit code:
@@ -230,8 +223,8 @@ fi
 
 export PIP_INSTALL='python -m pip install'
 
-retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
-    $PIP_FALLBACK && ( \
+retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || { \
+    $PIP_FALLBACK && { \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
@@ -245,8 +238,8 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
         $PIP_INSTALL pytest${PIP_PYTEST_VERSION}
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
-    fi)
-)
+    fi;}
+}
 
 # In case of older python versions there isn't an up-to-date version of pip
 # which may lead to ignore install dependencies of the package we test.
@@ -514,14 +507,14 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
-            $PIP_FALLBACK && ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || { \
+            $PIP_FALLBACK && { \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "astropy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi))
+            fi;};}
     fi
 
 fi
@@ -549,14 +542,14 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         SUNPY_OPTION=$SUNPY_VERSION
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
-            $PIP_FALLBACK && ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || { \
+            $PIP_FALLBACK && { \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "sunpy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi))
+            fi;};}
     fi
 
 fi
@@ -603,8 +596,8 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_file_copy >> $PIN_FILE
 
-        retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
-            $PIP_FALLBACK && (\
+        retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || { \
+            $PIP_FALLBACK && { \
             echo "Installing $package with conda was unsuccessful, using pip instead."
             PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
@@ -614,7 +607,7 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
             fi
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
-        ))
+        };}
     done
 
     if [[ $DEBUG == True ]]; then
@@ -625,8 +618,8 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
-        $PIP_FALLBACK && ( \
+    retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || { \
+        $PIP_FALLBACK && { \
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
@@ -635,7 +628,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
-            retry_on_known_error $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
+            retry_on_known_error $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || { \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
@@ -650,9 +643,9 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 fi
                 awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
-                $PIP_INSTALL $package${PIP_PACKAGE_VERSION});
+                $PIP_INSTALL $package${PIP_PACKAGE_VERSION};};
         done
-        mv /tmp/pin_copy $PIN_FILE))
+        mv /tmp/pin_copy $PIN_FILE;};}
 fi
 
 # PARALLEL BUILDS
