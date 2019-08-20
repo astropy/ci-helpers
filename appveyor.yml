@@ -32,7 +32,7 @@ environment:
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "conda-forge astrofrog"
         PIP_DEPENDENCIES: "requests pyparsing"
-        CONDA_CHANNEL_PRIORITY: "True"
+        CONDA_CHANNEL_PRIORITY: "flexible"
         DEBUG: "True"
 
       - PYTHON_VERSION: "3.6"
@@ -40,7 +40,7 @@ environment:
         ASTROPY_VERSION: "stable"
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
-        CONDA_CHANNEL_PRIORITY: "False"
+        CONDA_CHANNEL_PRIORITY: "disabled"
         SUNPY_VERSION: "dev"
         DEBUG: "True"
 

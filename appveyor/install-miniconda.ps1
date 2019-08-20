@@ -265,7 +265,7 @@ conda install $QUIET conda=$env:CONDA_VERSION
 checkLastExitCode
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
-   $CONDA_CHANNEL_PRIORITY="false"
+   $CONDA_CHANNEL_PRIORITY="disabled"
 } else {
    $CONDA_CHANNEL_PRIORITY=$env:CONDA_CHANNEL_PRIORITY.ToLower()
 }
