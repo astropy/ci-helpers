@@ -52,7 +52,7 @@ function retry_on_known_error() {
         # the event a conda solve takes a really long time (>10 min). If
         # there is no output on travis for that long, the job is cancelled.
         set +e
-        $@ 2>&1 > >(tee $_tmp_output_file)
+        $@ > >(tee $_tmp_output_file) 2>&1
         _exitval="$?"
         set -e
 
@@ -78,7 +78,7 @@ function retry_on_known_error() {
             revised_command=$(cat $_tmp_updated_conda_command)
             echo $revised_command
             # Try it; if it still has conflicts then just give up
-            $revised_command 2>&1 > >(tee $_tmp_output_file)
+            $revised_command > >(tee $_tmp_output_file) 2>&1
             _exitval="$?"
             if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
                 echo "STOPPING conda attempts because unable to resolve conda pinning issues"
@@ -390,7 +390,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     #
     # Use tee to print output to console and to file to avoid travis timing out
     _tmp_output_file="tmp.txt"
-    conda install --dry-run $CONDA_DEPENDENCIES 2>&1 > >(tee $_tmp_output_file)
+    conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
     # 'grep' returns non-zero exit status if no lines match.
     if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
         echo "restoring free channel"
@@ -413,7 +413,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # Try the dry run again, fail if pinnings are still ignored
         echo "Re-running with free channel restored"
 
-        conda install --dry-run $CONDA_DEPENDENCIES 2>&1 > >(tee $_tmp_output_file)
+        conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
         if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
             # No clue how to fix this, so just give up
             echo "conda is ignoring pinnings, exiting"
