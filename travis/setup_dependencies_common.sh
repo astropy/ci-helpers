@@ -60,7 +60,7 @@ function retry_on_known_error() {
             # If a known error string was found, throw a warning and wait a
             # certain number of seconds before invoking the command again:
             for _error in $RETRY_ERRORS; do
-                if [ -n "$(grep "$_error" "$_tmp_output_file" )" ]; then
+                if [ -n "$(grep "$_error" "$_tmp_output_file")" ]; then
                     echo "WARNING: The comand \"$@\" failed due to a $_error, retrying." 1>&2
                     _n_retries=$(($_n_retries + 1))
                     _retry=true
@@ -93,12 +93,8 @@ conda config --set always_yes yes --set changeps1 no
 
 shopt -s nocasematch
 
-# Remove Python 3.7.3 pinning when 3.7.5 is out. Avoid using 3.7.4 with conda.
-# https://github.com/astropy/astropy/issues/9113
 if [[ -z $PYTHON_VERSION ]]; then
     export PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
-elif [[ $PYTHON_VERSION == 3.7 ]]; then
-    export PYTHON_VERSION=3.7.3
 fi
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
@@ -140,7 +136,7 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION="4.7.*"
+    CONDA_VERSION=4.7.11
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
@@ -245,8 +241,22 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
 # which may lead to ignore install dependencies of the package we test.
 # This update should not interfere with the rest of the functionalities
 # here.
+#
+# This *may* be leading to inconsistent conda environments, definitely means
+# that conda is not aware of pip installs, and is often overridden by
+# subsequent conda installs because conda is configured to install pip by
+# default now.
+#
+# For really old pythons it may be necessary, though, so check pip version and
+# install this way if the major version is less than 19.
 if [[ -z $PIP_VERSION ]]; then
-    $PIP_INSTALL --upgrade pip
+    old_pip=$(python -c "from distutils.version import LooseVersion;\
+                import os; import pip;\
+                print(LooseVersion(pip.__version__) <\
+                      LooseVersion('19.0.0'))")
+    if [[ $old_pip == True ]]; then
+        $PIP_INSTALL --upgrade pip
+    fi
 fi
 
 # PEP8
@@ -599,9 +609,15 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || { \
             $PIP_FALLBACK && { \
             echo "Installing $package with conda was unsuccessful, using pip instead."
-            PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
+            PIP_PACKAGE_VERSION=$(grep $package $PIN_FILE | awk '{print $2}')
+            # Debugging....
+            echo "WHAT IS GOING ON HERE (TAKE 2)"
+            conda info -a
+            conda config --show
+            conda list
+            cat $PIN_FILE
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
+                PIP_PACKAGE_VERSION='=='${PIP_PACKAGE_VERSION}
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
