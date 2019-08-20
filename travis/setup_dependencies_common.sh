@@ -47,7 +47,7 @@ function retry_on_known_error() {
         # This command needs to run in the current shell/environment in case
         # it sets environment variables (like 'conda install' does)
         set +e
-        tee $_tmp_output_file < <($@ 2>&1)
+        $@ 2>&1 > >(tee $_tmp_output_file)
         _exitval="$?"
         set -e
         # If the command was sucessful, abort the retry loop:
