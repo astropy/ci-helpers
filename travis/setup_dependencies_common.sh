@@ -350,9 +350,11 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     #     The shell does not exit if the command that fails is ...part of the
     #     test in an if statement...
     #
-    # In the pipeline below, 'grep' returns non-zero exit status if no lines
-    # match.
-    if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
+    # Use tee to print output to console and to file to avoid travis timing out
+    _tmp_output_file="tmp.txt"
+    conda install --dry-run $CONDA_DEPENDENCIES 2>&1 > >(tee $_tmp_output_file)
+    # 'grep' returns non-zero exit status if no lines match.
+    if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
         echo "restoring free channel"
         # Restoring the free channel only helps if the channel priority
         # is not strict, so check that first. If it is strict, fail instead
@@ -364,6 +366,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             # If the channel priority is strict we should fail instead of silently
             # changing how the solve is done.
             echo "cannot solve this environment with pinnings and strict channel priority"
+            rm -f $_tmp_output_file
             exit 1
         fi
         # Add the free channel, which might fix this...
@@ -372,12 +375,15 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # Try the dry run again, fail if pinnings are still ignored
         echo "Re-running with free channel restored"
 
-        if [[ ! -z $(conda install --dry-run $CONDA_DEPENDENCIES 2>&1 | grep "conflicts with explicit specs") ]]; then
+        conda install --dry-run $CONDA_DEPENDENCIES 2>&1 > >(tee $_tmp_output_file)
+        if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
             # No clue how to fix this, so just give up
             echo "conda is ignoring pinnings, exiting"
+            rm -f $_tmp_output_file
             exit 1
         fi
     fi
+    rm -f $_tmp_output_file
 fi
 
 # NUMPY
