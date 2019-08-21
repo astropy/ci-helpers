@@ -23,7 +23,7 @@ environment:
         PYTEST_VERSION: "=3"
         TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
 
-      - PYTHON_VERSION: "3.5"
+      - PYTHON_VERSION: "3.7"
         NUMPY_VERSION: "1.13"
         ASTROPY_VERSION: "lts"
 
@@ -48,7 +48,7 @@ environment:
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable)
 
-      - PYTHON_VERSION: "3.4"
+      - PYTHON_VERSION: "3.7"
         NUMPY_VERSION: "1.9"
 
         # We deliberately test with Numpy 1.13 to check that installing Astropy
