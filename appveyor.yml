@@ -79,14 +79,6 @@ install:
     # Install Miniconda
     - "git clone . ci-helpers"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    # Activate again...maybe necessary because the first activate
-    # was in powershell?
-    -  CALL "%PYTHON%\\Scripts\\activate.bat"
-    # From https://github.com/geopandas/geopandas/pull/1029/files#diff-180360612c6b8c4ed830919bbb4dd459R33
-    # this is basically equivalent to what conda init does.  It changes the
-    # "conda" to be a .bat script that sets appropriate PATH entries before
-    # conda hits problems.
-    -  set "PATH=%PYTHON%\condabin:%PATH%"
     - "conda activate test"
 
     # Test that PATH is set correctly

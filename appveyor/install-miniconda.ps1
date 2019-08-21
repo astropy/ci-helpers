@@ -239,6 +239,7 @@ checkLastExitCode
 & "${env:PYTHON}\Scripts\activate.bat"
 # Equivalent to conda init
 $env:PATH = "${env:PYTHON}\condabin;" + $env:PATH
+conda init cmd.exe
 
 # Conda config
 
