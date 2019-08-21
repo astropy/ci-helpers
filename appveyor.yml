@@ -79,6 +79,7 @@ install:
     # Install Miniconda
     - "git clone . ci-helpers"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
+    - "conda activate test"
 
     # Test that PATH is set correctly
     - "conda --version"
