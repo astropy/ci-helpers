@@ -217,8 +217,7 @@ Include the following lines at the start of the ``install`` section in
 install:
     - "git clone --depth 1 git://github.com/astropy/ci-helpers.git"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-    - "activate test"
+    - "conda activate test"
 ```
 
 This does the following:
