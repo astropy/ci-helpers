@@ -7,6 +7,9 @@ if [[ -z "${MINICONDA_VERSION}" ]]; then
     MINICONDA_VERSION=4.7.10
 fi
 wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -O miniconda.sh --progress=dot:mega
+# Create .conda directory before install to workaround conda bug
+# See https://github.com/ContinuumIO/anaconda-issues/issues/11148
+mkdir $HOME/.conda
 bash miniconda.sh -b -p $HOME/miniconda
 $HOME/miniconda/bin/conda init bash
 source ~/.bash_profile
