@@ -390,7 +390,10 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     #
     # Use tee to print output to console and to file to avoid travis timing out
     _tmp_output_file="tmp.txt"
+    # do not exit on failure of the dry run because pip fallback may succeed
+    set +e
     conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+    set -e
     # 'grep' returns non-zero exit status if no lines match.
     if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
         echo "restoring free channel"
@@ -413,7 +416,10 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         # Try the dry run again, fail if pinnings are still ignored
         echo "Re-running with free channel restored"
 
+        # do not exit on failure of the dry run because pip fallback may succeed
+        set +e
         conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+        set -e
         if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
             # No clue how to fix this, so just give up
             echo "WARNING: conda is ignoring pinnings"
