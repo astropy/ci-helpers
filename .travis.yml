@@ -93,7 +93,7 @@ matrix:
                PYTEST_VERSION="<3.6.2"
 
         # JOB .7
-        # -> Have non Python package (libcxx) in dependency list when
+        # -> Have non Python package (libtiff) in dependency list when
         #    falling back on pip installing the dependencies (as ipyevents is
         #    missing from listed channels) to test the install one-by-one.
         # -> Have package dependency that matches partially another package
@@ -109,8 +109,8 @@ matrix:
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.6
                TEST_CMD='conda list; py.test test_env.py && coverage run test_env.py; python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")"'
                CONDA_CHANNELS=''
-               CONDA_DEPENDENCIES='libcxx pytest pytest-cov ipyevents'
-               DEBUG=True NUMPY_VERSION=1.15 ASTROPY_VERSION=stable
+               CONDA_DEPENDENCIES='libtiff pytest pytest-cov ipyevents'
+               DEBUG=True ASTROPY_VERSION=stable
                IPYEVENTS_VERSION='<0.5,>=0.4'
 
         # JOB .8
