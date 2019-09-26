@@ -106,8 +106,8 @@ else
     export NO_PYTEST_ASTROPY=True
 fi
 export ASTROPY_LTS_VERSION=2.0.14
-export LATEST_NUMPY_STABLE=1.16
-export LATEST_SUNPY_STABLE=1.0.1
+export LATEST_NUMPY_STABLE=1.17
+export LATEST_SUNPY_STABLE=1.0.3
 
 
 is_number='[0-9]'
