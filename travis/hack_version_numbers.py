@@ -32,9 +32,10 @@ for line in lines:
         package = match.group(1)
         versions[package] = "=" + match.group(2)
 
-new_args = []
+# We never want to add a spec to the "conda install" part of the command
+new_args = original_args[:2]
 
-for arg in original_args:
+for arg in original_args[2:]:
     if arg in versions:
         # Add a version spec
         pkg_version = versions[arg]
