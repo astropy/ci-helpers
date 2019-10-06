@@ -54,8 +54,9 @@ function retry_on_known_error() {
         set +e
         if [[ $TRAVIS_OS_NAME == windows ]]; then
             echo $PWD
+            echo "am i working" > >(tee junk) 2>&1
         fi
-        $@ > >(tee $_tmp_output_file) 2>&1
+        $@ > $_tmp_output_file 2>&1
         _exitval="$?"
         set -e
 
@@ -395,6 +396,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     _tmp_output_file="tmp.txt"
     # do not exit on failure of the dry run because pip fallback may succeed
     set +e
+
     conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
     set -e
     # 'grep' returns non-zero exit status if no lines match.
