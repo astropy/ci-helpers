@@ -52,6 +52,9 @@ function retry_on_known_error() {
         # the event a conda solve takes a really long time (>10 min). If
         # there is no output on travis for that long, the job is cancelled.
         set +e
+        if [[ $TRAVIS_OS_NAME == windows ]]; then
+            echo $PWD
+        fi
         $@ > >(tee $_tmp_output_file) 2>&1
         _exitval="$?"
         set -e
