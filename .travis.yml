@@ -49,7 +49,7 @@ matrix:
           addons:
               apt:
                   packages: gfortran
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy Pillow'
+          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy pillow'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
                SCIKIT_LEARN_VERSION='dev'
