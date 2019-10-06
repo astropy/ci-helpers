@@ -188,6 +188,8 @@ def test_dependency_imports():
             continue
         elif package == '':
             continue
+        elif package == "pillow":
+            __import__('PIL')
         else:
             __import__(package)
 
