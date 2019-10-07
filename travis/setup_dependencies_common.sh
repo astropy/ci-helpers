@@ -405,7 +405,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
         # ...but only if the free channel is not ruled out by strict
         # channel priority
-        if [[ ! -z $CONDA_CHANNEL_PRIORITY && $CONDA_CHANNEL_PRIORITY == strict ]]; then
+        if [[ $CONDA_CHANNEL_PRIORITY == strict ]]; then
             # If the channel priority is strict we should fail instead of silently
             # changing how the solve is done.
             echo "WARNING: May not be able to solve this environment with pinnings and strict channel priority"
