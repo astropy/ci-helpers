@@ -53,6 +53,7 @@ function retry_on_known_error() {
         # there is no output on travis for that long, the job is cancelled.
         set +e
         $@ > $_tmp_output_file 2>&1
+        cat $_tmp_output_file
         _exitval="$?"
         set -e
 
