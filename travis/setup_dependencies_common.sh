@@ -53,8 +53,10 @@ function retry_on_known_error() {
         # there is no output on travis for that long, the job is cancelled.
         set +e
         $@ > $_tmp_output_file 2>&1
-        cat $_tmp_output_file
         _exitval="$?"
+        # Keep the cat here...otherwise _exitval is always 0
+        # even if the conda install failed.
+        cat $_tmp_output_file
         set -e
 
         # The hack below is to work around a bug in conda 4.7 in which a spec
