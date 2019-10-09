@@ -56,10 +56,10 @@ matrix:
 
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
-        #    deliberately test with Numpy 1.14 to check that installing Astropy
+        #    deliberately test with Numpy 1.16 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.14 ASTROPY_VERSION=dev
+          env: SETUP_CMD='test' NUMPY_VERSION=1.16 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.6 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
 
         # -> For the Numpy dev build, we also specify a conda package that
