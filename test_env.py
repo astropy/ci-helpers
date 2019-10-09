@@ -184,6 +184,8 @@ def test_dependency_imports():
             assert 'mkl' in str(subprocess.check_output(["conda", "list"]))
         elif package == 'pillow':
             __import__('PIL')
+        elif package == 'attrs':
+            continue
         elif package == '':
             continue
         else:
