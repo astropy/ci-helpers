@@ -91,4 +91,4 @@ build: false
 test_script:
   - "conda info -a"
   - conda list
-  - "%TEST_CMD%"
+  - "%CMD_IN_ENV% %TEST_CMD%"
