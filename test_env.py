@@ -33,14 +33,14 @@ if 'TRAVIS_REPO_SLUG' in os.environ:
 
 
 if not LooseVersion(sys.version) < '3.5':
-    LATEST_ASTROPY_STABLE = '3.2.1'
-    LATEST_ASTROPY_STABLE_WIN = '3.2'
+    LATEST_ASTROPY_STABLE = '3.2.2'
+    LATEST_ASTROPY_STABLE_WIN = '3.2.2'
 else:
-    LATEST_ASTROPY_STABLE = '2.0.14'
-    LATEST_ASTROPY_STABLE_WIN = '2.0.13'
+    LATEST_ASTROPY_STABLE = '2.0.15'
+    LATEST_ASTROPY_STABLE_WIN = '2.0.15'
 
-LATEST_ASTROPY_LTS = '2.0.14'
-LATEST_ASTROPY_LTS_WIN = '2.0.13'
+LATEST_ASTROPY_LTS = '2.0.15'
+LATEST_ASTROPY_LTS_WIN = '2.0.15'
 LATEST_NUMPY_STABLE = '1.17'
 LATEST_NUMPY_STABLE_WIN = '1.16'
 LATEST_SUNPY_STABLE = '1.0.3'
@@ -182,6 +182,10 @@ def test_dependency_imports():
             import subprocess
             assert 'nomkl' not in str(subprocess.check_output(["conda", "list"]))
             assert 'mkl' in str(subprocess.check_output(["conda", "list"]))
+        elif package == 'pillow':
+            __import__('PIL')
+        elif package == 'attrs':
+            continue
         elif package == '':
             continue
         else:

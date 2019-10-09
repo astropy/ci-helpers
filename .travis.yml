@@ -37,11 +37,13 @@ matrix:
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
+        # -> Adding Pillow to deps as it's required by MPL. Currently we
+        #    don't install upstream dependencies for the dev versions.
         - os: linux
           addons:
               apt:
                   packages: gfortran
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
+          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy Pillow'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
                SCIKIT_LEARN_VERSION='dev'
@@ -56,10 +58,10 @@ matrix:
 
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
-        #    deliberately test with Numpy 1.14 to check that installing Astropy
+        #    deliberately test with Numpy 1.16 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.14 ASTROPY_VERSION=dev
+          env: SETUP_CMD='test' NUMPY_VERSION=1.16 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.6 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
 
         # -> For the Numpy dev build, we also specify a conda package that
@@ -114,8 +116,10 @@ matrix:
                TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=="\""1.5.1"\"'
 
         # -> astropy stable should stay on the 2.0.x branch
+        # Limit attrs version as newer ones break old pytest
         - os: linux
           env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7 ASTROPY_VERSION='stable'
+               CONDA_DEPENDENCY='attrs<19.2'
 
         - os: linux
           env: MAIN_CMD='pep8'
@@ -162,9 +166,10 @@ matrix:
                PYTHON_VERSION='3.5'
 
         # -> Have empty string as dependency list when falling back on pip
+        # Limit attrs version as newer ones break old pytest
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
-               CONDA_DEPENDENCIES=''
+               CONDA_DEPENDENCIES='attrs<19.2'
 
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5'
