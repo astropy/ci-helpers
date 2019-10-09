@@ -182,6 +182,8 @@ def test_dependency_imports():
             import subprocess
             assert 'nomkl' not in str(subprocess.check_output(["conda", "list"]))
             assert 'mkl' in str(subprocess.check_output(["conda", "list"]))
+        elif package == 'pillow':
+            __import__('PIL')
         elif package == '':
             continue
         else:
