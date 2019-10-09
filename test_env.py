@@ -42,6 +42,7 @@ else:
 LATEST_ASTROPY_LTS = '2.0.14'
 LATEST_ASTROPY_LTS_WIN = '2.0.13'
 LATEST_NUMPY_STABLE = '1.17'
+LATEST_NUMPY_STABLE_WIN = '1.16'
 LATEST_SUNPY_STABLE = '1.0.3'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
@@ -87,7 +88,10 @@ def test_numpy():
             assert re.match("[0-9.]*[0-9](a[0-9]|b[0-9]|rc[0-9])", np_version)
         else:
             if 'stable' in os_numpy_version:
-                assert np_version.startswith(LATEST_NUMPY_STABLE)
+                if 'APPVEYOR' in os.environ:
+                    assert np_version.startswith(LATEST_NUMPY_STABLE_WIN)
+                else:
+                    assert np_version.startswith(LATEST_NUMPY_STABLE)
             else:
                 assert np_version.startswith(os_numpy_version)
             assert re.match("^[0-9]+\.[0-9]+\.[0-9]", np_version)
@@ -242,7 +246,7 @@ def test_regression_mkl():
 
 def test_conda_channel_priority():
 
-    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'False')
+    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled' if 'APPVEYOR' in os.environ else 'False')
 
     with open(os.path.expanduser('~/.condarc'), 'r') as f:
         content = f.read()

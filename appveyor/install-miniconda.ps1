@@ -107,7 +107,7 @@ function retry_on_known_error {
                                               -Action $_output_event_handler `
                                               -EventName 'ErrorDataReceived' `
                                               -MessageData $_stderr_builder
-        $_process.Start() | Out-Null
+        $_process.Start()
         $_process.BeginOutputReadLine()
         $_process.BeginErrorReadLine()
         $_process.WaitForExit()
@@ -235,8 +235,11 @@ if (! $env:MINICONDA_VERSION) {
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
 checkLastExitCode
 
-# Set environment variables
-$env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
+# Add conda to path
+& "${env:PYTHON}\Scripts\activate.bat"
+# Equivalent to conda init
+$env:PATH = "${env:PYTHON}\condabin;" + $env:PATH
+conda init cmd.exe
 
 # Conda config
 
@@ -258,11 +261,12 @@ if ($env:CONDA_CHANNELS) {
 }
 
 # Install the build and runtime dependencies of the project.
-retry_on_known_error conda install $QUIET conda=$env:CONDA_VERSION
+# Pulled out retry_on_knwon_error for now
+conda install $QUIET conda=$env:CONDA_VERSION
 checkLastExitCode
 
 if (! $env:CONDA_CHANNEL_PRIORITY) {
-   $CONDA_CHANNEL_PRIORITY="false"
+   $CONDA_CHANNEL_PRIORITY="disabled"
 } else {
    $CONDA_CHANNEL_PRIORITY=$env:CONDA_CHANNEL_PRIORITY.ToLower()
 }
@@ -274,13 +278,15 @@ checkLastExitCode
 
 # Create a conda environment using the astropy bonus packages
 if (! $env:CONDA_ENVIRONMENT ) {
-   retry_on_known_error conda create $QUIET -n test python=$env:PYTHON_VERSION
+   # This was preceded by retry_on_known_error but that
+   # appears to be broken.
+   conda create $QUIET -n test python=$env:PYTHON_VERSION
 } else {
-   retry_on_known_error conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
+   conda env create $QUIET -n test -f $env:CONDA_ENVIRONMENT
 }
 checkLastExitCode
 
-activate test
+conda activate test
 checkLastExitCode
 
 # Set environment variables for environment (activate test doesn't seem to do the trick)
@@ -310,7 +316,8 @@ if ($env:DEBUG) {
    Get-Content ${env:PYTHON}\envs\test\conda-meta\pinned
 }
 
-retry_on_known_error conda install $QUIET -n test pytest pip
+# Pulled out retry_on_known_error
+conda install $QUIET -n test pytest"$env:PYTEST_VERSION" pip
 checkLastExitCode
 
 # In case of older python versions there isn't an up-to-date version of pip
@@ -329,7 +336,8 @@ if ($env:NUMPY_VERSION) {
     } else {
         $NUMPY_OPTION = "numpy=" + $env:NUMPY_VERSION
     }
-    retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION
+    # Pulled out retry_on_known_error
+    conda install -n test $QUIET $NUMPY_OPTION
     checkLastExitCode
 } else {
     $NUMPY_OPTION = ""
@@ -351,7 +359,8 @@ if ($env:ASTROPY_VERSION) {
         $ASTROPY_OPTION = "astropy=" + $env:ASTROPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
+      # Pulled out retry_on_known_error
+      $output = conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing astropy with conda was unsuccessful, using pip instead"
@@ -362,7 +371,8 @@ if ($env:ASTROPY_VERSION) {
         checkLastExitCode
       }
     } else {
-      retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
+      # Pulled out retry_on_known_error
+      conda install -n test $QUIET $NUMPY_OPTION $ASTROPY_OPTION.Split(" ")
       checkLastExitCode
     }
 
@@ -380,7 +390,8 @@ if ($env:SUNPY_VERSION) {
         $SUNPY_OPTION = "sunpy=" + $env:SUNPY_VERSION
     }
     if ($env:PIP_FALLBACK -match "True") {
-      $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
+      # Pulled out retry_on_known_error
+      $output = conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
       Write-Host $output
       if ($output | select-string UnsatisfiableError) {
          Write-Warning "Installing sunpy with conda was unsuccessful, using pip instead"
@@ -391,7 +402,8 @@ if ($env:SUNPY_VERSION) {
         checkLastExitCode
       }
     } else {
-      retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
+      # Pulled out retry_on_known_error
+      conda install -n test $QUIET $NUMPY_OPTION $SUNPY_OPTION
       checkLastExitCode
     }
 } else {
@@ -409,7 +421,8 @@ if ($env:CONDA_DEPENDENCIES) {
 if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
 
   if ($env:PIP_FALLBACK -match "True") {
-    $output = retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
+    # Pulled out retry_on_known_error
+    $output = conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
     Write-Host $output
     if ($output | select-string UnsatisfiableError, PackageNotFoundError, PackagesNotFoundError) {
        Write-Warning "Installing dependencies with conda was unsuccessful, using pip instead"
@@ -419,7 +432,8 @@ if ($NUMPY_OPTION -or $CONDA_DEPENDENCIES) {
       checkLastExitCode
     }
   } else {
-    retry_on_known_error conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
+    # Pulled out retry_on_known_error
+    conda install -n test $QUIET $NUMPY_OPTION $CONDA_DEPENDENCIES
     checkLastExitCode
   }
 

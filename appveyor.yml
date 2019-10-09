@@ -6,6 +6,7 @@ environment:
   global:
       PYTHON: "C:\\conda"
       MINICONDA_VERSION: "latest"
+      CONDA_VERSION: "4.7"
       CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
       PYTHON_ARCH: "64" # needs to be set for CMD_IN_ENV to succeed. If a mix
                         # of 32 bit and 64 bit builds are needed, move this
@@ -19,11 +20,13 @@ environment:
 
       - PYTHON_VERSION: "2.7"
         DEBUG: "True"
-        PYTEST_VERSION: "<4"
+        PYTEST_VERSION: "=3"
         TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
 
-      - PYTHON_VERSION: "3.5"
+        # Adding limitation on attr version as 19.2 raises some pytest issues
+      - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "1.13"
+        CONDA_DEPENDENCIES: 'attrs<19.2'
         ASTROPY_VERSION: "lts"
 
       - PYTHON_VERSION: "3.7"
@@ -31,7 +34,7 @@ environment:
         CONDA_DEPENDENCIES: "scipy glymur"
         CONDA_CHANNELS: "conda-forge astrofrog"
         PIP_DEPENDENCIES: "requests pyparsing"
-        CONDA_CHANNEL_PRIORITY: "True"
+        CONDA_CHANNEL_PRIORITY: "flexible"
         DEBUG: "True"
 
       - PYTHON_VERSION: "3.6"
@@ -39,7 +42,7 @@ environment:
         ASTROPY_VERSION: "stable"
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
-        CONDA_CHANNEL_PRIORITY: "False"
+        CONDA_CHANNEL_PRIORITY: "disabled"
         SUNPY_VERSION: "dev"
         DEBUG: "True"
 
@@ -47,13 +50,13 @@ environment:
         # on Numpy to make sure that Numpy dev is used (because conda will also
         # install Numpy stable)
 
-      - PYTHON_VERSION: "3.4"
+      - PYTHON_VERSION: "3.7"
         NUMPY_VERSION: "1.9"
 
-        # We deliberately test with Numpy 1.13 to check that installing Astropy
+        # We deliberately test with Numpy 1.16 to check that installing Astropy
         # dev doesn't upgrade Numpy.
       - PYTHON_VERSION: "3.7"
-        NUMPY_VERSION: "1.15"
+        NUMPY_VERSION: "1.16"
         ASTROPY_VERSION: "development"
 
       # Have to supply "PYTHON_VERSION" only because of windows_sdk.cmd code
@@ -68,7 +71,7 @@ environment:
         CONDA_CHANNELS: "conda-forge"
 
 matrix:
-   fast_finish: true
+   fast_finish: false
 
 platform:
     -x64
@@ -78,10 +81,7 @@ install:
     # Install Miniconda
     - "git clone . ci-helpers"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-
-    # Set path again, need to find a way to avoid doing this again
-    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-    - "activate test"
+    - "conda activate test"
 
     # Test that PATH is set correctly
     - "conda --version"
@@ -91,4 +91,6 @@ install:
 build: false
 
 test_script:
+  - "conda info -a"
+  - conda list
   - "%CMD_IN_ENV% %TEST_CMD%"
