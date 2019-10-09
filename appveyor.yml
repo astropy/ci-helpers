@@ -51,10 +51,10 @@ environment:
       - PYTHON_VERSION: "3.7"
         NUMPY_VERSION: "1.9"
 
-        # We deliberately test with Numpy 1.13 to check that installing Astropy
+        # We deliberately test with Numpy 1.16 to check that installing Astropy
         # dev doesn't upgrade Numpy.
       - PYTHON_VERSION: "3.7"
-        NUMPY_VERSION: "1.15"
+        NUMPY_VERSION: "1.16"
         ASTROPY_VERSION: "development"
 
       # Have to supply "PYTHON_VERSION" only because of windows_sdk.cmd code
