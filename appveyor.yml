@@ -23,10 +23,9 @@ environment:
         PYTEST_VERSION: "=3"
         TEST_CMD: "python -c \"import pytest; assert int(pytest.__version__[0])<4\""
 
-        # Adding limitation on attr version as 19.2 raises some pytest issues
       - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "1.13"
-        CONDA_DEPENDENCIES: 'attrs<19.2'
+        PYTEST_VERSION: "3.6.4"
         ASTROPY_VERSION: "lts"
 
       - PYTHON_VERSION: "3.7"
