@@ -25,7 +25,7 @@ environment:
 
       - PYTHON_VERSION: "3.6"
         NUMPY_VERSION: "1.13"
-        PYTEST_VERSION: "3.6.4"
+        PYTEST_VERSION: "=3.6.4"
         ASTROPY_VERSION: "lts"
 
       - PYTHON_VERSION: "3.7"
