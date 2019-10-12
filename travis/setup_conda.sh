@@ -7,7 +7,6 @@
 #
 # The present script was added later.
 
-export DEBUG="True"
 if [[ $DEBUG == True ]]; then
     set -x
 fi

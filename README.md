@@ -146,7 +146,7 @@ environment variables
 * ``CONDA_CHANNEL_PRIORITY``: can be set to ``strict``, ``flexible`` or ``disabled``, and
   affects the ``channel_priority`` conda setting (as discussed
   [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-channels.html). The default is
-  ``false``.
+  ``disabled``.
 
 * ``EVENT_TYPE``: this should be a space-separated string of event
   types. If given, the build will run only if the ``TRAVIS_EVENT_TYPE``

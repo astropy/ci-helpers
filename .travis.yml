@@ -60,11 +60,6 @@ matrix:
         #    is 10.0.1 while the latest is 18.0 at the time of writing this test.
         # -> The latest version of pip as of 2019-08-15 on default channels is 19.2.2
         #    for Python >=3.6, so bump the pip version check to minimum of 19.
-        # Updated these versions because of availability of packages on the default
-        # channels:
-        #
-        #    PYTHON_VERSION 3.5 → 3.6
-        #    pip minimum version >17 → >18
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
                PYTHON_VERSION=3.6 DEBUG=True
@@ -127,26 +122,12 @@ matrix:
 
         # JOB .11
         # -> Setting pytest version should be recognized in the next two jobs
-        #
-        # Changed version numbers in 2019 because older versions are no longer
-        # available in default conda channels:
-        #
-        #    matplotlib 1.5.0 → 2.2.0
-        #    pytest 2.7.3 → 4.6.4
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib>2.0,<=2.2.0'
                DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=4.6.4
                TEST_CMD='conda list; python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
 
         # JOB .12
-        # Changed version numbers in 2019 because older versions are no longer
-        # available in default conda channels:
-        #
-        #    PYTHON_VERSION 3.5 → 3.6
-        #    MATPLOTLIB_VERSION 1.4 → 3.0 (and expected installed version 3.0.3)
-        #    SPHINX_VERSION 1.4.1 → 1.8.4
-        #    PYTEST_VERSION 3.0 → 5.0
-        #
         - os: linux
           env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.8.4 DEBUG=True
                MATPLOTLIB_VERSION=3.0 DEBUG=True PYTHON_VERSION=3.6 PYTEST_VERSION=5.0
@@ -212,8 +193,8 @@ matrix:
         #    can make sure the conda config was correctly updated.
         # -> Have a package dependency with alphanumerical name
         #
-        # -> The old cahnnel priority "true" is equivalent to the new priority
-        #    strict.
+        # -> The old channel priority "true" is equivalent to the new priority
+        #    "flexible".
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=flexible
                CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
