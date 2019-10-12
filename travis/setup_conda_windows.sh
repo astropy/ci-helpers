@@ -6,7 +6,7 @@ if [[ $DEBUG == True ]]; then
 fi
 
 if [[ -z "${MINICONDA_VERSION}" ]]; then
-    MINICONDA_VERSION=4.7.10
+    MINICONDA_VERSION=4.6.14
 fi
 
 echo "installing miniconda3"
