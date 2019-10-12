@@ -163,7 +163,7 @@ matrix:
         # Limit attrs version as newer ones break old pytest
         - os: linux
           env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7 ASTROPY_VERSION='stable'
-               CONDA_DEPENDENCY='attrs<19.2'
+               CONDA_DEPENDENCIES='attrs<19.2'
 
         # JOB .15
         - os: linux
