@@ -69,6 +69,15 @@ function retry_on_known_error() {
         # The hacky workaround is to identify overridden specs and add the
         # spec from the pin file back to the command line.
         if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
+            # Roll back the command than generated the conflict message.
+            # To do this, we get the most recent environment revision number,
+            # then roll back to the one before that.
+            # To ensure we don't need to activate, direct output of conda to
+            # a file instead of piping
+            _revision_file="revisions.txt"
+            conda list --revision > _revision_file
+            _current_revision=$(cat _revision_file | grep \(rev | tail -1 | cut -d' ' -f5 | cut -d')' -f1)
+            conda install --revision=$(( $_current_revision - 1 ))
             _tmp_spec_conflicts=bad_spec.txt
             # Isolate the problematic specs
             grep "conflicts with explicit specs" $_tmp_output_file > $_tmp_spec_conflicts
