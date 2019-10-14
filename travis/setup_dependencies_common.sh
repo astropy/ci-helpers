@@ -37,25 +37,80 @@ function retry_on_known_error() {
         echo "ERROR: Function retry_on_known_error() called without arguments." 1>&2
         return 1
     fi
+    _tmp_output_file="tmp.txt"
     _n_retries=0
     _exitval=0
     _retry=true
     while $_retry; do
         _retry=false
-        # Execute the wrapped command and get its unified output:
-        _output=$($@ 2>&1)
+        # Execute the wrapped command and get its unified output.
+        # This command needs to run in the current shell/environment in case
+        # it sets environment variables (like 'conda install' does)
+        #
+        # tee will both echo output to stdout and save it in a file. The file
+        # is needed for some error checks later. Output to stdout is needed in
+        # the event a conda solve takes a really long time (>10 min). If
+        # there is no output on travis for that long, the job is cancelled.
+        set +e
+        $@ > $_tmp_output_file 2>&1
         _exitval="$?"
+        # Keep the cat here...otherwise _exitval is always 0
+        # even if the conda install failed.
+        cat $_tmp_output_file
+        set -e
+
+        # The hack below is to work around a bug in conda 4.7 in which a spec
+        # pinned in a pin file is not respected if that package is listed
+        # explicitly on the command line even if there is no version spec on
+        # the command line. See:
+        #
+        #   https://github.com/conda/conda/issues/9052
+        #
+        # The hacky workaround is to identify overridden specs and add the
+        # spec from the pin file back to the command line.
+        if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
+            # Roll back the command than generated the conflict message.
+            # To do this, we get the most recent environment revision number,
+            # then roll back to the one before that.
+            # To ensure we don't need to activate, direct output of conda to
+            # a file instead of piping
+            _revision_file="revisions.txt"
+            conda list --revision > _revision_file
+            _current_revision=$(cat _revision_file | grep \(rev | tail -1 | cut -d' ' -f5 | cut -d')' -f1)
+            conda install --revision=$(( $_current_revision - 1 ))
+            _tmp_spec_conflicts=bad_spec.txt
+            # Isolate the problematic specs
+            grep "conflicts with explicit specs" $_tmp_output_file > $_tmp_spec_conflicts
+
+            # Do NOT turn the three lines below into one by putting the python in a
+            # $()...we need to make sure we stay in the shell in which conda is activated,
+            # not a subshell.
+            _tmp_updated_conda_command=new_command.txt
+            python ci-helpers/travis/hack_version_numbers.py $_tmp_spec_conflicts "$@" > $_tmp_updated_conda_command
+            revised_command=$(cat $_tmp_updated_conda_command)
+            echo $revised_command
+            # Try it; if it still has conflicts then just give up
+            $revised_command > >(tee $_tmp_output_file) 2>&1
+            _exitval="$?"
+            if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
+                echo "STOPPING conda attempts because unable to resolve conda pinning issues"
+                rm -f $_tmp_output_file
+                return 1
+            fi
+        fi
+
         # If the command was sucessful, abort the retry loop:
         if [ "$_exitval" == "0" ]; then
             break
         fi
+
         # The command errored, so let's check its output for the specified error
         # strings:
         if [[ $_n_retries -lt $RETRY_MAX ]]; then
             # If a known error string was found, throw a warning and wait a
             # certain number of seconds before invoking the command again:
             for _error in $RETRY_ERRORS; do
-                if [ -n "$(echo "$_output" | grep "$_error")" ]; then
+                if [ -n "$(grep "$_error" "$_tmp_output_file")" ]; then
                     echo "WARNING: The comand \"$@\" failed due to a $_error, retrying." 1>&2
                     _n_retries=$(($_n_retries + 1))
                     _retry=true
@@ -65,13 +120,8 @@ function retry_on_known_error() {
             done
         fi
     done
-    # If the command succeeded, print its output to stdout (otherwise, print to
-    # stderr):
-    if [ "$_exitval" == "0" ]; then
-        echo "$_output"
-    else
-        echo "$_output" 1>&2
-    fi
+    # remove the temporary output file
+    rm -f "$_tmp_output_file"
     # Finally, return the command's exit code:
     return $_exitval
 }
@@ -136,7 +186,7 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.5.12
+    CONDA_VERSION=4.7.11
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
@@ -148,7 +198,7 @@ echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 retry_on_known_error conda install $QUIET conda
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
-    CONDA_CHANNEL_PRIORITY=false
+    CONDA_CHANNEL_PRIORITY=disabled
 else
     # Make lowercase
     CONDA_CHANNEL_PRIORITY=$(echo $CONDA_CHANNEL_PRIORITY | awk '{print tolower($0)}')
@@ -174,13 +224,21 @@ if [[ -z $MPLBACKEND ]]; then
     export MPLBACKEND=Agg
 fi
 
+
+# Python 3.4 is only available on conda's "free" channel, which was removed in
+# conda 4.7.
+if [[ $PYTHON_VERSION == 3.4* ]]; then
+    conda config --set restore_free_channel true
+fi
+
+
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
     retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
 else
     retry_on_known_error conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
-source activate test
+conda activate test
 
 # PIN FILE
 if [[ -z $PIN_FILE ]]; then
@@ -211,8 +269,8 @@ fi
 
 export PIP_INSTALL='python -m pip install'
 
-retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || ( \
-    $PIP_FALLBACK && ( \
+retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || { \
+    $PIP_FALLBACK && { \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
@@ -226,15 +284,29 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
         $PIP_INSTALL pytest${PIP_PYTEST_VERSION}
         awk '{if ($1 != "pytest") print $0}' $PIN_FILE > /tmp/pin_file_temp
         mv /tmp/pin_file_temp $PIN_FILE
-    fi)
-)
+    fi;}
+}
 
 # In case of older python versions there isn't an up-to-date version of pip
 # which may lead to ignore install dependencies of the package we test.
 # This update should not interfere with the rest of the functionalities
 # here.
+#
+# This *may* be leading to inconsistent conda environments, definitely means
+# that conda is not aware of pip installs, and is often overridden by
+# subsequent conda installs because conda is configured to install pip by
+# default now.
+#
+# For really old pythons it may be necessary, though, so check pip version and
+# install this way if the major version is less than 19.
 if [[ -z $PIP_VERSION ]]; then
-    $PIP_INSTALL --upgrade pip
+    old_pip=$(python -c "from distutils.version import LooseVersion;\
+                import os; import pip;\
+                print(LooseVersion(pip.__version__) <\
+                      LooseVersion('19.0.0'))")
+    if [[ $old_pip == True ]]; then
+        $PIP_INSTALL --upgrade pip
+    fi
 fi
 
 # PEP8
@@ -267,7 +339,7 @@ if [[ $MAIN_CMD == pylint* ]]; then
 fi
 
 # Pin required versions for dependencies, howto is in FAQ of conda
-# http://conda.pydata.org/docs/faq.html#pinning-packages
+# https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
     if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') &&
@@ -313,7 +385,85 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     fi
 fi
 
+if [[ ! -z $CONDA_DEPENDENCIES ]]; then
+    # Do a dry run of the conda install here to make sure that pins are
+    # ACTUALLY being respected. This will become unnecessary when
+    # https://github.com/conda/conda/issues/9052
+    # is fixed
+
+    # NOTE: it is important that the expression below remain in an if context
+    # because of the 'set -e' above, which causes the shell to immediately
+    # exit if the last command in a pipeline has a non-zero exit status,
+    # UNLESS the pipeline is in a few specific contexts.  From
+    # https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html:
+    #
+    #     The shell does not exit if the command that fails is ...part of the
+    #     test in an if statement...
+    #
+    # Use tee to print output to console and to file to avoid travis timing out
+    _tmp_output_file="tmp.txt"
+    # do not exit on failure of the dry run because pip fallback may succeed
+    set +e
+
+    conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+    set -e
+    # 'grep' returns non-zero exit status if no lines match.
+    if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
+        echo "restoring free channel"
+        # Restoring the free channel only helps if the channel priority
+        # is not strict, so check that first. If it is strict, fail instead
+        # of changing the solve logic.
+
+        # ...but only if the free channel is not ruled out by strict
+        # channel priority
+        if [[ $CONDA_CHANNEL_PRIORITY == strict ]]; then
+            # If the channel priority is strict we should fail instead of silently
+            # changing how the solve is done.
+            echo "WARNING: May not be able to solve this environment with pinnings and strict channel priority"
+            # Keep going, because retry_on_known_errors now checks for pinning
+            # problems and will trigger a pip fallback if they continue.
+        fi
+        # Add the free channel, which might fix this...
+        conda config --set restore_free_channel true
+
+        # Try the dry run again, fail if pinnings are still ignored
+        echo "Re-running with free channel restored"
+
+        # do not exit on failure of the dry run because pip fallback may succeed
+        set +e
+        conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+        set -e
+        if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
+            # No clue how to fix this, so just give up
+            echo "WARNING: conda is ignoring pinnings"
+            # Actually, just continue. retry_on_known_errors now checks for
+            # pinning problems and will trigger a pip fallback if they continue.
+        fi
+    fi
+
+    # Clean up
+    rm -f $_tmp_output_file
+fi
+
 # NUMPY
+
+# Older versions of numpy are only available on the "free" channel, which
+# has been removed as of conda 4.7 from the list of default channels.
+# This adds it back if needed.
+
+if [[ ! -z $NUMPY_VERSION ]]; then
+    # We only want to do a check for old versions of numpy, not for dev or stable
+    if [[ $NUMPY_VERSION =~ [0-9]+(\.[0-9]){1,2} ]]; then
+        old_numpy=$(python -c "from distutils.version import LooseVersion;\
+                    import os;\
+                    print(LooseVersion(os.environ['NUMPY_VERSION']) <\
+                          LooseVersion('1.11.0'))")
+        if [[ $old_numpy == True ]]; then
+            conda config --set restore_free_channel true
+        fi
+    fi
+fi
+
 # We use --no-pin to avoid installing other dependencies just yet.
 
 
@@ -432,14 +582,14 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || ( \
-            $PIP_FALLBACK && ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || { \
+            $PIP_FALLBACK && { \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "astropy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi))
+            fi;};}
     fi
 
 fi
@@ -467,14 +617,14 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         SUNPY_OPTION=$SUNPY_VERSION
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || ( \
-            $PIP_FALLBACK && ( \
+        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || { \
+            $PIP_FALLBACK && { \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
             if [[ -f $PIN_FILE ]]; then
                 awk '{if ($1 != "sunpy") print $0}' $PIN_FILE > /tmp/pin_file_temp
                 mv /tmp/pin_file_temp $PIN_FILE
-            fi))
+            fi;};}
     fi
 
 fi
@@ -521,18 +671,24 @@ if [[ $SETUP_CMD == *build_sphinx* ]] || [[ $SETUP_CMD == *build_docs* ]]; then
         awk -v package=$package '{if ($1 == package) print $0}' /tmp/pin_file_copy > $PIN_FILE
         awk 'FNR==NR{a[$1]=$1;next} $1 in a{print $0}' /tmp/installed /tmp/pin_file_copy >> $PIN_FILE
 
-        retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || ( \
-            $PIP_FALLBACK && (\
+        retry_on_known_error $CONDA_INSTALL $package && mv /tmp/pin_file_copy $PIN_FILE || { \
+            $PIP_FALLBACK && { \
             echo "Installing $package with conda was unsuccessful, using pip instead."
-            PIP_PACKAGE_VERSION=$(awk '{print $2}' $PIN_FILE)
+            PIP_PACKAGE_VERSION=$(grep $package $PIN_FILE | awk '{print $2}')
+            # Debugging....
+            echo "WHAT IS GOING ON HERE (TAKE 2)"
+            conda info -a
+            conda config --show
+            conda list
+            cat $PIN_FILE
             if [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1) =~ $is_number ]]; then
-                PIP_PACKAGE_VERSION='=='${PIP_${package}_VERSION}
+                PIP_PACKAGE_VERSION='=='${PIP_PACKAGE_VERSION}
             elif [[ $(echo $PIP_PACKAGE_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
                 PIP_PACKAGE_VERSION='='${PIP_PACKAGE_VERSION}
             fi
             $PIP_INSTALL ${package}${PIP_PACKAGE_VERSION}
             awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_file_copy > $PIN_FILE
-        ))
+        };}
     done
 
     if [[ $DEBUG == True ]]; then
@@ -543,8 +699,8 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-    retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || ( \
-        $PIP_FALLBACK && ( \
+    retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || { \
+        $PIP_FALLBACK && { \
         # If there is a problem with conda install, try pip install one-by-one
         cp $PIN_FILE /tmp/pin_copy
         for package in $(echo $CONDA_DEPENDENCIES); do
@@ -553,7 +709,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
             if [[ $DEBUG == True ]]; then
                 cat $PIN_FILE
             fi
-            retry_on_known_error $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || ( \
+            retry_on_known_error $CONDA_INSTALL $package $CONDA_DEPENDENCIES_FLAGS || { \
                 echo "Installing the dependency $package with conda was unsuccessful, using pip instead."
                 # We need to remove the problematic package from the pin
                 # file, otherwise further conda install commands may fail,
@@ -568,9 +724,9 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
                 fi
                 awk -v package=$package '{if ($1 != package) print $0}' /tmp/pin_copy > /tmp/pin_copy_temp
                 mv /tmp/pin_copy_temp /tmp/pin_copy
-                $PIP_INSTALL $package${PIP_PACKAGE_VERSION});
+                $PIP_INSTALL $package${PIP_PACKAGE_VERSION};};
         done
-        mv /tmp/pin_copy $PIN_FILE))
+        mv /tmp/pin_copy $PIN_FILE;};}
 fi
 
 # PARALLEL BUILDS
@@ -747,7 +903,8 @@ fi
 
 if [[ $DEBUG == True ]]; then
     # include debug information about the current conda install
-    conda install -n root _license
+    # There was once an install of a _license package here, which does not
+    # exist for python >=3.7
     conda info -a
 fi
 

@@ -250,7 +250,7 @@ def test_regression_mkl():
 
 def test_conda_channel_priority():
 
-    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled' if 'APPVEYOR' in os.environ else 'False')
+    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled')
 
     with open(os.path.expanduser('~/.condarc'), 'r') as f:
         content = f.read()
