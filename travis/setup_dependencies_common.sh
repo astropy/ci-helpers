@@ -276,7 +276,7 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
         if [[ $(echo $PYTEST_VERSION | cut -c 1) =~ $is_number ]]; then
-            PIP_PYTEST_VERSION='=='${PYTEST_VERSION}
+            PIP_PYTEST_VERSION='=='${PYTEST_VERSION}.*
         elif [[ $(echo $PYTEST_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
             PIP_PYTEST_VERSION='='${PYTEST_VERSION}
         else
