@@ -187,6 +187,8 @@ def test_dependency_imports():
             __import__('PIL')
         elif package == 'attrs':
             continue
+        elif package == 'libtiff':
+            continue
         elif package == '':
             continue
         else:
