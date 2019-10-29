@@ -259,7 +259,3 @@ def test_conda_channel_priority():
         content = f.read()
 
     assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
-
-
-if __name__ == '__main__':
-    pytest.main(__file__)
