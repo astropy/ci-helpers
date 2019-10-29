@@ -24,7 +24,7 @@ matrix:
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
 
-        # JOB .33 (because it is under allowed failures)
+        # JOB .34 (because it is under allowed failures)
         # NOTE: IT DOES NOT CURRENTLY FAIL
         # Try pytest pip fallback as conda package for 3.1 is not available
         # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
@@ -34,8 +34,9 @@ matrix:
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
         # JOB .2
+        # --> regression test for pip version resolution in https://github.com/astropy/ci-helpers/issues/425
         - os: windows
-          env: PYTHON_VERSION=3.7
+          env: PYTHON_VERSION=3.7 PYTEST_VERSION=3.9
 
         # JOB .3
         # -> tests sunpy dev
@@ -101,7 +102,7 @@ matrix:
         # and we want the pip fallback to happen.
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.6
-               TEST_CMD='conda list; py.test test_env.py && coverage run test_env.py; python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")"'
+               TEST_CMD='conda list && python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")" && py.test test_env.py && coverage run test_env.py'
                CONDA_CHANNELS=''
                CONDA_DEPENDENCIES='libtiff pytest pytest-cov ipyevents'
                DEBUG=True ASTROPY_VERSION=stable
@@ -124,7 +125,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib>2.0,<=2.2.0'
                DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=4.6.4
-               TEST_CMD='conda list; python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
+               TEST_CMD='conda list && python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
 
         # JOB .12
         - os: linux
@@ -254,7 +255,7 @@ matrix:
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
 
     allow_failures:
-        # JOB .33
+        # JOB .34
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 

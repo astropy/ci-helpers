@@ -150,13 +150,14 @@ fi
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
 if [[ $(python -c "from distutils.version import LooseVersion; import os;\
         print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
-    export LATEST_ASTROPY_STABLE=3.2.2
+    export LATEST_ASTROPY_STABLE=3.2.3
+    export LATEST_NUMPY_STABLE=1.17
 else
-    export LATEST_ASTROPY_STABLE=2.0.15
+    export LATEST_ASTROPY_STABLE=2.0.16
     export NO_PYTEST_ASTROPY=True
+    export LATEST_NUMPY_STABLE=1.16
 fi
-export ASTROPY_LTS_VERSION=2.0.15
-export LATEST_NUMPY_STABLE=1.17
+export ASTROPY_LTS_VERSION=2.0.16
 export LATEST_SUNPY_STABLE=1.0.3
 
 
@@ -275,7 +276,7 @@ retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION p
         echo "Installing pytest with conda was unsuccessful, using pip instead"
         retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
         if [[ $(echo $PYTEST_VERSION | cut -c 1) =~ $is_number ]]; then
-            PIP_PYTEST_VERSION='=='${PYTEST_VERSION}
+            PIP_PYTEST_VERSION='=='${PYTEST_VERSION}.*
         elif [[ $(echo $PYTEST_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
             PIP_PYTEST_VERSION='='${PYTEST_VERSION}
         else
