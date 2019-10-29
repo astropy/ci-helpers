@@ -101,7 +101,7 @@ matrix:
         # and we want the pip fallback to happen.
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.6
-               TEST_CMD='conda list; py.test test_env.py && coverage run test_env.py; python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")"'
+               TEST_CMD='conda list && python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")" && py.test test_env.py && coverage run test_env.py'
                CONDA_CHANNELS=''
                CONDA_DEPENDENCIES='libtiff pytest pytest-cov ipyevents'
                DEBUG=True ASTROPY_VERSION=stable
@@ -124,7 +124,7 @@ matrix:
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib>2.0,<=2.2.0'
                DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=4.6.4
-               TEST_CMD='conda list; python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
+               TEST_CMD='conda list && python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
 
         # JOB .12
         - os: linux
