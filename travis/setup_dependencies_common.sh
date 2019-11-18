@@ -90,8 +90,11 @@ function retry_on_known_error() {
             revised_command=$(cat $_tmp_updated_conda_command)
             echo $revised_command
             # Try it; if it still has conflicts then just give up
-            $revised_command > >(tee $_tmp_output_file) 2>&1
+            $revised_command > $_tmp_output_file 2>&1
             _exitval="$?"
+            # Keep the cat here...otherwise _exitval is always 0
+            # even if the conda install failed.
+            cat $_tmp_output_file
             if [[ -n $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
                 echo "STOPPING conda attempts because unable to resolve conda pinning issues"
                 rm -f $_tmp_output_file
@@ -405,8 +408,8 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     _tmp_output_file="tmp.txt"
     # do not exit on failure of the dry run because pip fallback may succeed
     set +e
-
-    conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+    conda install --dry-run $CONDA_DEPENDENCIES > $_tmp_output_file 2>&1
+    cat $_tmp_output_file
     set -e
     # 'grep' returns non-zero exit status if no lines match.
     if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
