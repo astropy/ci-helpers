@@ -33,10 +33,10 @@ if 'TRAVIS_REPO_SLUG' in os.environ:
 
 
 if not LooseVersion(sys.version) < '3.5':
-    LATEST_ASTROPY_STABLE = '3.2.3'
+    LATEST_ASTROPY_STABLE = '4.0'
     # This is not for windows but appveyor only
     LATEST_ASTROPY_STABLE_WIN = '3.2.2'
-    LATEST_NUMPY_STABLE = '1.17'
+    LATEST_NUMPY_STABLE = '1.18'
 else:
     LATEST_ASTROPY_STABLE = '2.0.16'
     # This is not for windows but appveyor only
@@ -47,7 +47,7 @@ LATEST_ASTROPY_LTS = '2.0.16'
 # This is not for windows but appveyor only
 LATEST_ASTROPY_LTS_WIN = '2.0.15'
 LATEST_NUMPY_STABLE_WIN = '1.16'
-LATEST_SUNPY_STABLE = '1.0.3'
+LATEST_SUNPY_STABLE = '1.0.6'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
