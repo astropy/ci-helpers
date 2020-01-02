@@ -882,7 +882,8 @@ fi
 
 if [[ $SETUP_CMD == *coverage* ]]; then
     # We install requests with conda since it's required by coveralls.
-    retry_on_known_error $CONDA_INSTALL coverage requests
+    # Limit the version number as the astropy testrunner is not compatible with v5
+    retry_on_known_error $CONDA_INSTALL 'coverage<5' requests
     $PIP_INSTALL coveralls codecov
 fi
 
