@@ -1,9 +1,12 @@
 #!/bin/bash -x
-
 hash -r
 
 set -e
-
+if [ `uname -m` = 'aarch64' ]; then
+    sudo chmod -R 777 /home/travis/miniconda
+    sudo chmod -R 777 /home/travis/.condarc
+    sudo rm /usr/bin/lsb_release
+fi
 
 # If not set from outside, initialize parameters for the retry_on_known_error()
 # function:
@@ -156,9 +159,15 @@ if [[ $(python -c "from distutils.version import LooseVersion; import os;\
     export LATEST_ASTROPY_STABLE=4.0
     export LATEST_NUMPY_STABLE=1.18
 else
-    export LATEST_ASTROPY_STABLE=2.0.16
-    export NO_PYTEST_ASTROPY=True
-    export LATEST_NUMPY_STABLE=1.16
+     if [[ $(python -c "from distutils.version import LooseVersion; import os;\
+            print(LooseVersion(os.environ['PYTHON_VERSION']) < '3.5')") == False ]]; then
+        export LATEST_ASTROPY_STABLE=4.0
+        export LATEST_NUMPY_STABLE=1.18
+     else
+        export LATEST_ASTROPY_STABLE=2.0.16
+        export NO_PYTEST_ASTROPY=True
+        export LATEST_NUMPY_STABLE=1.16
+     fi
 fi
 export ASTROPY_LTS_VERSION=4.0
 export LATEST_SUNPY_STABLE=1.0.6
@@ -190,28 +199,27 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.7.11
+    if [ `uname -m` = 'aarch64' ]; then
+        CONDA_VERSION=4.5.12
+    else
+	CONDA_VERSION=4.7.11
+    fi
 fi
-
-if [[ -z $PIN_FILE_CONDA ]]; then
-    PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
-fi
-
+PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
-
 retry_on_known_error conda install $QUIET conda
+if [ `uname -m` != 'aarch64' ]; then
+    if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
+        CONDA_CHANNEL_PRIORITY=disabled
+    else
+        # Make lowercase
+        CONDA_CHANNEL_PRIORITY=$(echo $CONDA_CHANNEL_PRIORITY | awk '{print tolower($0)}')
+    fi
 
-if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
-    CONDA_CHANNEL_PRIORITY=disabled
-else
-    # Make lowercase
-    CONDA_CHANNEL_PRIORITY=$(echo $CONDA_CHANNEL_PRIORITY | awk '{print tolower($0)}')
+	# We need to add this after the update, otherwise the ``channel_priority``
+	# key may not yet exists
+    conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
 fi
-
-# We need to add this after the update, otherwise the ``channel_priority``
-# key may not yet exists
-conda config  --set channel_priority $CONDA_CHANNEL_PRIORITY
-
 # Use utf8 encoding. Should be default, but this is insurance against
 # future changes
 export PYTHONIOENCODING=UTF8
@@ -222,6 +230,7 @@ if [[ ! -z $PYTHON_VERSION ]]; then
 else
     PYTHON_OPTION=""
 fi
+
 
 # Setting the MPL backend to a default to avoid occational segfaults with the qt backend
 if [[ -z $MPLBACKEND ]]; then
@@ -237,12 +246,22 @@ fi
 
 
 # CONDA
-if [[ -z $CONDA_ENVIRONMENT ]]; then
-    retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
+if [ `uname -m` == 'aarch64' ]; then
+   if [[ -z $CONDA_ENVIRONMENT ]]; then
+    retry_on_known_error conda create -q -n test  python=3.7
+   else
+    retry_on_known_error conda create -q -n test python=3.7 $CONDA_ENVIRONMENT
+   fi
+   source activate test
 else
+   if [[ -z $CONDA_ENVIRONMENT ]]; then
+    retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
+   else
     retry_on_known_error conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
+   fi
+   conda activate test
 fi
-conda activate test
+
 
 # PIN FILE
 if [[ -z $PIN_FILE ]]; then
@@ -345,10 +364,11 @@ fi
 # Pin required versions for dependencies, howto is in FAQ of conda
 # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
-
-    if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') &&
-            $TRAVIS_OS_NAME != windows && ! -z $NUMPY_VERSION ]]; then
-        CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
+    if [ `uname -m` ! = 'aarch64' ]; then
+        if [[ -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') &&
+                 $TRAVIS_OS_NAME != windows && ! -z $NUMPY_VERSION ]]; then
+            CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
+        fi
     fi
 
     # The astropy testrunner is not compatible with coverage 5.0+, thus we limit the version
@@ -478,7 +498,11 @@ fi
 # We use --no-pin to avoid installing other dependencies just yet.
 
 
-MKL='nomkl'
+if [ `uname -m` = aarch64]; then
+    MKL='';
+else
+    MKL='nomkl';
+fi
 if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep '\bmkl\b') ||
         $TRAVIS_OS_NAME == windows || -z $NUMPY_VERSION ]]; then
     MKL=''
