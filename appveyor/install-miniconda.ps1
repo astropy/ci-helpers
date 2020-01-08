@@ -144,17 +144,17 @@ function retry_on_known_error {
 $MINICONDA_URL = "https://repo.continuum.io/miniconda/"
 
 # We will use the 2.0.x releases as "stable" for Python 2.7 and 3.4
-if ((python -c "from distutils.version import LooseVersion; import os; print(LooseVersion(os.environ['PYTHON_VERSION']) < str(3.5))") -match "False") {
-    $env:LATEST_ASTROPY_STABLE = "3.2.2"
+if ((python -c "from distutils.version import LooseVersion; import os; print(LooseVersion(os.environ['PYTHON_VERSION']) < str(3.6))") -match "False") {
+    $env:LATEST_ASTROPY_STABLE = "4.0"
 }
 else {
-    $env:LATEST_ASTROPY_STABLE = "2.0.15"
+    $env:LATEST_ASTROPY_STABLE = "2.0.16"
     $env:NO_PYTEST_ASTROPY = "True"
 }
 
-$env:ASTROPY_LTS_VERSION = "2.0.15"
-$env:LATEST_NUMPY_STABLE = "1.16"
-$env:LATEST_SUNPY_STABLE = "1.0.1"
+$env:ASTROPY_LTS_VERSION = "4.0"
+$env:LATEST_NUMPY_STABLE = "1.17"
+$env:LATEST_SUNPY_STABLE = "1.0.6"
 
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
