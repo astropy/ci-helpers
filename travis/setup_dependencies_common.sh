@@ -205,7 +205,9 @@ if [[ -z $CONDA_VERSION ]]; then
 	CONDA_VERSION=4.7.11
     fi
 fi
-PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+if [[ -z $PIN_FILE_CONDA ]]; then
+    PIN_FILE_CONDA=$HOME/miniconda/conda-meta/pinned
+fi
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 retry_on_known_error conda install $QUIET conda
 if [ `uname -m` != 'aarch64' ]; then
