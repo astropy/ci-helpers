@@ -102,7 +102,7 @@ matrix:
         # and we want the pip fallback to happen.
         - os: linux
           env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.6
-               TEST_CMD='conda list && python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\")" && py.test test_env.py && coverage run test_env.py'
+               TEST_CMD='conda list && python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\"); import coverage; assert int(coverage.__version__[0]) < 5" && py.test test_env.py && coverage run test_env.py'
                CONDA_CHANNELS=''
                CONDA_DEPENDENCIES='libtiff pytest pytest-cov ipyevents'
                DEBUG=True ASTROPY_VERSION=stable

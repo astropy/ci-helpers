@@ -351,6 +351,13 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
         CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" nomkl"
     fi
 
+    # The astropy testrunner is not compatible with coverage 5.0+, thus we limit the version
+    if [[ ! -z $(echo $CONDA_DEPENDENCIES | grep -i pytest-cov) ]]; then
+        if [[ -z $(echo $CONDA_DEPENDENCIES | grep -i coverage) ]]; then
+            CONDA_DEPENDENCIES=${CONDA_DEPENDENCIES}" coverage<5"
+        fi
+    fi
+
     echo $CONDA_DEPENDENCIES | awk '{print tolower($0)}' | tr " " "\n" | \
         sed -E -e 's|([a-z0-9]+)([=><!])|\1 \2|g' -e 's| =([0-9])| ==\1|g' >> $PIN_FILE
 
@@ -703,6 +710,7 @@ fi
 
 # ADDITIONAL DEPENDENCIES (can include optionals, too)
 if [[ ! -z $CONDA_DEPENDENCIES ]]; then
+
     retry_on_known_error $CONDA_INSTALL $CONDA_DEPENDENCIES $CONDA_DEPENDENCIES_FLAGS || { \
         $PIP_FALLBACK && { \
         # If there is a problem with conda install, try pip install one-by-one
@@ -870,6 +878,13 @@ fi
 # build time)
 
 if [[ ! -z $PIP_DEPENDENCIES ]]; then
+    # The astropy testrunner is not compatible with coverage 5.0+, thus we limit the version
+    if [[ ! -z $(echo $PIP_DEPENDENCIES | grep -i pytest-cov) ]]; then
+        if [[ -z $(echo $PIP_DEPENDENCIES | grep -i coverage) ]]; then
+            PIP_DEPENDENCIES=${PIP_DEPENDENCIES}" coverage<5"
+        fi
+    fi
+
     $PIP_INSTALL $PIP_DEPENDENCIES $PIP_DEPENDENCIES_FLAGS
 fi
 
