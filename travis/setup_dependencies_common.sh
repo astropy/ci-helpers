@@ -881,14 +881,13 @@ fi
 # install this now in case the user installs cpp-coveralls via PIP_DEPENDENCIES.
 
 if [[ $SETUP_CMD == *coverage* ]]; then
-    # We install requests with conda since it's required by coveralls.
+    # We install requests since it's required by coveralls.
     # Limit the version number as the astropy testrunner is not compatible with v5
-    retry_on_known_error $CONDA_INSTALL 'coverage<5' requests
-    $PIP_INSTALL coveralls codecov
+    $PIP_INSTALL coveralls codecov 'coverage<5' requests
 fi
 
 if [[ $SETUP_CMD == *-cov* ]]; then
-    $PIP_INSTALL coveralls codecov pytest-cov
+    $PIP_INSTALL coveralls codecov pytest-cov 'coverage<5'
 fi
 
 
