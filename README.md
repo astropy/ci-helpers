@@ -280,6 +280,29 @@ environment variables:
 * ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``$RETRY_DELAY=2``.
 
+### Tox
+
+For CI builds using tox, we also provide a script that installs and runs tox, assuming that the following environment
+variables are defined:
+
+* ``TOXENV``: the name of the tox environment to run
+* ``TOXARGS``: the arguments to pass to tox
+* ``TOXPOSARGS``: the positional arguments to pass after the ``--`` separator
+
+The resulting tox command looks like::
+
+    tox -e $TOXENV $TOXPOSARGS -- $TOXPOSARGS
+
+This script may also apply patches, for example to prevent a too recent version
+of pytest from being installed if this breaks many packages, or excluding a
+broken version of another package. This is done by running a proxy PyPI server
+which excludes the problematic package versions. In general however, the goal
+will be to not have any patches most of the time and to only use this in extreme
+circumstances.
+
+Note that this script will not set up conda and will by default just use the
+active Python interpreter. Aside from the three environment variables mentioned
+in this section, no other environment variables are taken into account.
 
 ### Utils
 
