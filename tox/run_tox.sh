@@ -33,7 +33,7 @@ echo ''
 pip install tox
 
 # If PyPI patches are needed, uncommend the following line
-# pip install tox-pypi-filter
+pip install tox-pypi-filter
 
 echo ''
 echo 'Listing Python packages:'
@@ -48,6 +48,6 @@ echo ''
 
 # Run tox. If PyPI patches are needed, add a --pypi-filter=...
 # option to the command, e.g. --pypi-filter='pytest<5'
-tox -e $TOXENV $TOXARGS -- $TOXPOSARGS
+tox -e $TOXENV $TOXARGS --pypi-filter='pytest<5.4' -- $TOXPOSARGS
 echo ''
 echo '########################################################################'
