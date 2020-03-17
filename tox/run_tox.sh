@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 
 # This script installs and runs tox, assuming that the following environment
 # variables are defined:
@@ -16,6 +16,8 @@
 # another package. This is done by running a proxy PyPI server which
 # excludes the problematic package versions.
 
+set -e
+
 echo '########################################################################'
 echo ''
 echo 'ci-helpers run_tox.sh script'
@@ -24,7 +26,13 @@ echo 'TOXENV='$TOXENV
 echo 'TOXARGS='$TOXARGS
 echo 'TOXPOSARGS='$TOXPOSARGS
 echo ''
-echo 'No global patches being applied'
+
+# Temporary version limitation, remove here and below once
+# https://github.com/astropy/pytest-doctestplus/issues/94 is fixed and released
+
+# echo 'No global patches being applied'
+echo 'Patching pytest to <5.4'
+
 echo ''
 echo 'Installing tox:'
 echo ''
@@ -33,7 +41,7 @@ echo ''
 pip install tox
 
 # If PyPI patches are needed, uncommend the following line
-# pip install tox-pypi-filter
+pip install tox-pypi-filter
 
 echo ''
 echo 'Listing Python packages:'
@@ -48,6 +56,6 @@ echo ''
 
 # Run tox. If PyPI patches are needed, add a --pypi-filter=...
 # option to the command, e.g. --pypi-filter='pytest<5'
-tox -e $TOXENV $TOXARGS -- $TOXPOSARGS
+tox -e $TOXENV $TOXARGS --pypi-filter='pytest<5.4' -- $TOXPOSARGS
 echo ''
 echo '########################################################################'
