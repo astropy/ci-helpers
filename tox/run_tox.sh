@@ -26,8 +26,13 @@ echo 'TOXENV='$TOXENV
 echo 'TOXARGS='$TOXARGS
 echo 'TOXPOSARGS='$TOXPOSARGS
 echo ''
+
+# Temporary version limitation, remove here and below once
+# https://github.com/astropy/pytest-doctestplus/issues/94 is fixed and released
+
 # echo 'No global patches being applied'
 echo 'Patching pytest to <5.4'
+
 echo ''
 echo 'Installing tox:'
 echo ''
