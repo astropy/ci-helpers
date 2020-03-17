@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 
 # This script installs and runs tox, assuming that the following environment
 # variables are defined:
@@ -16,6 +16,8 @@
 # another package. This is done by running a proxy PyPI server which
 # excludes the problematic package versions.
 
+set -xe
+
 echo '########################################################################'
 echo ''
 echo 'ci-helpers run_tox.sh script'
@@ -24,7 +26,8 @@ echo 'TOXENV='$TOXENV
 echo 'TOXARGS='$TOXARGS
 echo 'TOXPOSARGS='$TOXPOSARGS
 echo ''
-echo 'No global patches being applied'
+# echo 'No global patches being applied'
+echo 'Patching pytest to <5.4'
 echo ''
 echo 'Installing tox:'
 echo ''
