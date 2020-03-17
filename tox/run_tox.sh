@@ -16,7 +16,7 @@
 # another package. This is done by running a proxy PyPI server which
 # excludes the problematic package versions.
 
-set -xe
+set -e
 
 echo '########################################################################'
 echo ''
@@ -51,6 +51,6 @@ echo ''
 
 # Run tox. If PyPI patches are needed, add a --pypi-filter=...
 # option to the command, e.g. --pypi-filter='pytest<5'
-tox -e $TOXENV $TOXARGS --pypi-filter="pytest<5.4" -- $TOXPOSARGS
+tox -e $TOXENV $TOXARGS --pypi-filter='pytest<5.4' -- $TOXPOSARGS
 echo ''
 echo '########################################################################'
