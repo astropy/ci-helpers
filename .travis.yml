@@ -255,11 +255,6 @@ matrix:
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD="python -c $'import matplotlib\nimport scipy'"
 
-        - os: linux
-          python: 3.7
-          language: python
-          env: SETUP_CONDA=false TOXENV="test" TEST_CMD="source ci-helpers/tox/run_tox.sh && test -f tox_worked.log"
-
     allow_failures:
         # JOB .34
         - os: linux
