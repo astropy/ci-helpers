@@ -1,9 +1,6 @@
 # We set the language to c because python isn't supported on the MacOS X nodes
 # on Travis. However, the language ends up being irrelevant anyway, since we
 # install Python ourselves using conda.
-arch:
-    - amd64
-    - arm64
 language: c
 
 os:
@@ -21,6 +18,10 @@ env:
 
 jobs:
     include:
+        # ARM64 job
+        - arch: arm64
+          os: linux
+       
         # pytest dev version
         - os: linux
           env: PYTHON_VERSION=3.8 PYTEST_VERSION=dev
