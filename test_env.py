@@ -101,6 +101,11 @@ def test_numpy():
             assert re.match("^[0-9]+\.[0-9]+\.[0-9]", np_version)
 
 
+def test_pytest():
+    if 'dev' in os.environ['PYTEST_VERSION'].lower():
+        assert 'dev' in pytest.__version__
+
+
 def test_astropy():
     if 'ASTROPY_VERSION' in os.environ:
         import astropy

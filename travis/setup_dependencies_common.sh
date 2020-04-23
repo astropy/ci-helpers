@@ -269,7 +269,7 @@ if [[ -z $PYTEST_VERSION ]]; then
     PYTEST_VERSION="<5.4"
 fi
 
-if [[ ! -z $PYTEST_VERSION ]]; then
+if [[ ! -z $PYTEST_VERSION && $PYTEST_VERSION != dev* ]]; then
     echo "pytest ${PYTEST_VERSION}.*" >> $PIN_FILE
 fi
 
@@ -818,6 +818,12 @@ fi
 
 if [[ $SCIKIT_LEARN_VERSION == pre* ]]; then
     $PIP_INSTALL --pre --upgrade --no-deps scikit-learn
+fi
+
+# PYTEST DEV
+
+if [[ $PYTEST_VERSION == dev* ]]; then
+    $PIP_INSTALL git+https://github.com/pytest-dev/pytest.git#egg=pytest --upgrade --no-deps
 fi
 
 # ASTROPY DEV and PRE

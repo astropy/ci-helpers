@@ -20,6 +20,10 @@ env:
 
 matrix:
     include:
+        # pytest dev version
+        - os: linux
+          env: PYTHON_VERSION=3.8 PYTEST_VERSION=dev
+
         # JOB .1
         # pytest pip fallback, conda package for 3.1 is not available for py3.4
         - os: linux
