@@ -26,7 +26,6 @@ fi
 
 # Second check: if any of the custom tags are used to skip the build
 
-TR_SKIP="\[(skip travis|travis skip)\]"
 DOCS_ONLY="\[docs only|build docs\]"
 
 # Travis doesn't provide the commit message of the top of the branch for
@@ -39,14 +38,7 @@ else
     COMMIT_MESSAGE=$(git show -s $TRAVIS_COMMIT_RANGE | awk 'BEGIN{count=0}{if ($1=="Author:") count++; if (count==1) print $0}')
 fi
 
-# Skip build if the commit message contains [skip travis] or [travis skip]
-# Remove workaround once travis has this feature natively
-# https://github.com/travis-ci/travis-ci/issues/5032
-
-if [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${TR_SKIP}") ]]; then
-    echo "Travis was requested to be skipped by the commit message, exiting."
-    travis_terminate 0
-elif [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${DOCS_ONLY}") ]]; then
+if [[ ! -z $(echo ${COMMIT_MESSAGE} | grep -E "${DOCS_ONLY}") ]]; then
     if [[ ! $SETUP_CMD =~ build_docs|build_sphinx|pycodestyle|pylint|flake8|pep8 ]] && [[ ! $MAIN_CMD =~ pycodestyle|pylint|flake8|pep8 ]]; then
         # we also allow the style checkers to run here
         echo "Only docs build was requested by the commit message, exiting."
