@@ -39,8 +39,8 @@ This does the following:
 - Register the specified channels.
 - ``export PYTHONIOENCODING=UTF8``
 - Supports custom skip tags included in the commit message that are not yet
-  natively provided by Travis. To skip the travis build: ``[skip travis]`` or
-  [travis skip]. To run only the docs build: ``[build docs]`` or
+  natively provided by Travis.
+  To run only the docs build: ``[build docs]`` or
   ``[docs only]``. The latter requires ``SETUP_CMD`` (see below) to be set to
   ``build_docs`` or ``build_sphinx``.
 
