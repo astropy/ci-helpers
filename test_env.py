@@ -102,8 +102,9 @@ def test_numpy():
 
 
 def test_pytest():
-    if 'dev' in os.environ['PYTEST_VERSION'].lower():
-        assert 'dev' in pytest.__version__
+    if 'PYTEST_VERSION' in os.environ:
+        if 'dev' in os.environ['PYTEST_VERSION'].lower():
+            assert 'dev' in pytest.__version__
 
 
 def test_astropy():
