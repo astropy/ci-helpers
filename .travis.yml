@@ -6,8 +6,6 @@ language: c
 os:
     - linux
 
-sudo: false
-
 env:
     global:
         - SETUP_CMD='test'
@@ -15,10 +13,10 @@ env:
         - PYTHON_VERSION=3.6
         - SETUP_CONDA=true
 
-    matrix:
+    jobs:
         - SETUP_CMD='egg_info' TEST_CMD='python --version'
 
-matrix:
+jobs:
     include:
         # pytest dev version
         - os: linux
@@ -252,12 +250,12 @@ matrix:
         # JOB .31
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml'
-               TEST_CMD="python -c $'import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass\nelse:\n    raise RuntimeError'"
+               TEST_CMD='python -c "import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass\nelse:\n    raise RuntimeError"'
 
         # JOB .32
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
-               TEST_CMD="python -c $'import matplotlib\nimport scipy'"
+               TEST_CMD='python -c "import matplotlib\nimport scipy"'
 
         - os: linux
           python: 3.7
