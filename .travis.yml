@@ -128,7 +128,7 @@ jobs:
         - os: linux
           env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib>2.0,<=2.2.0'
                DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=4.6.4
-               TEST_CMD='conda list && python -c "import matplotlib; assert matplotlib.__version__==\"2.2.0\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
+               TEST_CMD='conda list && python -c "import matplotlib; assert matplotlib.__version__==\"2.0.2\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
 
         # JOB .12
         - os: linux
