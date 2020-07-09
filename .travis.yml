@@ -21,6 +21,7 @@ jobs:
         # pytest dev version
         - os: linux
           env: PYTHON_VERSION=3.8 PYTEST_VERSION=dev
+               TEST_CMD='pytest test_env.py'
 
         # JOB .1
         # pytest pip fallback, conda package for 3.1 is not available for py3.4
@@ -52,7 +53,8 @@ jobs:
           addons:
               apt:
                   packages: gfortran
-          env: NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy pillow'
+          env: PYTHON_VERSION=3.7
+               NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy pillow'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
                SCIKIT_LEARN_VERSION='dev'
