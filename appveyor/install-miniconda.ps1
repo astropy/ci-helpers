@@ -445,9 +445,11 @@ if ($env:NUMPY_VERSION -match "dev") {
    checkLastExitCode
 }
 
+# TODO: Use conda to install pyerfa when it is available.
 # Check whether the developer version of Astropy is required and if yes install
 # it. We need to include --no-deps to make sure that Numpy doesn't get upgraded.
 if ($env:ASTROPY_VERSION -match "dev") {
+   Invoke-Expression "${env:CMD_IN_ENV} pip install pyerfa --upgrade --no-deps"
    Invoke-Expression "${env:CMD_IN_ENV} pip install git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps"
    checkLastExitCode
 }

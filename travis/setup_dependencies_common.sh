@@ -830,7 +830,7 @@ fi
 # sure that Numpy doesn't get upgraded.
 
 if [[ $ASTROPY_VERSION == dev* ]]; then
-    $PIP_INSTALL Cython jinja2 pytest-astropy
+    $PIP_INSTALL Cython jinja2 pytest-astropy pyerfa
     $PIP_INSTALL git+https://github.com/astropy/astropy.git#egg=astropy --upgrade --no-deps
 fi
 
