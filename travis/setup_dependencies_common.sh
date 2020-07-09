@@ -817,6 +817,7 @@ fi
 # PYTEST DEV
 
 if [[ $PYTEST_VERSION == dev* ]]; then
+    $PIP_INSTALL iniconfig
     $PIP_INSTALL git+https://github.com/pytest-dev/pytest.git#egg=pytest --upgrade --no-deps
 fi
 
