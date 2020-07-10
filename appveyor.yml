@@ -42,7 +42,6 @@ environment:
         CONDA_DEPENDENCIES: "matplotlib h5py"
         PIP_DEPENDENCIES: "astrodendro"
         CONDA_CHANNEL_PRIORITY: "disabled"
-        SUNPY_VERSION: "dev"
         DEBUG: "True"
 
         # For the Numpy dev build, we also specify a conda package that depends
