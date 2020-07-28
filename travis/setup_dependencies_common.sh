@@ -263,6 +263,12 @@ fi
 
 # CORE DEPENDENCIES
 
+# Temporary version limitation, remove once
+# https://github.com/astropy/pytest-doctestplus/issues/118 is fixed and released
+if [[ -z $PYTEST_VERSION ]]; then
+    PYTEST_VERSION="<6"
+fi
+
 if [[ ! -z $PYTEST_VERSION && $PYTEST_VERSION != dev* ]]; then
     echo "pytest ${PYTEST_VERSION}.*" >> $PIN_FILE
 fi
