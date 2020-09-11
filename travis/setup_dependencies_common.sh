@@ -170,9 +170,9 @@ is_eq_float="=[0-9]+\.[0-9]+"
 
 if [[ $MAMBA == True ]]; then
     conda install -c conda-forge mamba;
-    CONDA_INSTALL_COMMAND='mamba';
+    CONDA_INSTALL_COMMAND='mamba install';
 else
-    CONDA_INSTALL_COMMAND='conda';
+    CONDA_INSTALL_COMMAND='conda install';
 fi
 
 if [[ -z $PIP_FALLBACK ]]; then
