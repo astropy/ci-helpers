@@ -168,6 +168,12 @@ is_number='[0-9]'
 is_eq_number='=[0-9]'
 is_eq_float="=[0-9]+\.[0-9]+"
 
+if [[ $MAMBA == True ]]; then
+    conda install -c conda-forge mamba;
+    CONDA_INSTALL_COMMAND='mamba';
+else
+    CONDA_INSTALL_COMMAND='conda';
+fi
 
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
@@ -273,11 +279,11 @@ fi
 
 export PIP_INSTALL='python -m pip install'
 
-retry_on_known_error conda install --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || { \
+retry_on_known_error $CONDA_INSTALL_COMMAND --no-channel-priority $QUIET $PYTHON_OPTION pytest pip || { \
     $PIP_FALLBACK && { \
     if [[ ! -z $PYTEST_VERSION ]]; then
         echo "Installing pytest with conda was unsuccessful, using pip instead"
-        retry_on_known_error conda install $QUIET $PYTHON_OPTION pip
+        retry_on_known_error $CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION pip
         if [[ $(echo $PYTEST_VERSION | cut -c 1) =~ $is_number ]]; then
             PIP_PYTEST_VERSION='=='${PYTEST_VERSION}.*
         elif [[ $(echo $PYTEST_VERSION | cut -c 1-2) =~ $is_eq_number ]]; then
@@ -415,7 +421,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
     _tmp_output_file="tmp.txt"
     # do not exit on failure of the dry run because pip fallback may succeed
     set +e
-    conda install --dry-run $CONDA_DEPENDENCIES > $_tmp_output_file 2>&1
+    $CONDA_INSTALL_COMMAND --dry-run $CONDA_DEPENDENCIES > $_tmp_output_file 2>&1
     cat $_tmp_output_file
     set -e
     # 'grep' returns non-zero exit status if no lines match.
@@ -442,7 +448,7 @@ if [[ ! -z $CONDA_DEPENDENCIES ]]; then
 
         # do not exit on failure of the dry run because pip fallback may succeed
         set +e
-        conda install --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
+        $CONDA_INSTALL_COMMAND --dry-run $CONDA_DEPENDENCIES > >(tee $_tmp_output_file) 2>&1
         set -e
         if [[ ! -z $(grep "conflicts with explicit specs" $_tmp_output_file) ]]; then
             # No clue how to fix this, so just give up
@@ -497,17 +503,17 @@ if [[ $NUMPY_VERSION == dev* ]]; then
     # we run into issues when we install the developer version of Numpy
     # because it is then not compiled against the MKL, and one runs into issues
     # if Scipy *is* still compiled against the MKL.
-    retry_on_known_error conda install $QUIET --no-pin $PYTHON_OPTION $MKL
+    retry_on_known_error $CONDA_INSTALL_COMMAND $QUIET --no-pin $PYTHON_OPTION $MKL
     # We then install Numpy itself at the bottom of this script
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
+    export CONDA_INSTALL="$CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION $MKL"
 elif [[ $NUMPY_VERSION == stable ]]; then
     export NUMPY_OPTION="numpy=$LATEST_NUMPY_STABLE"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
-    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    export CONDA_INSTALL="$CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    NUMPY_INSTALL="$CONDA_INSTALL_COMMAND $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
 elif [[ $NUMPY_VERSION == pre* ]]; then
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
-    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $MKL numpy"
+    export CONDA_INSTALL="$CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION $MKL"
+    NUMPY_INSTALL="$CONDA_INSTALL_COMMAND $QUIET --no-pin $PYTHON_OPTION $MKL numpy"
     if [[ -z $(pip list -o --pre | grep numpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
         # We want to stop the script if there isn't a pre-release available,
@@ -518,12 +524,12 @@ elif [[ $NUMPY_VERSION == pre* ]]; then
     fi
 elif [[ ! -z $NUMPY_VERSION ]]; then
     export NUMPY_OPTION="numpy=$NUMPY_VERSION"
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
-    NUMPY_INSTALL="conda install $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    export CONDA_INSTALL="$CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION $NUMPY_OPTION $MKL"
+    NUMPY_INSTALL="$CONDA_INSTALL_COMMAND $QUIET --no-pin $PYTHON_OPTION $NUMPY_OPTION $MKL"
 
 else
     export NUMPY_OPTION=""
-    export CONDA_INSTALL="conda install $QUIET $PYTHON_OPTION $MKL"
+    export CONDA_INSTALL="$CONDA_INSTALL_COMMAND $QUIET $PYTHON_OPTION $MKL"
 fi
 
 # try to install numpy:
@@ -560,7 +566,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         : # Install at the bottom of this script
     elif [[ $ASTROPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other dependencies just yet
-        retry_on_known_error conda install --no-pin $PYTHON_OPTION astropy
+        retry_on_known_error $CONDA_INSTALL_COMMAND --no-pin $PYTHON_OPTION astropy
         if [[ -z $(pip list -o --pre | grep astropy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -593,7 +599,7 @@ if [[ ! -z $ASTROPY_VERSION ]]; then
         fi
     fi
     if [[ ! -z $ASTROPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || { \
+        retry_on_known_error $CONDA_INSTALL_COMMAND --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION astropy=$ASTROPY_OPTION || { \
             $PIP_FALLBACK && { \
             echo "Installing astropy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL astropy==$ASTROPY_OPTION
@@ -611,7 +617,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         :  # Install at the bottom of the script
     elif [[ $SUNPY_VERSION == pre* ]]; then
         # We use --no-pin to avoid installing other
-        retry_on_known_error conda install --no-pin $PYTHON_OPTION sunpy
+        retry_on_known_error $CONDA_INSTALL_COMMAND --no-pin $PYTHON_OPTION sunpy
         if [[ -z $(pip list -o --pre | grep sunpy | \
             grep -E "[0-9]rc[0-9]|[0-9][ab][0-9]") ]]; then
             # We want to stop the script if there isn't a pre-release available,
@@ -628,7 +634,7 @@ if [[ ! -z $SUNPY_VERSION ]]; then
         SUNPY_OPTION=$SUNPY_VERSION
     fi
     if [[ ! -z $SUNPY_OPTION ]]; then
-        retry_on_known_error conda install --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || { \
+        retry_on_known_error $CONDA_INSTALL_COMMAND --no-pin $QUIET $PYTHON_OPTION $NUMPY_OPTION sunpy=$SUNPY_OPTION || { \
             $PIP_FALLBACK && { \
             echo "Installing sunpy with conda was unsuccessful, using pip instead"
             $PIP_INSTALL sunpy==$SUNPY_OPTION
@@ -758,7 +764,7 @@ fi
 # would override Numpy dev or pre.
 
 if [[ $NUMPY_VERSION == dev* ]]; then
-    retry_on_known_error conda install $QUIET Cython
+    retry_on_known_error $CONDA_INSTALL_COMMAND $QUIET Cython
     $PIP_INSTALL git+https://github.com/numpy/numpy.git#egg=numpy --upgrade --no-deps
 fi
 

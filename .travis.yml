@@ -259,6 +259,12 @@ jobs:
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD='python -c "import matplotlib;import scipy"'
 
+        # JOB .33
+        # -> Try and opt in to mamba for conda install
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
+               CONDA_DEPENDENCIES='scipy' MAMBA=True
+
     allow_failures:
         # JOB .34
         - os: linux
