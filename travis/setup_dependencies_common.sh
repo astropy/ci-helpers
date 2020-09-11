@@ -196,7 +196,11 @@ fi
 # We pin the version for conda as it's not the most stable package from
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
-    CONDA_VERSION=4.7.11
+    if [[ $MAMBA == True ]]; then
+        CONDA_VERSION=4.8.4
+    else
+        CONDA_VERSION=4.7.11
+    fi
 fi
 
 if [[ -z $PIN_FILE_CONDA ]]; then
