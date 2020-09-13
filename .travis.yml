@@ -73,10 +73,10 @@ jobs:
         # JOB .5
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
-        #    deliberately test with Numpy 1.16 to check that installing Astropy
+        #    deliberately test with Numpy 1.17 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.16 ASTROPY_VERSION=dev
+          env: SETUP_CMD='test' NUMPY_VERSION=1.17 ASTROPY_VERSION=dev
                PYTHON_VERSION=3.6 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
 
         # JOB .6
@@ -258,6 +258,12 @@ jobs:
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
                TEST_CMD='python -c "import matplotlib;import scipy"'
+
+        # JOB .33
+        # -> Try and opt in to mamba for conda install
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
+               CONDA_DEPENDENCIES='scipy' MAMBA=True
 
     allow_failures:
         # JOB .34

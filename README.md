@@ -73,6 +73,11 @@ environment variables
       installed
     * ``--open-files``: the psutil package is installed
 
+* ``MAMBA``: if set to ``True``, conda packages
+  will be installed with `mamba <https://github.com/mamba-org/mamba>`_, which is
+  both faster than conda and gives more readable errors in cases where there are
+  conflicts.
+
 * ``NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed along with Cython. If set to a
   version number, that version is installed. If set to ``stable``, install
