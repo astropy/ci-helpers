@@ -168,16 +168,6 @@ is_number='[0-9]'
 is_eq_number='=[0-9]'
 is_eq_float="=[0-9]+\.[0-9]+"
 
-if [[ $MAMBA == True ]]; then
-    CONDA_INSTALL_COMMAND='mamba install';
-    # mamba is not automatically linked like 'conda' so we need to install it
-    # in all new environments
-    MAMBA_DEPS='mamba';
-else
-    CONDA_INSTALL_COMMAND='conda install';
-    MAMBA_DEPS='';
-fi
-
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
 fi
@@ -212,7 +202,7 @@ fi
 
 echo "conda ${CONDA_VERSION}" > $PIN_FILE_CONDA
 
-retry_on_known_error conda install $QUIET conda $MAMBA_DEPS
+retry_on_known_error conda install $QUIET conda
 
 if [[ -z $CONDA_CHANNEL_PRIORITY ]]; then
     CONDA_CHANNEL_PRIORITY=disabled
@@ -248,10 +238,9 @@ if [[ $PYTHON_VERSION == 3.4* ]]; then
     conda config --set restore_free_channel true
 fi
 
-
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
-    retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION $MAMBA_DEPS
+    retry_on_known_error $CONDA_INSTALL_COMMAND create $QUIET -n test $PYTHON_OPTION
 else
     retry_on_known_error conda env create $QUIET -n test -f $CONDA_ENVIRONMENT
 fi
@@ -272,6 +261,14 @@ fi
 # EGG_INFO
 if [[ $SETUP_CMD == egg_info ]]; then
     return  # no more dependencies needed
+fi
+
+# install mamba and use it from now on
+if [[ $MAMBA == True ]]; then
+    CONDA_INSTALL_COMMAND='mamba install';
+    conda install -c conda-forge mamba
+else
+    CONDA_INSTALL_COMMAND='conda install';
 fi
 
 # CORE DEPENDENCIES
