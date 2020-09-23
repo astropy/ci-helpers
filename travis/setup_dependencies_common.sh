@@ -265,10 +265,10 @@ fi
 
 # install mamba and use it from now on
 if [[ $MAMBA == True ]]; then
-    CONDA_INSTALL_COMMAND='mamba install';
+    CONDA_INSTALL_COMMAND='mamba install'
     conda install -c conda-forge mamba
 else
-    CONDA_INSTALL_COMMAND='conda install';
+    CONDA_INSTALL_COMMAND='conda install'
 fi
 
 # CORE DEPENDENCIES
