@@ -76,7 +76,8 @@ environment variables
 * ``MAMBA``: if set to ``True``, conda packages
   will be installed with `mamba <https://github.com/mamba-org/mamba>`_, which is
   both faster than conda and gives more readable errors in cases where there are
-  conflicts.
+  conflicts. Note that if using ``CONDA_ENVIRONMENT`` you must include ``mamba``
+  as a dependency in addition to setting this to ``True``.
 
 * ``NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed along with Cython. If set to a
