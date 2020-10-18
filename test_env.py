@@ -76,7 +76,7 @@ def test_python_version():
 
 
 def test_exported_variables():
-    if 'TRAVIS' in os.environ:
+    if 'TRAVIS' in os.environ and os.environ.get('SETUP_MODE', '') == 'conda':
         assert os.environ.get('ASTROPY_LTS_VERSION', '') == LATEST_ASTROPY_LTS
         assert os.environ.get('LATEST_NUMPY_STABLE', '') == LATEST_NUMPY_STABLE
         assert os.environ.get('LATEST_SUNPY_STABLE', '') == LATEST_SUNPY_STABLE
@@ -262,9 +262,11 @@ def test_regression_mkl():
 
 def test_conda_channel_priority():
 
-    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled')
+    if os.environ.get('SETUP_MODE', '') == 'conda':
 
-    with open(os.path.expanduser('~/.condarc'), 'r') as f:
-        content = f.read()
+        channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled')
 
-    assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
+        with open(os.path.expanduser('~/.condarc'), 'r') as f:
+            content = f.read()
+
+        assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
