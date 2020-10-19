@@ -5,7 +5,7 @@
 echo "==================== Starting executing ci-helpers scripts ====================="
 
 if [[ -z $PYTHON_VERSION ]]; then
-    echo "$PYTHON_VERSION needs to be set";
+    echo "PYTHON_VERSION needs to be set";
     exit 1;
 fi
 
@@ -31,6 +31,7 @@ if [[ $TRAVIS_OS_NAME == osx ]]; then
 
     wget https://www.python.org/ftp/python/$FULL_PYTHON_VERSION/python-$FULL_PYTHON_VERSION-macosx10.9.pkg
     sudo installer -pkg python-$FULL_PYTHON_VERSION-macosx10.9.pkg -target /
+    /Applications/Python\ $PYTHON_VERSION/Install\ Certificates.command
     python$PYTHON_VERSION -m venv ~/python;
     source ~/python/bin/activate;
     python -m pip install --upgrade pip;
