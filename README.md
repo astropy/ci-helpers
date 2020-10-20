@@ -21,7 +21,7 @@ service are no longer supported. Please use the
 [Windows build on Travis](https://docs.travis-ci.com/user/reference/windows/)
 instead.
 
-Also see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
+For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
 
 How to use
 ----------
