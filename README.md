@@ -26,7 +26,7 @@ For the usage of the deprecated scripts see [Appveyor scripts README](https://gi
 How to use
 ----------
 
-### Travis
+### Travis (with conda)
 
 Include the following lines at the start of the ``install`` section in
 ``.travis.yml``:
@@ -220,6 +220,29 @@ Python and Numpy versions stay fixed to those requested, e.g.
 - $CONDA_INSTALL another_package
 ```
 
+### Setting up Python without conda on Travis
+
+We also provide a script to set up Python on MacOS X and Windows without making
+use of conda. To use this include the following lines at the start of the
+``install`` section in ``.travis.yml``:
+
+```yaml
+install:
+    - git clone --depth 1 git://github.com/astropy/ci-helpers.git
+    - source ci-helpers/travis/setup_python.sh
+```
+
+You will need to set the ``PYTHON_VERSION`` environment variable to the
+major.minor version of Python that you want to have installed (e.g. 3.8)
+
+The script does nothing on Linux, so it is safe to call as above without special
+casing the operating system. On Linux, you should instead use ``language:
+python`` provide the Python version with ``python: ...``.
+
+The script also sets up a virtual environment using
+[venv](https://docs.python.org/3/library/venv.html) and upgrades pip to the
+latest version, but does not install any other packages. This is deliberate as we want to keep this script as minimal as possible.
+
 ### pip pinnings
 
 We also provide a file called
@@ -251,6 +274,7 @@ The scripts include:
   this directly rather than the OS specific ones below
 * ``travis/setup_conda_linux.sh`` - set up conda on Linux
 * ``travis/setup_conda_osx.sh`` - set up conda on MacOS X
+* ``travis/setup_python.sh`` - set up Python on MacOS X and Windows without conda
 
 This repository can be cloned directly from the ``.travis.yml``
 file when about to run tests and does not need to be included
