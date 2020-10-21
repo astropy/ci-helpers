@@ -28,6 +28,8 @@ How to use
 
 ### Travis (with conda)
 
+*Note that you can also set up Python without conda using ci-helpers - see [here](#setting-up-python-without-conda-on-travis) for more details*
+
 Include the following lines at the start of the ``install`` section in
 ``.travis.yml``:
 
