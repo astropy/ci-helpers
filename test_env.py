@@ -43,17 +43,22 @@ if 'TRAVIS_REPO_SLUG' in os.environ:
 # properly parsed hard-wire the latest stable branch version here
 
 
-if not LooseVersion(sys.version) < '3.5':
-    LATEST_ASTROPY_STABLE = '3.1.2'
-    LATEST_ASTROPY_STABLE_WIN = '3.1.2'
+if not LooseVersion(sys.version) < '3.6':
+    LATEST_ASTROPY_STABLE = '4.0'
+    # This is not for windows but appveyor only
+    LATEST_ASTROPY_STABLE_WIN = '4.0'
+    LATEST_NUMPY_STABLE = '1.18'
 else:
-    LATEST_ASTROPY_STABLE = '2.0.12'
-    LATEST_ASTROPY_STABLE_WIN = '2.0.12'
+    LATEST_ASTROPY_STABLE = '2.0.16'
+    # This is not for windows but appveyor only
+    LATEST_ASTROPY_STABLE_WIN = '2.0.16'
+    LATEST_NUMPY_STABLE = '1.16'
 
-LATEST_ASTROPY_LTS = '2.0.12'
-LATEST_ASTROPY_LTS_WIN = '2.0.12'
-LATEST_NUMPY_STABLE = '1.16'
-LATEST_SUNPY_STABLE = '0.9.2'
+LATEST_ASTROPY_LTS = '4.0'
+# This is not for windows but appveyor only
+LATEST_ASTROPY_LTS_WIN = '4.0'
+LATEST_NUMPY_STABLE_WIN = '1.17'
+LATEST_SUNPY_STABLE = '1.0.6'
 
 if os.environ.get('PIP_DEPENDENCIES', None) is not None:
     PIP_DEPENDENCIES = os.environ['PIP_DEPENDENCIES'].split(' ')
@@ -98,10 +103,19 @@ def test_numpy():
             assert re.match("[0-9.]*[0-9](a[0-9]|b[0-9]|rc[0-9])", np_version)
         else:
             if 'stable' in os_numpy_version:
-                assert np_version.startswith(LATEST_NUMPY_STABLE)
+                if 'APPVEYOR' in os.environ:
+                    assert np_version.startswith(LATEST_NUMPY_STABLE_WIN)
+                else:
+                    assert np_version.startswith(LATEST_NUMPY_STABLE)
             else:
                 assert np_version.startswith(os_numpy_version)
             assert re.match("^[0-9]+\.[0-9]+\.[0-9]", np_version)
+
+
+def test_pytest():
+    if 'PYTEST_VERSION' in os.environ:
+        if 'dev' in os.environ['PYTEST_VERSION'].lower():
+            assert 'dev' in pytest.__version__
 
 
 def test_astropy():
@@ -189,6 +203,12 @@ def test_dependency_imports():
             import subprocess
             assert 'nomkl' not in str(subprocess.check_output(["conda", "list"]))
             assert 'mkl' in str(subprocess.check_output(["conda", "list"]))
+        elif package == 'pillow':
+            __import__('PIL')
+        elif package == 'attrs':
+            continue
+        elif package == 'libtiff':
+            continue
         elif package == '':
             continue
         else:
@@ -253,13 +273,9 @@ def test_regression_mkl():
 
 def test_conda_channel_priority():
 
-    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'False')
+    channel_priority = os.environ.get('CONDA_CHANNEL_PRIORITY', 'disabled')
 
     with open(os.path.expanduser('~/.condarc'), 'r') as f:
         content = f.read()
 
     assert 'channel_priority: {0}'.format(channel_priority.lower()) in content
-
-
-if __name__ == '__main__':
-    pytest.main(__file__)

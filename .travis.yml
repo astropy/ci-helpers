@@ -6,23 +6,30 @@ language: c
 os:
     - linux
 
-sudo: false
-
 env:
     global:
         - SETUP_CMD='test'
         - TEST_CMD='py.test test_env.py'
         - PYTHON_VERSION=3.6
+        - SETUP_CONDA=true
 
-    matrix:
+    jobs:
         - SETUP_CMD='egg_info' TEST_CMD='python --version'
 
-matrix:
+jobs:
     include:
-        # -> pytest pip fallback, conda package for 3.1 is not available for py3.4
+        # pytest dev version
+        - os: linux
+          env: PYTHON_VERSION=3.8 PYTEST_VERSION=dev
+               TEST_CMD='pytest test_env.py'
+
+        # JOB .1
+        # pytest pip fallback, conda package for 3.1 is not available for py3.4
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1
 
+        # JOB .34 (because it is under allowed failures)
+        # NOTE: IT DOES NOT CURRENTLY FAIL
         # Try pytest pip fallback as conda package for 3.1 is not available
         # for py3.4 but then fail as PIP_FALLBACK is False. Listing this
         # under the allowed failures as there is no way at the moment to
@@ -30,40 +37,50 @@ matrix:
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
+        # JOB .2
+        # --> regression test for pip version resolution in https://github.com/astropy/ci-helpers/issues/425
         - os: windows
-          env: PYTHON_VERSION=3.7
+          env: PYTHON_VERSION=3.7 PYTEST_VERSION=3.9
 
+        # JOB .3
         # -> tests sunpy dev
         # -> Test falling back on pip when conda install is not working.
         #    Here healpy is not available with numpy >=1.13
         # -> Test installing dev matplotlib
         # -> Test that CONDA_VERSION=stable works
+        # -> Adding Pillow to deps as it's required by MPL. Currently we
+        #    don't install upstream dependencies for the dev versions.
         - os: linux
           addons:
               apt:
                   packages: gfortran
-          env: PYTHON_VERSION=3.7 NUMPY_VERSION=stable
-               CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy'
+          env: PYTHON_VERSION=3.7
+               NUMPY_VERSION=stable CONDA_DEPENDENCIES='healpy matplotlib scikit-learn scipy pillow'
                CONDA_CHANNELS='conda-forge' DEBUG=True
                SUNPY_VERSION=dev MATPLOTLIB_VERSION='dev'
                SCIKIT_LEARN_VERSION='dev' CONDA_VERSION='stable'
 
+        # JOB .4
         # -> Testing whether pip install fallback is working for sphinx/matplotlib in the docs builds
         # -> Test we have a recent pip version, the newest on the defaults channel
         #    is 10.0.1 while the latest is 18.0 at the time of writing this test.
+        # -> The latest version of pip as of 2019-08-15 on default channels is 19.2.2
+        #    for Python >=3.6, so bump the pip version check to minimum of 19.
         - os: linux
           env: SETUP_CMD='build_docs' SPHINX_VERSION='>1.6'
-               PYTHON_VERSION=3.5 DEBUG=True
-               TEST_CMD='python -c "import sphinx; assert int(sphinx.__version__[2])>5; import pip; assert int(pip.__version__.split(\".\")[0])>17"'
+               PYTHON_VERSION=3.6 DEBUG=True
+               TEST_CMD='python -c "import sphinx; from distutils.version import LooseVersion; assert LooseVersion(sphinx.__version__)>LooseVersion(\"1.5\"); import pip; assert int(pip.__version__.split(\".\")[0])>18"'
 
+        # JOB .5
         # -> tests sunpy stable
         # -> Starting with the dev versions as they take the longest to run. We
-        #    deliberately test with Numpy 1.13 to check that installing Astropy
+        #    deliberately test with Numpy 1.17 to check that installing Astropy
         #    dev doesn't upgrade Numpy.
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.13 ASTROPY_VERSION=dev
-               PYTHON_VERSION=3.5 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
+          env: SETUP_CMD='test' NUMPY_VERSION=1.17 ASTROPY_VERSION=dev
+               PYTHON_VERSION=3.6 SUNPY_VERSION=stable CONDA_CHANNELS='conda-forge'
 
+        # JOB .6
         # -> For the Numpy dev build, we also specify a conda package that
         #    depends on Numpy to make sure that Numpy dev is used (because
         #    conda will also install Numpy stable). It's also important to
@@ -76,138 +93,181 @@ matrix:
                CONDA_DEPENDENCIES='scipy'
                PYTEST_VERSION="<3.6.2"
 
-        # -> Have non Python package (openjpeg) in dependency list when
-        #    falling back on pip installing the dependencies (as photutils is
+        # JOB .7
+        # -> Have non Python package (libtiff) in dependency list when
+        #    falling back on pip installing the dependencies (as ipyevents is
         #    missing from listed channels) to test the install one-by-one.
         # -> Have package dependency that matches partially another package
         #    (pytest vs pytest-cov) when falling back to pip install
         # -> testing whether version numbers are respected by pip install fallback
+        #
+        # The list of dependencies was considerably simplified to speed up the
+        # (expected) conda failure.
+        #
+        # Need to omit conda-forge from channels here because ipyevents is on conda-forge
+        # and we want the pip fallback to happen.
         - os: linux
-          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.4
-               TEST_CMD='py.test test_env.py && coverage run test_env.py; python -c "import sklearn; assert sklearn.__version__.startswith(\"0.19\")"'
-               CONDA_CHANNELS='astropy-ci-extras astrofrog conda-forge'
-               CONDA_DEPENDENCIES='scipy pyqt5 openjpeg photutils pytest pytest-cov scikit-learn'
-               DEBUG=True NUMPY_VERSION=1.10 ASTROPY_VERSION=stable
-               SCIKIT_LEARN_VERSION='<0.20,>=0.19'
+          env: SETUP_CMD='test --coverage' PYTHON_VERSION=3.6
+               TEST_CMD='conda list && python -c "import ipyevents; assert ipyevents.__version__.startswith(\"0.4\"); import coverage; assert int(coverage.__version__[0]) < 5" && py.test test_env.py && coverage run test_env.py'
+               CONDA_CHANNELS=''
+               CONDA_DEPENDENCIES='libtiff pytest pytest-cov ipyevents'
+               DEBUG=True ASTROPY_VERSION=stable
+               IPYEVENTS_VERSION='<0.5,>=0.4'
 
+        # JOB .8
         # -> The pre builds should run the testing phase only when a pre
         #    release is available on pypi, otherwise it should pass
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=pre
+        # JOB .9
         - os: linux
           env: SETUP_CMD='test' ASTROPY_VERSION=pre DEBUG=True
+        # JOB .10
         - os: linux
           env: SUNPY_VERSION=prerelease CONDA_CHANNELS='conda-forge'
 
+        # JOB .11
         # -> Setting pytest version should be recognized in the next two jobs
         - os: linux
-          env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib<=1.5.0'
-               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=2.7.3
-               TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__==\"1.5.0\"; import pytest; assert pytest.__version__.startswith(\"2.7.3\")"'
+          env: SETUP_CMD='build_sphinx' CONDA_DEPENDENCIES='matplotlib>2.0,<=2.2.0'
+               DEBUG=True PYTHON_VERSION=2.7 PYTEST_VERSION=4.6.4
+               TEST_CMD='conda list && python -c "import matplotlib; assert matplotlib.__version__==\"2.0.2\"; import pytest; assert pytest.__version__.startswith(\"4.6.4\")"'
 
+        # JOB .12
         - os: linux
-          env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.4.1 DEBUG=True
-               MATPLOTLIB_VERSION=1.4 DEBUG=True PYTHON_VERSION=3.5 PYTEST_VERSION=3.0
-               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.4.1\"; import pytest; pytest.__version__.startswith(\"3.0\"); import matplotlib; assert matplotlib.__version__=="\""1.4.3"\"'
+          env: SETUP_CMD='build_sphinx' SPHINX_VERSION=1.8.4 DEBUG=True
+               MATPLOTLIB_VERSION=3.0 DEBUG=True PYTHON_VERSION=3.6 PYTEST_VERSION=5.0
+               TEST_CMD='python -c "import sphinx; assert sphinx.__version__==\"1.8.4\"; import pytest; pytest.__version__.startswith(\"5.0\"); import matplotlib; assert matplotlib.__version__=="\""3.0.3"\"'
 
+        # JOB .13
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5.0 sphinx'
                MATPLOTLIB_VERSION=1.5.1 DEBUG=True PYTHON_VERSION=3.5
                TEST_CMD='python -c "import matplotlib; assert matplotlib.__version__=="\""1.5.1"\"'
 
+        # JOB .14
         # -> astropy stable should stay on the 2.0.x branch
+        # Limit attrs version as newer ones break old pytest
         - os: linux
           env: SETUP_CMD='build_docs' PYTHON_VERSION=2.7 ASTROPY_VERSION='stable'
+               CONDA_DEPENDENCIES='attrs<19.2'
 
+        # JOB .15
         - os: linux
           env: MAIN_CMD='pep8'
                TEST_CMD='pep8 --version'
 
+        # JOB .16
         - os: linux
           env: MAIN_CMD='pycodestyle'
                TEST_CMD='pycodestyle --version'
 
+        # JOB .17
         - os: linux
           env: MAIN_CMD='flake8'
                TEST_CMD='flake8 --version'
 
+        # JOB .18
         - os: linux
           env: MAIN_CMD='pylint'
                TEST_CMD='pylint --version'
 
+        # JOB .19
         - os: linux
           env: SETUP_CMD="--cov package"
                TEST_CMD='python -c "import pytest_cov"'
 
+        # JOB .20
         # -> Don't test osx with LTS as we currently build LTS only for linux.
         - os: osx
           env: SETUP_CMD='test' ASTROPY_VERSION=stable
                CONDA_DEPENDENCIES='requests'
 
-        # -> Note that setting CONDA_CHANNEL_PRIORITY to False here is unrelated
+        # JOB .21
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to disabled here is unrelated
         #    to the rest of the build and won't change anything, except that we
         #    can make sure the conda config was correctly updated.
         - os: linux
           env: SETUP_CMD='test' NUMPY_VERSION=1.10 DEBUG=True
                SCIKIT_IMAGE_VERSION=0.11 PYTHON_VERSION=3.5
                CONDA_DEPENDENCIES='Cython numpy scikit-image'
-               CONDA_CHANNEL_PRIORITY=False
+               CONDA_CHANNEL_PRIORITY=disabled
 
-        # -> Note that setting CONDA_CHANNEL_PRIORITY to True here is unrelated
+        # JOB .22
+        # -> Note that setting CONDA_CHANNEL_PRIORITY to flexible here is unrelated
         #    to the rest of the build and won't change anything, except that we
         #    can make sure the conda config was correctly updated.
         # -> Have a package dependency with alphanumerical name
+        #
+        # -> The old channel priority "true" is equivalent to the new priority
+        #    "flexible".
         - os: linux
-          env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=True
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10 CONDA_CHANNEL_PRIORITY=flexible
                CONDA_DEPENDENCIES='jinja2=2.8 h5py matplotlib' DEBUG=True
                ASTROPY_VERSION=1.0 CONDA_CHANNELS='astropy'
                PYTHON_VERSION='3.5'
 
+        # JOB .23
         # -> Have empty string as dependency list when falling back on pip
-        # -> check CONDA_VERSION does set the version
+        # Limit attrs version as newer ones break old pytest
         - os: linux
-          env: PYTHON_VERSION=3.7 CONDA_VERSION=4.5.10
-               SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
-               CONDA_DEPENDENCIES=''
+          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
+               CONDA_DEPENDENCIES='attrs<19.2'
 
+        # JOB .24
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib=1.5'
                TEST_CMD='python -c "import matplotlib; assert int(matplotlib.__version__[-1])>0"'
 
+        # JOB .25
         - os: linux
           env: SETUP_CMD='test --parallel'
                TEST_CMD='py.test -n 4 test_env.py'
 
+        # JOB .26
         - os: linux
           env: SETUP_CMD='test --numprocesses'
                TEST_CMD='py.test --numprocesses 4 test_env.py'
 
+        # JOB .27
         - os: linux
           env: SETUP_CMD='test --open-files'
 
+        # JOB .28
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib'
                CONDA_DEPENDENCIES_FLAGS='--no-deps'
                NUMPY_VERSION=1.16 PYTHON_VERSION=3.5
 
+        # JOB .29
         - os: linux
           env: SETUP_CMD='test' CONDA_DEPENDENCIES='matplotlib'
                CONDA_DEPENDENCIES_FLAGS='--no-deps'
                NUMPY_VERSION=1.16.1 PYTHON_VERSION=3.5
 
+        # JOB .30
         - os: linux
           env: SETUP_CMD='test' PIP_DEPENDENCIES='pyparsing requests'
                PIP_DEPENDENCIES_FLAGS='--log pip_install.log'
 
+        # JOB .31
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml'
-               TEST_CMD="python -c $'import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass\nelse:\n    raise RuntimeError'"
+               TEST_CMD='printf "import matplotlib\ntry:\n    import scipy\nexcept ImportError:\n    pass"|python'
 
+        # JOB .32
         - os: linux
           env: SETUP_CMD='test' CONDA_ENVIRONMENT='conda_environment.yml' CONDA_DEPENDENCIES="scipy"
-               TEST_CMD="python -c $'import matplotlib\nimport scipy'"
+               TEST_CMD='python -c "import matplotlib;import scipy"'
+
+        # JOB .33
+        # -> Try and opt in to mamba for conda install
+        - os: linux
+          env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
+               CONDA_DEPENDENCIES='scipy' MAMBA=True
 
     allow_failures:
+        # JOB .34
         - os: linux
           env: PYTHON_VERSION=3.4 PYTEST_VERSION=3.1 PIP_FALLBACK=false
 
@@ -218,9 +278,10 @@ before_install:
       else
         ln -s . ci-helpers;
       fi
-    - source ci-helpers/travis/setup_conda.sh
+    - if [[ $SETUP_CONDA == true ]]; then source ci-helpers/travis/setup_conda.sh; fi
 
 script:
+   - python --version
    - eval $TEST_CMD
 
 after_success:

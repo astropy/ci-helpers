@@ -39,8 +39,8 @@ This does the following:
 - Register the specified channels.
 - ``export PYTHONIOENCODING=UTF8``
 - Supports custom skip tags included in the commit message that are not yet
-  natively provided by Travis. To skip the travis build: ``[skip travis]`` or
-  [travis skip]. To run only the docs build: ``[build docs]`` or
+  natively provided by Travis.
+  To run only the docs build: ``[build docs]`` or
   ``[docs only]``. The latter requires ``SETUP_CMD`` (see below) to be set to
   ``build_docs`` or ``build_sphinx``.
 
@@ -68,10 +68,15 @@ environment variables
   are installed:
 
     * ``--coverage``: the coverage, coveralls, and codecov packages are installed
-    * ``--cov``: the pytest-cov, coveralls, and codecov packages are installed
+    * ``-cov``: the pytest-cov, coveralls, and codecov packages are installed
     * ``--parallel`` or ``--numprocesses``: the pytest-xdist package is
       installed
     * ``--open-files``: the psutil package is installed
+
+* ``MAMBA``: if set to ``True``, conda packages
+  will be installed with `mamba <https://github.com/mamba-org/mamba>`_, which is
+  both faster than conda and gives more readable errors in cases where there are
+  conflicts.
 
 * ``NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Numpy is installed along with Cython. If set to a
@@ -147,10 +152,10 @@ environment variables
   be ``SCIKIT_IMAGE_VERSION``). If specified it will override any version
   number limitations listed in ``CONDA_DEPENDENCIES``.
 
-* ``CONDA_CHANNEL_PRIORITY``: can be set to ``True`` or ``False``, and
+* ``CONDA_CHANNEL_PRIORITY``: can be set to ``strict``, ``flexible`` or ``disabled``, and
   affects the ``channel_priority`` conda setting (as discussed
-  [here](http://conda.pydata.org/docs/channels.html). The default is
-  ``False``.
+  [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-channels.html). The default is
+  ``disabled``.
 
 * ``EVENT_TYPE``: this should be a space-separated string of event
   types. If given, the build will run only if the ``TRAVIS_EVENT_TYPE``
@@ -221,8 +226,7 @@ Include the following lines at the start of the ``install`` section in
 install:
     - "git clone --depth 1 git://github.com/astropy/ci-helpers.git"
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-    - "activate test"
+    - "conda activate test"
 ```
 
 This does the following:
@@ -232,8 +236,6 @@ This does the following:
 - Set up a conda environment named 'test' and switch to it.
 - Set the ``always_yes`` config option for conda to ``true`` so that you don't
   need to include ``--yes``.
-- Register the specified channels, or if not stated the ``astropy``,
-  ``astropy-ci-extras``, and ``openastronomy`` channels.
 
 Following this, various dependencies are installed depending on the following
 environment variables:
@@ -291,6 +293,15 @@ environment variables:
 * ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
   before retrying. If not set, this will default to ``$RETRY_DELAY=2``.
 
+### pip pinnings
+
+We also provide a file called
+[pip_pinnings.txt](https://github.com/astropy/ci-helpers/blob/master/pip_pinnings.rst)
+which contains any version pins we currently recommend. This file is in the
+[pip requirements](https://pip.pypa.io/en/stable/user_guide/#requirements-files) format.
+Often this file will be empty if no pinnings are recommended. This file is suitable for
+use with any tools that understand pip requirements files, including for example
+[tox-pypi-filter](https://pypi.org/project/tox-pypi-filter/).
 
 ### Utils
 
