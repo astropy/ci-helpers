@@ -168,13 +168,6 @@ is_number='[0-9]'
 is_eq_number='=[0-9]'
 is_eq_float="=[0-9]+\.[0-9]+"
 
-if [[ $MAMBA == True ]]; then
-    conda install -c conda-forge mamba;
-    CONDA_INSTALL_COMMAND='mamba install';
-else
-    CONDA_INSTALL_COMMAND='conda install';
-fi
-
 if [[ -z $PIP_FALLBACK ]]; then
     PIP_FALLBACK=true
 fi
@@ -197,7 +190,7 @@ fi
 # release to release. Add note here if version is pinned due to a bug upstream.
 if [[ -z $CONDA_VERSION ]]; then
     if [[ $MAMBA == True ]]; then
-        CONDA_VERSION=4.8.4
+        CONDA_VERSION=">=4.8"
     else
         CONDA_VERSION=4.7.11
     fi
@@ -247,7 +240,6 @@ if [[ $PYTHON_VERSION == 3.4* ]]; then
     conda config --set restore_free_channel true
 fi
 
-
 # CONDA
 if [[ -z $CONDA_ENVIRONMENT ]]; then
     retry_on_known_error conda create $QUIET -n test $PYTHON_OPTION
@@ -271,6 +263,14 @@ fi
 # EGG_INFO
 if [[ $SETUP_CMD == egg_info ]]; then
     return  # no more dependencies needed
+fi
+
+# install mamba and use it from now on
+if [[ $MAMBA == True ]]; then
+    CONDA_INSTALL_COMMAND='mamba install'
+    conda install -c conda-forge mamba
+else
+    CONDA_INSTALL_COMMAND='conda install'
 fi
 
 # CORE DEPENDENCIES

@@ -11,7 +11,7 @@ env:
         - SETUP_CMD='test'
         - TEST_CMD='py.test test_env.py'
         - PYTHON_VERSION=3.6
-        - SETUP_CONDA=true
+        - SETUP_MODE=conda
 
     jobs:
         - SETUP_CMD='egg_info' TEST_CMD='python --version'
@@ -266,6 +266,16 @@ jobs:
           env: SETUP_CMD='test' NUMPY_VERSION=stable ASTROPY_VERSION=lts
                CONDA_DEPENDENCIES='scipy' MAMBA=True
 
+        # JOB .34
+        # -> Installation on MacOS X without conda
+        - os: osx
+          env: SETUP_MODE='native' PYTHON_VERSION=3.7
+
+        # JOB .35
+        # -> Installation on Windows without conda
+        - os: windows
+          env: SETUP_MODE='native' PYTHON_VERSION=3.7
+
     allow_failures:
         # JOB .34
         - os: linux
@@ -278,7 +288,11 @@ before_install:
       else
         ln -s . ci-helpers;
       fi
-    - if [[ $SETUP_CONDA == true ]]; then source ci-helpers/travis/setup_conda.sh; fi
+    - if [[ $SETUP_MODE == conda ]]; then source ci-helpers/travis/setup_conda.sh; fi
+    - if [[ $SETUP_MODE == native ]]; then
+        source ci-helpers/travis/setup_python.sh;
+        python -m pip install pytest;
+      fi
 
 script:
    - python --version

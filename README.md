@@ -2,23 +2,33 @@ About
 -----
 
 [![Build Status](https://travis-ci.org/astropy/ci-helpers.svg?branch=master)](https://travis-ci.org/astropy/ci-helpers)
-[![Build status](https://ci.appveyor.com/api/projects/status/4mqtucv6ks4peakf/branch/master?svg=true)](https://ci.appveyor.com/project/Astropy/ci-helpers/branch/master)
 
 This repository contains a set of scripts that are used by the
-``.travis.yml`` and ``appveyor.yml`` files of astropy packages for the
-[Travis](https://travis-ci.org) and [AppVeyor](https://www.appveyor.com/)
-services respectively.
+``.travis.yml`` file of Astropy packages for the
+[Travis](https://travis-ci.com) service.
 
 The idea is to clone these at the last minute when the continuous
 integration is about to be run. This is better than including this
-repository as a sub-module, because this allows updates to this repository
-to take effect immediately, and not have to update the sub-module every time
+repository as a Git sub-module, because this allows updates to this repository
+to take effect immediately, and not have to update the Git sub-module every time
 a change is made.
+
+Important notice
+----------------
+
+Scripts for ``appveyor.yml`` for the [AppVeyor](https://www.appveyor.com/)
+service are no longer supported. Please use the
+[Windows build on Travis](https://docs.travis-ci.com/user/reference/windows/)
+instead.
+
+For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
 
 How to use
 ----------
 
-### Travis
+### Travis (with conda)
+
+*Note that you can also set up Python without conda using ci-helpers - see [here](#setting-up-python-without-conda-on-travis) for more details*
 
 Include the following lines at the start of the ``install`` section in
 ``.travis.yml``:
@@ -172,8 +182,7 @@ environment variables
   will default to ``RETRY_ERRORS="CondaHTTPError"``. When package installation
   via conda fails, the respective command's output (stdout and stderr) is
   searched for the strings in ``RETRY_ERRORS``. If any of these is found, the
-  installation will be automatically retried. Setting ``RETRY_ERRORS``
-  in ``appveyor.yml`` will *overwrite* the default.
+  installation will be automatically retried.
 
 * ``RETRY_MAX``: an integer specifying the maximum number of automatic retries.
   If not set, this will default to ``RETRY_MAX=3``. Setting ``RETRY_MAX`` to
@@ -217,81 +226,28 @@ Python and Numpy versions stay fixed to those requested, e.g.
 - $CONDA_INSTALL another_package
 ```
 
-### AppVeyor
+### Setting up Python without conda on Travis
 
-Include the following lines at the start of the ``install`` section in
-``appveyor.yml``:
+We also provide a script to set up Python on MacOS X and Windows without making
+use of conda. To use this include the following lines at the start of the
+``install`` section in ``.travis.yml``:
 
 ```yaml
 install:
-    - "git clone --depth 1 git://github.com/astropy/ci-helpers.git"
-    - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    - "conda activate test"
+    - git clone --depth 1 git://github.com/astropy/ci-helpers.git
+    - source ci-helpers/travis/setup_python.sh
 ```
 
-This does the following:
+You will need to set the ``PYTHON_VERSION`` environment variable to the
+major.minor version of Python that you want to have installed (e.g. 3.8)
 
-- Set up Miniconda.
-- Set up the PATH appropriately.
-- Set up a conda environment named 'test' and switch to it.
-- Set the ``always_yes`` config option for conda to ``true`` so that you don't
-  need to include ``--yes``.
+The script does nothing on Linux, so it is safe to call as above without special
+casing the operating system. On Linux, you should instead use ``language:
+python`` provide the Python version with ``python: ...``.
 
-Following this, various dependencies are installed depending on the following
-environment variables:
-
-* ``NUMPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Numpy is installed along with Cython. If set to a
-  version number, that version is installed.  If set to ``stable``, install
-  the latest stable version of Numpy.
-
-* ``ASTROPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Astropy is installed, along with Cython and jinja2,
-  which are compile-time dependencies. If set to a version number, that
-  version is installed. If set to ``stable``, install the latest stable
-  version of Astropy. If set to ``lts`` the latest long term support (LTS)
-  version is installed (more info about LTS can be found
-  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering)).
-
-* ``SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
-  developer version of Sunpy is installed. If set to a
-  version number, that version is installed. If set to ``stable``, install
-  the latest stable version of Sunpy.
-
-* ``MINICONDA_VERSION``: this sets the version of Miniconda that will be
-  installed.  Use this to override a pinned version if necessary.
-
-* ``CONDA_VERSION``: This sets the version of conda that will be
-  installed.  Use this to override a pinned version if necessary.
-  If set to ``stable``, install the latest stable version of conda.
-
-* ``CONDA_DEPENDENCIES``: this should be a space-separated string of package
-  names that will be installed with conda.
-
-* ``CONDA_CHANNELS``: this should be a space-separated string of conda
-  channel names. We don't add any channel by default.
-
-* ``DEBUG``: if `True` this turns on the shell debug mode in the install
-  scripts, and provides information on the current conda install and
-  switches off the ``-q`` conda flag for verbose output.
-
-* ``PIP_FALLBACK``: the default behaviour is to fall back to try to pip
-  install a package if installing it with conda fails for any reason. Set
-  this variable to ``false`` to opt out of this.
-
-* ``RETRY_ERRORS``: a comma-separated string array containing error names.
-  If not set, this will default to ``$RETRY_ERRORS="CondaHTTPError"``. When
-  package installation via conda fails, the respective command's error output
-  (stderr) is searched for the strings in ``RETRY_ERRORS``. If any of these is
-  found, the installation will be automatically retried. Setting
-  ``RETRY_ERRORS`` in ``appveyor.yml`` will *overwrite* the default.
-
-* ``RETRY_MAX``: an integer specifying the maximum number of automatic retries.
-  If not set, this will default to ``$RETRY_MAX=3``. Setting ``RETRY_MAX`` to
-  zero will disable automatic retries.
-
-* ``RETRY_DELAY``: a positive integer specifying the number of seconds to wait
-  before retrying. If not set, this will default to ``$RETRY_DELAY=2``.
+The script also sets up a virtual environment using
+[venv](https://docs.python.org/3/library/venv.html) and upgrades pip to the
+latest version, but does not install any other packages. This is deliberate as we want to keep this script as minimal as possible.
 
 ### pip pinnings
 
@@ -318,16 +274,14 @@ Details
 
 The scripts include:
 
-* ``appveyor/install-miniconda.ps1`` - set up conda on Windows
-* ``appveyor/windows_sdk.cmd`` - set up the compiler environment on Windows
 * ``travis/setup_dependencies_common.sh`` - set up conda packages on Linux and
   MacOS X
 * ``travis/setup_conda.sh`` - set up conda on MacOS X or Linux, users should use
   this directly rather than the OS specific ones below
 * ``travis/setup_conda_linux.sh`` - set up conda on Linux
 * ``travis/setup_conda_osx.sh`` - set up conda on MacOS X
+* ``travis/setup_python.sh`` - set up Python on MacOS X and Windows without conda
 
-
-This repository can be cloned directly from the ``.travis.yml`` and
-``appveyor.yml`` files when about to run tests and does not need to be included
-as a sub-module in repositories.
+This repository can be cloned directly from the ``.travis.yml``
+file when about to run tests and does not need to be included
+as a Git sub-module in repositories.
