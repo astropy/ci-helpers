@@ -18,6 +18,10 @@ env:
 
 jobs:
     include:
+        # ppc64le job
+        - arch: ppc64le
+          os: linux
+
         # pytest dev version
         - os: linux
           env: PYTHON_VERSION=3.8 PYTEST_VERSION=dev
