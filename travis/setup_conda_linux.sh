@@ -6,7 +6,12 @@
 if [[ -z "${MINICONDA_VERSION}" ]]; then
     MINICONDA_VERSION=4.7.10
 fi
-wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -O miniconda.sh --progress=dot:mega
+if [[ "${TRAVIS_CPU_ARCH}" == "amd64" ]]; then
+    MINICONDA_ARCH="x86_64"
+else
+    MINICONDA_ARCH="${TRAVIS_CPU_ARCH}"
+fi
+wget https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-${MINICONDA_ARCH}.sh -O miniconda.sh --progress=dot:mega
 # Create .conda directory before install to workaround conda bug
 # See https://github.com/ContinuumIO/anaconda-issues/issues/11148
 mkdir $HOME/.conda
