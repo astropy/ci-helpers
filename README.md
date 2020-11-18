@@ -1,7 +1,31 @@
+Important notices
+-----------------
+
+This package is no longer actively developed. Please read on below for service-specific
+information.
+
+Travis CI
+=========
+
+Astropy Project has decided to move away from Travis CI after they dropped support
+for OSS by removing their free-tier plan. Please see
+[this announcement](https://groups.google.com/g/astropy-dev/c/45frnTEAX-U)
+for more information. We recommend switching to GitHub Actions instead;
+you can see an example of it on [astropy](https://github.com/astropy/astropy)
+and on [package template](https://github.com/astropy/package-template).
+
+Appveyor
+========
+
+Scripts for ``appveyor.yml`` for the [AppVeyor](https://www.appveyor.com/)
+service are no longer supported. Please use the
+[Windows build on Travis](https://docs.travis-ci.com/user/reference/windows/)
+instead.
+
+For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
+
 About
 -----
-
-[![Build Status](https://travis-ci.org/astropy/ci-helpers.svg?branch=master)](https://travis-ci.org/astropy/ci-helpers)
 
 This repository contains a set of scripts that are used by the
 ``.travis.yml`` file of Astropy packages for the
@@ -12,16 +36,6 @@ integration is about to be run. This is better than including this
 repository as a Git sub-module, because this allows updates to this repository
 to take effect immediately, and not have to update the Git sub-module every time
 a change is made.
-
-Important notice
-----------------
-
-Scripts for ``appveyor.yml`` for the [AppVeyor](https://www.appveyor.com/)
-service are no longer supported. Please use the
-[Windows build on Travis](https://docs.travis-ci.com/user/reference/windows/)
-instead.
-
-For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
 
 How to use
 ----------
