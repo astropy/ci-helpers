@@ -1,11 +1,9 @@
-Important notices
------------------
+## Important notices
 
 This package is no longer actively developed. Please read on below for service-specific
 information.
 
-Travis CI
-=========
+### Travis CI
 
 Astropy Project has decided to move away from Travis CI after they dropped support
 for OSS by removing their free-tier plan. Please see
@@ -14,8 +12,7 @@ for more information. We recommend switching to GitHub Actions instead;
 you can see an example of it on [astropy](https://github.com/astropy/astropy)
 and on [package template](https://github.com/astropy/package-template).
 
-Appveyor
-========
+### Appveyor
 
 Scripts for ``appveyor.yml`` for the [AppVeyor](https://www.appveyor.com/)
 service are no longer supported. Please use the
@@ -24,8 +21,7 @@ instead.
 
 For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
 
-About
------
+## About
 
 This repository contains a set of scripts that are used by the
 ``.travis.yml`` file of Astropy packages for the
@@ -37,8 +33,7 @@ repository as a Git sub-module, because this allows updates to this repository
 to take effect immediately, and not have to update the Git sub-module every time
 a change is made.
 
-How to use
-----------
+## How to use
 
 ### Travis (with conda)
 
@@ -278,9 +273,7 @@ CI runs.
   importing submodules when optional dependencies, including pytest, are
   missing.
 
-
-Details
--------
+## Details
 
 The scripts include:
 
