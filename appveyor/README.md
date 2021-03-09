@@ -38,7 +38,7 @@ environment variables:
   version is installed. If set to ``stable``, install the latest stable
   version of Astropy. If set to ``lts`` the latest long term support (LTS)
   version is installed (more info about LTS can be found
-  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering)).
+  [here](https://github.com/astropy/astropy-APEs/blob/main/APE2.rst#version-numbering)).
 
 * ``SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Sunpy is installed. If set to a

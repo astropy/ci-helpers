@@ -19,7 +19,7 @@ service are no longer supported. Please use the
 [Windows build on Travis](https://docs.travis-ci.com/user/reference/windows/)
 instead.
 
-For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/master/appveyor/README.md).
+For the usage of the deprecated scripts see [Appveyor scripts README](https://github.com/astropy/ci-helpers/blob/main/appveyor/README.md).
 
 ## About
 
@@ -117,7 +117,7 @@ environment variables
   passes on Travis without running the tests. If set to ``lts`` the latest
   long term support (LTS) version is installed (more info about LTS can be
   found
-  [here](https://github.com/astropy/astropy-APEs/blob/master/APE2.rst#version-numbering).
+  [here](https://github.com/astropy/astropy-APEs/blob/main/APE2.rst#version-numbering).
 
 * ``SUNPY_VERSION``: if set to ``dev`` or ``development``, the latest
   developer version of Sunpy is installed. If set to a
@@ -176,7 +176,7 @@ environment variables
   types. If given, the build will run only if the ``TRAVIS_EVENT_TYPE``
   matches with any of the listed ones. Otherwise the build exits and passes
   on Travis without running the tests. This is a way to control builds to
-  run only on pushes to master, or for Travis cron jobs. Valid event types
+  run only on pushes to main, or for Travis cron jobs. Valid event types
   are: ``push``, ``pull_request``, ``api`` or ``cron``.
 
 * ``PIP_FALLBACK``: the default behaviour is to fall back to try to pip
@@ -257,7 +257,7 @@ latest version, but does not install any other packages. This is deliberate as w
 ### pip pinnings
 
 We also provide a file called
-[pip_pinnings.txt](https://github.com/astropy/ci-helpers/blob/master/pip_pinnings.rst)
+[pip_pinnings.txt](https://github.com/astropy/ci-helpers/blob/main/pip_pinnings.rst)
 which contains any version pins we currently recommend. This file is in the
 [pip requirements](https://pip.pypa.io/en/stable/user_guide/#requirements-files) format.
 Often this file will be empty if no pinnings are recommended. This file is suitable for
