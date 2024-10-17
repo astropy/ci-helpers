@@ -1,6 +1,6 @@
 ## Important notices
 
-This package is no longer actively developed. Please read on below for service-specific
+This package is no longer actively developed and has been archived. Please read on below for service-specific
 information.
 
 ### Travis CI
